@@ -39,14 +39,16 @@ function GraduationCapIcon() {
 type Props = {
   className?: string;
   content: SiteContent["applicationCard"];
+  intakes?: SiteContent["intakes"];
 };
 
-export function ApplicationCard({ className, content }: Props) {
-  const status = applicationStatus();
+export function ApplicationCard({ className, content, intakes }: Props) {
+  const status = applicationStatus(intakes);
   return (
     <aside
       className={`${styles.card}${className ? ` ${className}` : ""}`}
       aria-label={content.ariaLabel}
+      data-intake-state={status.state}
     >
       <div className={styles.head}>
         <GraduationCapIcon />
@@ -57,6 +59,12 @@ export function ApplicationCard({ className, content }: Props) {
           <strong>{status.deadlineLabel}</strong>
           <span>{status.deadlineValue}</span>
         </li>
+        {status.state === "closing-soon" && typeof status.daysLeft === "number" ? (
+          <li>
+            <strong>Time left</strong>
+            <span>{status.daysLeft === 0 ? "Last day today" : `${status.daysLeft} day${status.daysLeft === 1 ? "" : "s"}`}</span>
+          </li>
+        ) : null}
         <li>
           <strong>{content.programsLabel}</strong>
           <span>{content.programsValue}</span>

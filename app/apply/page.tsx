@@ -9,7 +9,7 @@ import { DeadlineBand } from "@/components/DeadlineBand";
 import { PreviewBanner } from "@/components/PreviewBanner";
 import { ShareRow } from "@/components/ShareRow";
 import { isScholarshipId } from "@/lib/application/constants";
-import { deadlineBandItems } from "@/lib/application/intakes";
+import { deadlineBandItems, deadlineCycleItems, type ScholarshipId } from "@/lib/application/intakes";
 import { loadSiteContent, resolvePreview } from "@/lib/content";
 import { site } from "@/lib/site";
 import styles from "./apply.module.css";
@@ -32,6 +32,12 @@ const PROGRAM_FACTS: Record<string, { who: string; eligibility: string; covers: 
   },
 };
 
+const PROGRAM_SCHOLARSHIP: Record<string, ScholarshipId> = {
+  "john-ivy": "john-ivy-azariah",
+  "robert-mathais": "robert-mathias",
+  "ivy-azariah": "ivy-azariah",
+};
+
 export const metadata: Metadata = { title: "Apply" , alternates: { canonical: `${site.url}/apply` } };
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
@@ -48,7 +54,8 @@ export default async function ApplyPage({
   if (isScholarshipId(scholarshipValue)) {
     redirect(`/apply/form?scholarship=${scholarshipValue}`);
   }
-  const { apply, chrome } = await loadSiteContent({ preview });
+  const content = await loadSiteContent({ preview });
+  const { apply, chrome } = content;
 
   return (
     <>
@@ -76,7 +83,7 @@ export default async function ApplyPage({
                     { label: "Who it's for", text: facts?.who ?? intro },
                     { label: "Eligibility", text: facts?.eligibility ?? prog.heading },
                     { label: "What it covers", text: facts?.covers ?? intro },
-                    deadlineFact(apply.deadlines),
+                    deadlineFact(deadlineCycleItems(content.intakes, PROGRAM_SCHOLARSHIP[prog.id])),
                   ]}
                 >
                   <ReadableParagraph text={prog.body} />
@@ -99,7 +106,7 @@ export default async function ApplyPage({
         </div>
       </section>
 
-      <DeadlineBand items={deadlineBandItems()} ariaLabel={apply.deadlinesAriaLabel} />
+      <DeadlineBand items={deadlineBandItems(content.intakes)} ariaLabel={apply.deadlinesAriaLabel} />
     </>
   );
 }

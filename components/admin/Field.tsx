@@ -7,6 +7,9 @@ export function Field({
   multiline,
   disabled,
   mono,
+  id: idProp,
+  type = "text",
+  hint,
 }: {
   label: string;
   value: string;
@@ -14,8 +17,11 @@ export function Field({
   multiline?: boolean;
   disabled?: boolean;
   mono?: boolean;
+  id?: string;
+  type?: "text" | "date" | "url";
+  hint?: string;
 }) {
-  const id = label.replace(/\s+/g, "-").toLowerCase();
+  const id = idProp ?? label.replace(/\s+/g, "-").toLowerCase();
   return (
     <div className={styles.field}>
       <label htmlFor={id}>{label}</label>
@@ -29,12 +35,14 @@ export function Field({
       ) : (
         <input
           id={id}
+          type={type}
           className={mono ? styles.pathMono : undefined}
           value={value}
           disabled={disabled}
           onChange={(event) => onChange(event.target.value)}
         />
       )}
+      {hint ? <p className={styles.hint}>{hint}</p> : null}
     </div>
   );
 }

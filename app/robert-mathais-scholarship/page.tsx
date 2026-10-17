@@ -45,7 +45,7 @@ export default async function Page({
               },
               {
                 label: "Deadline",
-                text: deadlineStatusSentence(),
+                text: deadlineStatusSentence(content.intakes, new Date(), "robert-mathias"),
               },
             ]}
           />

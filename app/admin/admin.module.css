@@ -711,3 +711,24 @@
   padding: 0.3rem 0.6rem;
   cursor: pointer;
 }
+
+.checkGroup {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.checkGroup legend {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+  padding: 0;
+}
+
+.checkGroup label,
+.inlineCheck {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 500;
+}

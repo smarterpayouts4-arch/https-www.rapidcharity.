@@ -2,6 +2,7 @@ import type { HomepageSectionId, SiteContent } from "@/lib/content/schema";
 
 export type Tab =
   | "home"
+  | "schedule"
   | "about"
   | "apply"
   | "donate"
@@ -19,6 +20,7 @@ export type ContentChange = (path: ContentPath, value: unknown) => void;
 
 export const TABS: Array<{ id: Tab; label: string; previewPath: string }> = [
   { id: "home", label: "Home", previewPath: "/?preview=1" },
+  { id: "schedule", label: "Dates & announcements", previewPath: "/?preview=1" },
   { id: "about", label: "About", previewPath: "/about-us?preview=1" },
   { id: "apply", label: "Apply", previewPath: "/apply?preview=1" },
   { id: "donate", label: "Donate", previewPath: "/donate?preview=1" },

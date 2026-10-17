@@ -3,6 +3,7 @@ import Link from "next/link";
 import { GuideSections, ReadableParagraph } from "@/components/content/Guide";
 import { PageHero } from "@/components/PageHero";
 import { PreviewBanner } from "@/components/PreviewBanner";
+import { fillIntakeTokens } from "@/lib/application/intakes";
 import { loadSiteContent, resolvePreview } from "@/lib/content";
 import { site } from "@/lib/site";
 
@@ -18,7 +19,19 @@ export default async function ScholarshipCriteriaPage({
   const params = searchParams ? await searchParams : undefined;
   const preview = await resolvePreview(params);
   const content = await loadSiteContent({ preview });
-  const landing = content.apply.landings.criteria;
+  const raw = content.apply.landings.criteria;
+  const fill = (text: string) => fillIntakeTokens(text, content.intakes);
+  const landing = {
+    ...raw,
+    paragraphs: raw.paragraphs.map(fill),
+    note: raw.note ? fill(raw.note) : raw.note,
+    sections: (raw.sections ?? []).map((section) => ({
+      ...section,
+      paragraphs: section.paragraphs?.map(fill),
+      listItems: section.listItems?.map(fill),
+      orderedItems: section.orderedItems?.map(fill),
+    })),
+  };
 
   return (
     <>

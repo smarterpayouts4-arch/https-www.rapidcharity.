@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { isAuthFailure, requireAdminRead, requireAdminWrite } from "@/lib/auth/guard";
 import {
@@ -9,6 +10,20 @@ import {
 } from "@/lib/content/repository";
 
 const noStore = { "Cache-Control": "no-store" };
+
+/**
+ * Drop every cached render after a publish so the next request reads the new
+ * content. Public pages already render per request; this also clears the
+ * cached sitemap and any router cache entries.
+ */
+function revalidateSite() {
+  try {
+    revalidatePath("/", "layout");
+    revalidatePath("/sitemap.xml");
+  } catch {
+    // Outside a Next.js request (unit tests, scripts) there is nothing to revalidate.
+  }
+}
 
 function messageOf(error: unknown, fallback: string): string {
   return error instanceof Error ? error.message : fallback;
@@ -83,6 +98,7 @@ export function createPublishHandler<T extends { updatedAt?: string }>(options: 
         updatedAt: new Date().toISOString(),
       });
       await publishCollection(options.name, stamped);
+      revalidateSite();
       return NextResponse.json(
         { ok: true, published: true, path: options.publishedLabel, updatedAt: stamped.updatedAt },
         { headers: noStore },

@@ -5,6 +5,12 @@ export const eventItemSchema = z.object({
   title: z.string().min(1),
   body: z.string().min(1),
   status: z.enum(["draft", "published"]).default("published"),
+  /** Event day (YYYY-MM-DD). Drives upcoming vs past on /events. Optional for older entries. */
+  date: z.union([z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Use YYYY-MM-DD"), z.literal("")]).optional(),
+  /** Optional time text, for example "4:00 pm". */
+  time: z.string().optional(),
+  /** Venue or city. When empty the page infers a city from the title. */
+  location: z.string().optional(),
   images: z
     .array(z.object({ src: z.string().min(1), alt: z.string().default("") }))
     .optional(),

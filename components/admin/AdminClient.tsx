@@ -12,6 +12,7 @@ import { useCollectionAdmin } from "./useCollectionAdmin";
 import { GroupSection } from "./sections/GroupSection";
 import { HomeSection } from "./sections/HomeSection";
 import { VerifiedSection } from "./sections/VerifiedSection";
+import { ScheduleSection } from "./sections/ScheduleSection";
 import { BlogCollectionSection } from "./sections/BlogCollectionSection";
 import { EventsCollectionSection } from "./sections/EventsCollectionSection";
 import { ApplicationsPanel } from "./ApplicationsPanel";
@@ -167,6 +168,7 @@ export function AdminClient({
               onUpload={(file) => void admin.uploadVideo(file)}
             />
           ) : null}
+          {tab === "schedule" ? <ScheduleSection content={admin.content} onChange={admin.change} /> : null}
           {tab === "about" ? (
             <GroupSection
               title="About Us"

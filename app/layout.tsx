@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Plus_Jakarta_Sans, Poppins } from "next/font/google";
 import { SiteShell } from "@/components/SiteShell";
 import { loadSiteContent } from "@/lib/content";
+import { activeAnnouncement } from "@/lib/content/announcement";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -76,6 +77,7 @@ export default async function RootLayout({
         <SiteShell
           nav={content.nav}
           footer={content.footer}
+          announcement={activeAnnouncement(content.announcement, content.intakes?.timezone)}
           programBlurbs={Object.fromEntries(
             (content.scholarshipPrograms?.programs ?? []).map((p) => [p.href, p.blurb]),
           )}

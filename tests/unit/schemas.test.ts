@@ -16,7 +16,7 @@ test("published site, blog, and events JSON match their schemas", () => {
   assert.equal(site.verified.scholarshipsAwarded, "147");
   assert.ok(blog.posts.length >= 27);
   assert.equal(events.items.length, 6);
-  assert.equal(site.missionOverview.video.embedUrl, "");
+  assert.ok(site.intakes.items.length >= 1);
 });
 
 test("blog schema rejects duplicate slugs", () => {

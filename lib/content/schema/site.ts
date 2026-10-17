@@ -2,6 +2,7 @@ import { z } from "zod";
 import { footerSchema, navSchema, sharedChromeSchema } from "./chrome";
 import { homeContentShape } from "./home";
 import { pageContentShape } from "./pages";
+import { scheduleContentShape } from "./schedule";
 import { verifiedSchema } from "./verified";
 
 export const siteContentSchema = z.object({
@@ -12,6 +13,7 @@ export const siteContentSchema = z.object({
   chrome: sharedChromeSchema,
   ...homeContentShape,
   ...pageContentShape,
+  ...scheduleContentShape,
   verified: verifiedSchema,
 });
 

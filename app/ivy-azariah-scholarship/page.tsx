@@ -4,6 +4,7 @@ import { ContentLink } from "@/components/ContentLink";
 import { deadlineFact, LandingBody } from "@/components/apply/LandingBody";
 import { PageHero } from "@/components/PageHero";
 import { PreviewBanner } from "@/components/PreviewBanner";
+import { deadlineCycleItems } from "@/lib/application/intakes";
 import { loadSiteContent, resolvePreview } from "@/lib/content";
 import { site } from "@/lib/site";
 
@@ -39,7 +40,7 @@ export default async function Page({
                 label: "What it covers",
                 text: "Ivy Azariah believed these qualities were the true measure of success: 1) respect for God, your family and yourself, 2) education and 3) discipline.",
               },
-              deadlineFact(content.apply.deadlines),
+              deadlineFact(deadlineCycleItems(content.intakes, "ivy-azariah")),
             ]}
           />
           {landing.applyHref ? (

@@ -99,3 +99,13 @@
   .row h3 { font-size: 1.35rem; }
   .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+.groupTitle {
+  margin: 0 0 1.25rem;
+  text-align: left;
+  color: #222222;
+}
+
+.list + .groupTitle {
+  margin-top: 3rem;
+}

@@ -8,6 +8,8 @@ import {
   resolvePreview,
   visibleEvents,
 } from "@/lib/content";
+import { calendarDay, formatIntakeDate } from "@/lib/application/intakes";
+import type { EventItem } from "@/lib/content/eventsSchema";
 import { site } from "@/lib/site";
 import styles from "./events.module.css";
 
@@ -38,6 +40,19 @@ function eventWhen(title: string, body: string): string {
   return year?.[0] ?? "";
 }
 
+function eventMeta(item: EventItem) {
+  const place = item.location?.trim() || eventPlace(item.title, item.body);
+  let badge = dateBadge(item.title, item.body);
+  let when = eventWhen(item.title, item.body);
+  if (item.date) {
+    const [, m, d] = item.date.split("-").map(Number);
+    badge = { month: MONTHS[m - 1].slice(0, 3).toUpperCase(), day: String(d) };
+    when = formatIntakeDate(item.date);
+  }
+  if (item.time?.trim()) when = when ? `${when}, ${item.time.trim()}` : item.time.trim();
+  return { place, badge, when };
+}
+
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
 export async function generateMetadata({
@@ -65,6 +80,59 @@ export default async function EventsPage({
   const siteContent = await loadSiteContent({ preview });
   const { events } = siteContent;
   const items = visibleEvents(await loadEventsContent({ preview }), preview);
+  const today = calendarDay(new Date(), siteContent.intakes?.timezone);
+  const upcoming = items
+    .filter((item) => item.date && item.date >= today)
+    .sort((a, b) => (a.date ?? "").localeCompare(b.date ?? ""));
+  const past = items.filter((item) => !(item.date && item.date >= today));
+
+  const renderList = (list: EventItem[]) => (
+    <div className={styles.list}>
+      {list.map((item) => {
+        const { place, badge, when } = eventMeta(item);
+        return (
+          <article key={item.id} className={styles.row} data-reveal-item data-dated={badge ? "true" : undefined} data-event-id={item.id}>
+            <div className={styles.meta}>
+              <span className={styles.badge}>{place}</span>
+              {badge ? (
+                <span className={styles.dateBadge}>
+                  <span>{badge.month}</span>
+                  <span>{badge.day}</span>
+                </span>
+              ) : null}
+              {when ? <p className={styles.when}>{when}</p> : null}
+            </div>
+            <div className={styles.copy}>
+              <h3>{item.title}</h3>
+              <p className={styles.place}>{place}</p>
+              <div className={styles.detail}>
+                {item.body.split(/\n\n+/).map((paragraph) => (
+                  <p key={paragraph.slice(0, 40)}>{paragraph}</p>
+                ))}
+              </div>
+              {item.images?.filter((image) => /\.[a-z0-9]{3,4}$/i.test(image.src)).length ? (
+                <ul className={styles.gallery} aria-label={`${item.title} photos`}>
+                  {item.images.filter((image) => /\.[a-z0-9]{3,4}$/i.test(image.src)).map((image) => (
+                    <li key={image.src}>
+                      <a href={image.src} target="_blank" rel="noopener noreferrer">
+                        <Image
+                          src={image.src}
+                          alt={image.alt}
+                          width={480}
+                          height={360}
+                          sizes="(max-width: 767px) 50vw, 240px"
+                        />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  );
 
   return (
     <>
@@ -72,53 +140,14 @@ export default async function EventsPage({
       <PageHero title={events.title} subtitle={events.subtitle} />
       <section className="section">
         <div className="container">
-          <div className={styles.list}>
-            {items.map((item) => {
-              const place = eventPlace(item.title, item.body);
-              const when = eventWhen(item.title, item.body);
-              const badge = dateBadge(item.title, item.body);
-              return (
-                <article key={item.id} className={styles.row} data-reveal-item data-dated={badge ? "true" : undefined}>
-                  <div className={styles.meta}>
-                    <span className={styles.badge}>{place}</span>
-                    {badge ? (
-                      <span className={styles.dateBadge}>
-                        <span>{badge.month}</span>
-                        <span>{badge.day}</span>
-                      </span>
-                    ) : null}
-                    {when ? <p className={styles.when}>{when}</p> : null}
-                  </div>
-                  <div className={styles.copy}>
-                    <h3>{item.title}</h3>
-                    <p className={styles.place}>{place}</p>
-                    <div className={styles.detail}>
-                      {item.body.split(/\n\n+/).map((paragraph) => (
-                        <p key={paragraph.slice(0, 40)}>{paragraph}</p>
-                      ))}
-                    </div>
-                    {item.images?.length ? (
-                      <ul className={styles.gallery} aria-label={`${item.title} photos`}>
-                        {item.images.map((image) => (
-                          <li key={image.src}>
-                            <a href={image.src} target="_blank" rel="noopener noreferrer">
-                              <Image
-                                src={image.src}
-                                alt={image.alt}
-                                width={480}
-                                height={360}
-                                sizes="(max-width: 767px) 50vw, 240px"
-                              />
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : null}
-                  </div>
-                </article>
-              );
-            })}
-          </div>
+          {upcoming.length ? (
+            <>
+              <h2 className={styles.groupTitle} id="upcoming-events">Upcoming events</h2>
+              {renderList(upcoming)}
+              <h2 className={styles.groupTitle} id="past-events">Past events</h2>
+            </>
+          ) : null}
+          {renderList(past)}
         </div>
       </section>
     </>

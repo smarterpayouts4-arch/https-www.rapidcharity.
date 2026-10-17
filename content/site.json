@@ -602,7 +602,7 @@
           "The following criteria and process are published on Rapid Charity's scholarship guidelines. For the current application cycle and forms, use the Apply page."
         ],
         "listItems": [],
-        "note": "Use the deadlines published on the Apply page (Spring 2027: 15 October 2026; Fall 2027: 15 April 2027). Older dates that may appear on archived Wix criteria pages are not used here.",
+        "note": "Use the deadlines published on the Apply page ({deadlines}). Older dates that may appear on archived Wix criteria pages are not used here.",
         "applyLabel": "Apply",
         "applyHref": "",
         "backLabel": "Back to Apply",
@@ -665,7 +665,7 @@
           {
             "title": "Current cycle deadlines",
             "paragraphs": [
-              "Use the deadlines published on the Apply page (Spring 2027: 15 October 2026; Fall 2027: 15 April 2027). Older dates that may appear on archived Wix criteria pages are not used here."
+              "Use the deadlines published on the Apply page ({deadlines}). Older dates that may appear on archived Wix criteria pages are not used here."
             ],
             "listItems": [],
             "orderedItems": []
@@ -832,5 +832,33 @@
         "href": "/"
       }
     }
+  },
+  "intakes": {
+    "timezone": "Asia/Karachi",
+    "closingSoonDays": 14,
+    "items": [
+      {
+        "id": "spring-2027",
+        "name": "Spring Semester 2027",
+        "opens": "2026-04-16",
+        "deadline": "2026-10-15",
+        "scholarships": []
+      },
+      {
+        "id": "fall-2027",
+        "name": "Fall Semester 2027",
+        "opens": "",
+        "deadline": "2027-04-15",
+        "scholarships": []
+      }
+    ]
+  },
+  "announcement": {
+    "enabled": false,
+    "text": "",
+    "linkLabel": "",
+    "linkHref": "",
+    "startsOn": "",
+    "endsOn": ""
   }
 }

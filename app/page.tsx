@@ -34,7 +34,7 @@ export default async function HomePage({
 
   const sectionMap: Record<HomepageSectionId, ReactNode> = {
     hero: (
-      <Hero content={content.hero} applicationCard={content.applicationCard} />
+      <Hero content={content.hero} applicationCard={content.applicationCard} intakes={content.intakes} />
     ),
     missionOverview: <MissionOverview content={content.missionOverview} />,
     impactStats: <ImpactStats content={content.impactStats} />,

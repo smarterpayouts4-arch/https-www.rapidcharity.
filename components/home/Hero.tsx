@@ -7,6 +7,7 @@ import styles from "./Hero.module.css";
 type Props = {
   content: SiteContent["hero"];
   applicationCard: SiteContent["applicationCard"];
+  intakes?: SiteContent["intakes"];
 };
 
 function TitleLine({ text }: { text: string }) {
@@ -22,7 +23,7 @@ function TitleLine({ text }: { text: string }) {
   );
 }
 
-export function Hero({ content, applicationCard }: Props) {
+export function Hero({ content, applicationCard, intakes }: Props) {
   return (
     <section className={styles.hero} aria-label={content.ariaLabel} data-hero-root>
       <div className={styles.intro}>
@@ -48,11 +49,11 @@ export function Hero({ content, applicationCard }: Props) {
             <p>&ldquo;{content.quote}&rdquo;</p>
           </blockquote>
         </div>
-        <ApplicationCard className={styles.appCardDesktop} content={applicationCard} />
+        <ApplicationCard className={styles.appCardDesktop} content={applicationCard} intakes={intakes} />
       </div>
       <HeroMedia slides={content.slides} ariaLabel={content.slidesAriaLabel} />
       <div className={styles.after}>
-        <ApplicationCard className={styles.appCardMobile} content={applicationCard} />
+        <ApplicationCard className={styles.appCardMobile} content={applicationCard} intakes={intakes} />
         <p className={styles.motif} aria-hidden="true">
           {content.motif}
         </p>

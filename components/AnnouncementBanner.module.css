@@ -1,0 +1,35 @@
+.bar {
+  background: #8b0a24;
+  color: #f7f4ef;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.35rem 1rem;
+  padding-block: 0.55rem;
+  text-align: left;
+}
+
+.text {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.link {
+  color: #ffe8ee;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+}
+
+.link:hover,
+.link:focus-visible {
+  color: #f7f4ef;
+}

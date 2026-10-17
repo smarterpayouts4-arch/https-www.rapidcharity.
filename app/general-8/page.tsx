@@ -4,6 +4,7 @@ import { ContentLink } from "@/components/ContentLink";
 import { deadlineFact, LandingBody } from "@/components/apply/LandingBody";
 import { PageHero } from "@/components/PageHero";
 import { PreviewBanner } from "@/components/PreviewBanner";
+import { deadlineCycleItems } from "@/lib/application/intakes";
 import { loadSiteContent, resolvePreview } from "@/lib/content";
 import { site } from "@/lib/site";
 
@@ -42,7 +43,7 @@ export default async function Page({
                 label: "What it covers",
                 text: "This scholarship honors their legacy by providing financial support to high-achieving students from minority backgrounds, enabling them to access top-tier educational opportunities and achieve their professional dreams.",
               },
-              deadlineFact(content.apply.deadlines),
+              deadlineFact(deadlineCycleItems(content.intakes, "john-ivy-azariah")),
             ]}
           />
           {landing.applyHref ? (
