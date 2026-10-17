@@ -1,6 +1,7 @@
 import { PDFDocument } from "pdf-lib";
 import { NextResponse } from "next/server";
 import {
+  documentStorageReady,
   filesForApplication,
   putFile,
   rememberFile,
@@ -9,10 +10,12 @@ import {
 } from "@/lib/application/blobStore";
 import { emptyChecks } from "@/lib/application/documents";
 import { loadFormState } from "@/lib/application/formSettings";
-import { getSubmission } from "@/lib/application/store";
+import { getSubmission, StorageNotConfiguredError, submissionStorageReady } from "@/lib/application/store";
 import {
   MAX_FILE_BYTES,
+  MAX_PHOTO_BYTES,
   MAX_PDF_PAGES,
+  PHOTO_MIN_SIDE,
   MAX_TOTAL_BYTES,
   MIN_IMAGE_HEIGHT,
   MIN_IMAGE_WIDTH,
@@ -24,6 +27,20 @@ import { isDocSlot } from "@/lib/application/fileRules";
 import type { DocumentChecks } from "@/lib/application/types";
 
 export const dynamic = "force-dynamic";
+
+/** Shown to applicants when storage is not set up. The cause is logged on the server. */
+const UNAVAILABLE = "Uploads are temporarily unavailable. Please try again later or contact us.";
+
+function unavailable(cause: string) {
+  console.error(`[uploads] ${cause}`);
+  return NextResponse.json({ error: UNAVAILABLE, code: "uploads_unavailable" }, { status: 503 });
+}
+
+function maxIndex(slot: string): number {
+  if (slot === "result") return 5;
+  if (slot === "education_proof") return 6;
+  return 1;
+}
 
 function numberOrNull(value: unknown): number | null {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
@@ -65,10 +82,13 @@ export async function POST(request: Request) {
   const slot = String(form.get("slot") ?? "");
   const index = Number(form.get("index") ?? "1");
   const file = form.get("file");
-  if (!isDocSlot(slot) || !Number.isInteger(index) || index < 1 || (slot === "result" ? index > 5 : index !== 1)) {
+  if (!isDocSlot(slot) || !Number.isInteger(index) || index < 1 || index > maxIndex(slot)) {
     return NextResponse.json({ error: "Choose a document slot." }, { status: 400 });
   }
   if (!(file instanceof File)) return NextResponse.json({ error: "Choose a JPG, PNG, or PDF." }, { status: 400 });
+  // Without a submission store or a file store nothing can be saved; say so instead of a retry message.
+  if (!submissionStorageReady()) return unavailable("Application storage is not configured (Firestore credentials missing).");
+  if (!documentStorageReady()) return unavailable("Document storage is not configured (Google Drive or Cloudinary keys missing).");
   // Re-uploads for an existing submission stay in that submission's cycle and
   // work while the form is closed; new uploads need the form to be open.
   let uploadCycle: string;
@@ -81,7 +101,9 @@ export async function POST(request: Request) {
       if (!formState.open) return NextResponse.json({ error: formState.closedMessage }, { status: 403 });
       uploadCycle = formState.cycleId;
     }
-  } catch {
+  } catch (error) {
+    if (error instanceof StorageNotConfiguredError) return unavailable(error.message);
+    console.error("[uploads] could not check the draft or form state", error);
     return NextResponse.json({ error: "The upload could not be checked. Try again in a moment." }, { status: 503 });
   }
   const bytes = Buffer.from(await file.arrayBuffer());
@@ -89,6 +111,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Each file must be 5 MB or smaller." }, { status: 400 });
   }
   const mime = sniffType(bytes);
+  if (slot === "photo" && mime !== "image/jpeg" && mime !== "image/png") {
+    return NextResponse.json({ error: "The passport-size photo must be a JPG or PNG picture." }, { status: 400 });
+  }
+  if (slot === "photo" && bytes.length > MAX_PHOTO_BYTES) {
+    return NextResponse.json({ error: "The passport-size photo must be 500 KB or smaller. Choose it again and it will be resized." }, { status: 400 });
+  }
   if (mime === "reject" || mime === "image/heic") {
     return NextResponse.json(
       { error: "Use a JPG, PNG, or PDF. If this is a HEIC photo, save it as JPG and try again." },
@@ -109,7 +137,11 @@ export async function POST(request: Request) {
     }
   } else {
     const size = readImageSize(bytes, mime);
-    if (!size || size.width < MIN_IMAGE_WIDTH || size.height < MIN_IMAGE_HEIGHT) {
+    if (slot === "photo") {
+      if (!size || size.width < PHOTO_MIN_SIDE || size.height < PHOTO_MIN_SIDE) {
+        return NextResponse.json({ error: "This photo is too small. Use a clear photo of at least 200 x 200 pixels." }, { status: 400 });
+      }
+    } else if (!size || size.width < MIN_IMAGE_WIDTH || size.height < MIN_IMAGE_HEIGHT) {
       return NextResponse.json({ error: "This photo is smaller than 800×600. Retake it so the text can be read." }, { status: 400 });
     }
     checks.width = size.width;
@@ -169,7 +201,11 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
-    if (error instanceof UploadStorageError) return NextResponse.json({ error: error.message }, { status: 503 });
+    if (error instanceof UploadStorageError) {
+      console.error("[uploads] storage rejected the file", error.message);
+      return NextResponse.json({ error: UNAVAILABLE, code: "uploads_unavailable" }, { status: 503 });
+    }
+    console.error("[uploads] the file could not be stored", error);
     return NextResponse.json({ error: "The file could not be stored." }, { status: 500 });
   }
 }

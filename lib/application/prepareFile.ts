@@ -7,7 +7,10 @@ import {
   imageStats,
   keywordWarnings,
   MAX_PDF_PAGES,
+  MAX_PHOTO_BYTES,
   MIN_IMAGE_HEIGHT,
+  PHOTO_MAX_SIDE,
+  PHOTO_MIN_SIDE,
   MIN_IMAGE_WIDTH,
   readabilityIssue,
   sniffType,
@@ -131,10 +134,83 @@ export async function mergeImagesToPdf(files: File[]): Promise<Blob> {
   return new Blob([new Uint8Array(await pdf.save())], { type: "application/pdf" });
 }
 
+/**
+ * Passport-size photo: any phone photo (JPG, PNG, HEIC, WebP) is resized to fit
+ * inside 600 x 600 and saved as a JPEG of at most 500 KB, the portal's limit.
+ * Big photos are compressed, never rejected for size. Nothing is cropped; the
+ * circular previews use object-fit: cover.
+ */
+export async function preparePhoto(file: File): Promise<PreparedFile> {
+  const source = await maybeHeic(file);
+  const head = new Uint8Array(await source.slice(0, 32).arrayBuffer());
+  const kind = isWebp(head) ? "image/webp" : sniffType(head);
+  if (kind === "application/pdf") throw new Error("Choose a photo of your face (JPG, PNG or HEIC), not a PDF.");
+  if (kind === "reject" || kind === "image/heic") throw new Error("Choose a photo (JPG, PNG, HEIC or WebP).");
+  let bitmap: ImageBitmap;
+  try {
+    bitmap = await createImageBitmap(source);
+  } catch {
+    throw new Error("This photo could not be read. Choose another photo.");
+  }
+  const width = bitmap.width;
+  const height = bitmap.height;
+  if (width < PHOTO_MIN_SIDE || height < PHOTO_MIN_SIDE) {
+    bitmap.close();
+    throw new Error("This photo is too small. Use a clear photo of at least 200 x 200 pixels.");
+  }
+  let side = PHOTO_MAX_SIDE;
+  let blob: Blob | null = null;
+  let outWidth = 0;
+  let outHeight = 0;
+  let stats = { blur: 0, brightness: 0 };
+  try {
+    for (let round = 0; round < 6 && !blob; round += 1) {
+      const scale = Math.min(1, side / Math.max(width, height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(width * scale));
+      canvas.height = Math.max(1, Math.round(height * scale));
+      const context = canvas.getContext("2d", { willReadFrequently: true });
+      if (!context) throw new Error("This browser could not read the photo.");
+      context.fillStyle = "#ffffff";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      if (round === 0) stats = imageStats(context.getImageData(0, 0, canvas.width, canvas.height));
+      for (const quality of [0.9, 0.82, 0.74, 0.66, 0.58, 0.5]) {
+        const candidate = await blobOf(canvas, quality);
+        if (candidate.size <= MAX_PHOTO_BYTES) {
+          blob = candidate;
+          outWidth = canvas.width;
+          outHeight = canvas.height;
+          break;
+        }
+      }
+      side = Math.round(side * 0.8);
+    }
+  } finally {
+    bitmap.close();
+  }
+  if (!blob) throw new Error("This photo could not be made smaller than 500 KB. Choose another photo.");
+  const warnings: string[] = [];
+  const soft = blurWarning(stats.blur);
+  if (soft) warnings.push(soft);
+  return {
+    blob,
+    name: "photo.jpg",
+    checks: checksFrom({
+      blur_score: stats.blur,
+      brightness: stats.brightness,
+      width: outWidth,
+      height: outHeight,
+      warnings,
+    }),
+  };
+}
+
 export async function prepareFile(
   file: File,
   context: { slot: string; name: string; cnic: string; fatherName: string; fee: number | null },
 ): Promise<PreparedFile> {
+  if (context.slot === "photo") return preparePhoto(file);
   const source = await maybeHeic(file);
   const head = new Uint8Array(await source.slice(0, 32).arrayBuffer());
   // WebP (some Android galleries) is decoded by the browser and re-encoded as JPEG below.

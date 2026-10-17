@@ -13,16 +13,38 @@ scholarship in small text):
 
 | Chip | id | Scholarship | Notes |
 | --- | --- | --- | --- |
-| Akram Naseem | `john-ivy` | John-Ivy Azariah | Male, new, FCCU BS Computer Science, part-time job, Faisalabad |
-| Ayesha Khan | `ivy` | Ivy Azariah (women only) | Female, new, Kinnaird College BS Nursing, Lahore |
-| Bilal Masih | `robert` | Robert Mathias | Male, continuing, Punjab University BBA, 25% other award, reuses photo and CNIC |
+| Akram Naseem | `john-ivy` | John-Ivy Azariah | Male, new, FCCU BS Computer Science, part-time job, Faisalabad. Guardian: Father. Semester 5, GPA 3.21 of 4.00, requests PKR 100,000 |
+| Ayesha Khan | `ivy` | Ivy Azariah (women only) | Female, new, Kinnaird College BS Nursing, Lahore. Guardian: Other guardian (maternal uncle, Clerk). Semester 3, GPA 3.60 of 4.00, requests PKR 70,000 |
+| Bilal Masih | `robert` | Robert Mathias | Male, continuing, Punjab University BBA, 25% other award, RAPID scholarship before, reuses CNIC (uploads a new photo). Permanent address differs from current. Semester 5, GPA 3.42 of 4.00, requests PKR 60,000 |
+
+Every sample also fills the portal fields: Country (Pakistan), Community
+(Christian), Disability No, Family monthly income, three Education history
+rows (Matriculation and Intermediate completed with a result %, Bachelor's in
+progress), the Statement of financial need, and the priest or pastor name and
+contact. Qualification proofs are optional, so the samples leave them empty.
 
 Tapping a chip fills every step (scholarship included) and shows
 "Filled with Akram Naseem's sample. Tap Continue to move through the steps."
-with a **Clear sample** link. When you reach the Documents step the SAMPLE
-files are attached automatically through the normal upload pipeline
-(compression, text checks, preview); Continue reads "Attaching sample files…"
-until they are in. Then keep tapping Continue to Review.
+with a **Clear sample** link. On the Personal step the SAMPLE passport-size
+photo (`passport-photo-sample.jpg`, a 600 x 600 placeholder drawn by
+`scripts/generate-sample-documents.mjs`) is attached automatically and shown in
+the round preview; Continue reads "Adding photo…" until it is in. When you
+reach the Documents step the other SAMPLE files are attached automatically
+through the normal upload pipeline (compression, text checks, preview);
+Continue reads "Attaching sample files…" until they are in. Then keep tapping
+Continue to Review, which shows the photo next to the name.
+
+### When file storage is not set up
+
+On a server with no storage (for example Vercel before the Firebase, Google
+Drive or Cloudinary env vars are added) the upload route answers 503 with
+"Uploads are temporarily unavailable. Please try again later or contact us."
+and logs the cause on the server. In sample mode the SAMPLE photo and
+documents are then attached in the browser only and listed as **Sample file
+(not uploaded)**, so the walk-through still reaches Review. Submit still asks
+for confirmation, and then fails with "This sample used sample files that were
+not uploaded, because file storage is not set up here. Nothing was submitted."
+Real applicants on such a server see the unavailable message on each upload.
 
 The box always shows: "Samples are for testing. Submitting one creates a real
 test application." On Review, **Submit application** with sample data asks for
@@ -108,6 +130,19 @@ npx playwright test tests/e2e/mock-applications.spec.ts
 Runs against the normal `next start` server with no env flag. It checks that
 the chips and sample routes are hidden without the key, that `?demo=rapid2027`
 is remembered and `?demo=off` forgets it, and walks each chip through all 8
-steps to Review at 393, 412, 768 and 1440 px (plus a 360 px wrap check). It
-never submits: the Submit test dismisses the confirm dialog. Set
-`MOCK_SHOTS_DIR` to save screenshots.
+steps to Review at 360, 393, 412, 768, 1024 and 1440 px, checking on every
+step that there are no validation errors, no horizontal overflow, no clipped
+text and no tap target under 44 px. It never submits: the Submit test
+dismisses the confirm dialog. Set `MOCK_SHOTS_DIR` to save screenshots, and
+`AUDIT_SHOTS_DIR` for the Personal photo, education rows and Review shots.
+
+Two opt-in specs cover the rest:
+
+```
+# Demo flow with no storage (start this server first)
+VERCEL=1 VERCEL_ENV=production npx next start -H 127.0.0.1 -p 4731
+NO_STORAGE_BASE_URL=http://127.0.0.1:4731 npx playwright test tests/e2e/demo-no-storage.spec.ts
+
+# Local submission, admin photo, decision form and portal CSV (writes to data/, then deletes it)
+ADMIN_PORTAL_E2E=1 npx playwright test tests/e2e/admin-portal.spec.ts
+```

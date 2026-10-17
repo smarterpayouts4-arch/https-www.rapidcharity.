@@ -18,8 +18,9 @@ import { DEFAULT_APPLICATION_FORM } from "@/lib/content/schema/schedule";
 import { slugify } from "./normalize";
 import { decodeFirestore, encodeFirestore, type FirestoreValue } from "./firestoreValues";
 import { FIELD_TO_PROMOTED_LIST } from "./record";
-import { unverifiedRequired } from "./documents";
-import type { PromotedOption, StoredApplication, WorkflowStatus } from "./types";
+import { applyDecision } from "./decision";
+import { formatApplicationNumber, nextApplicationSequence, normalizeStored } from "./portal";
+import type { PromotedOption, StoredApplication } from "./types";
 
 export { BatchClosedError };
 
@@ -45,6 +46,11 @@ function storageMode(): "firestore" | "local" | "unconfigured" {
   if (firestoreConfigured()) return "firestore";
   if (process.env.VERCEL) return "unconfigured";
   return "local";
+}
+
+/** False on Vercel without Firestore credentials: nothing can be stored. */
+export function submissionStorageReady(): boolean {
+  return storageMode() !== "unconfigured";
 }
 
 function assertWritable(): "firestore" | "local" {
@@ -140,11 +146,78 @@ async function savePromotedFirestore(options: PromotedOption[]): Promise<void> {
   if (!response.ok) throw new Error(`Could not save promoted options (${response.status}).`);
 }
 
+const numbersRoot = path.join(root, "numbers");
+
+/**
+ * Reserves the next RAPID-<SESSIONCODE>-000001 number. The sequence is shared by
+ * all sessions (the portal reuses numbers across sessions; this does not).
+ * Reservations are never deleted, not even when a batch is purged.
+ */
+async function reserveApplicationNumber(application: StoredApplication, mode: "firestore" | "local"): Promise<string> {
+  let candidate = nextApplicationSequence((await listSubmissions()).map((item) => item.application_number));
+  if (mode === "local") {
+    try {
+      const names = await readdir(numbersRoot);
+      for (const name of names) {
+        const used = Number(name);
+        if (Number.isInteger(used) && used >= candidate) candidate = used + 1;
+      }
+    } catch {
+      // No reservations yet.
+    }
+  } else {
+    candidate = Math.max(candidate, (await readNumberHintFirestore()) + 1);
+  }
+  for (let attempt = 0; attempt < 500; attempt += 1, candidate += 1) {
+    const number = formatApplicationNumber(application.cycle, candidate);
+    if (mode === "local") {
+      await mkdir(numbersRoot, { recursive: true });
+      try {
+        const handle = await open(path.join(numbersRoot, String(candidate)), "wx");
+        await handle.writeFile(`${number} ${application.id}`, "utf8");
+        await handle.close();
+        return number;
+      } catch (error) {
+        if (error && typeof error === "object" && "code" in error && error.code === "EEXIST") continue;
+        throw error;
+      }
+    }
+    const encoded = encodeFirestore({ application_id: application.id, number });
+    if (!("mapValue" in encoded)) throw new Error("Number could not be encoded.");
+    const response = await authorized(`${baseUrl()}/applicationNumbers?documentId=${candidate}`, {
+      method: "POST",
+      body: JSON.stringify({ fields: encoded.mapValue.fields }),
+    });
+    if (response.status === 409) continue;
+    if (!response.ok) throw new Error(`Could not reserve an application number (${response.status}).`);
+    await writeNumberHintFirestore(candidate).catch(() => undefined);
+    return number;
+  }
+  throw new Error("Could not reserve an application number.");
+}
+
+async function readNumberHintFirestore(): Promise<number> {
+  const response = await authorized(`${baseUrl()}/applicationMeta/numbering`);
+  if (!response.ok) return 0;
+  const body = (await response.json()) as { fields?: Record<string, FirestoreValue> };
+  const decoded = decodeFirestore({ mapValue: { fields: body.fields ?? {} } }) as { last?: number };
+  return typeof decoded.last === "number" ? decoded.last : 0;
+}
+
+async function writeNumberHintFirestore(last: number): Promise<void> {
+  const fields = encodeFirestore({ last });
+  if (!("mapValue" in fields)) return;
+  const body = JSON.stringify({ fields: fields.mapValue.fields });
+  const response = await authorized(`${baseUrl()}/applicationMeta/numbering`, { method: "PATCH", body });
+  if (response.status === 404) await authorized(`${baseUrl()}/applicationMeta?documentId=numbering`, { method: "POST", body });
+}
+
 export async function saveSubmission(application: StoredApplication): Promise<void> {
   await assertBatchOpen(application.cycle);
   if (assertWritable() === "firestore") {
     await createKeyFirestore(application);
     try {
+      if (!application.application_number) application.application_number = await reserveApplicationNumber(application, "firestore");
       await createApplicationFirestore(application);
     } catch (error) {
       await deleteKeyFirestore(application.cycle_cnic);
@@ -154,6 +227,7 @@ export async function saveSubmission(application: StoredApplication): Promise<vo
   }
   await exclusiveKey(application.cycle_cnic, application.id);
   try {
+    if (!application.application_number) application.application_number = await reserveApplicationNumber(application, "local");
     await atomicWriteFile(applicationPath(application.id), `${JSON.stringify(application, null, 2)}\n`);
   } catch (error) {
     await rm(keyPath(application.cycle_cnic), { force: true });
@@ -201,9 +275,12 @@ async function listFiles(): Promise<StoredApplication[]> {
   }
   const items: StoredApplication[] = [];
   for (const name of names) {
-    if (!name.endsWith(".json") || name === "promoted.json") continue;
+    // batches.json and promoted.json share this folder; only application records are listed.
+    if (!name.endsWith(".json") || name === "promoted.json" || name === "batches.json") continue;
     const raw = await readFile(path.join(root, name), "utf8");
-    items.push(JSON.parse(raw) as StoredApplication);
+    const parsed = JSON.parse(raw) as StoredApplication;
+    if (!parsed || typeof parsed.id !== "string" || typeof parsed.cnic !== "string" || !parsed.review) continue;
+    items.push(normalizeStored(parsed));
   }
   return items;
 }
@@ -223,7 +300,7 @@ async function listFirestore(): Promise<StoredApplication[]> {
       nextPageToken?: string;
     };
     for (const document of body.documents ?? []) {
-      items.push(decodeFirestore({ mapValue: { fields: document.fields ?? {} } }) as StoredApplication);
+      items.push(normalizeStored(decodeFirestore({ mapValue: { fields: document.fields ?? {} } }) as StoredApplication));
     }
     pageToken = body.nextPageToken ?? "";
   } while (pageToken);
@@ -236,11 +313,11 @@ export async function getSubmission(id: string): Promise<StoredApplication | nul
     if (response.status === 404) return null;
     if (!response.ok) throw new Error(`Could not read application (${response.status}).`);
     const body = (await response.json()) as { fields?: Record<string, FirestoreValue> };
-    return decodeFirestore({ mapValue: { fields: body.fields ?? {} } }) as StoredApplication;
+    return normalizeStored(decodeFirestore({ mapValue: { fields: body.fields ?? {} } }) as StoredApplication);
   }
   try {
     const raw = await readFile(applicationPath(id), "utf8");
-    return JSON.parse(raw) as StoredApplication;
+    return normalizeStored(JSON.parse(raw) as StoredApplication);
   } catch {
     return null;
   }
@@ -283,25 +360,18 @@ export async function reviewOtherField(
   return application;
 }
 
-const WORKFLOWS = new Set<WorkflowStatus>([
-  "submitted",
-  "incomplete",
-  "under_review",
-  "approved",
-  "rejected",
-  "did_not_reapply",
-  "pass_out",
-]);
 
 const DOC_STATES = new Set(["pending", "verified", "rejected", "reupload"]);
 
 export async function updateApplicationReview(
   id: string,
   patch: {
-    action: "workflow" | "award" | "category" | "remark" | "document" | "flag";
+    action: "workflow" | "decision" | "award" | "category" | "remark" | "document" | "flag";
     author: string;
     workflow?: string;
     award_amount?: number | null;
+    rejection_reason?: string;
+    remarks?: string;
     export_category?: string;
     text?: string;
     slot?: string;
@@ -312,18 +382,19 @@ export async function updateApplicationReview(
     verified?: boolean;
   },
 ): Promise<{ application: StoredApplication; reuploadPath: string }> {
-  const application = await getSubmission(id);
-  if (!application) throw new Error("Application not found.");
+  const found = await getSubmission(id);
+  if (!found) throw new Error("Application not found.");
+  let application = found;
   let reuploadPath = "";
-  if (patch.action === "workflow") {
-    if (!patch.workflow || !WORKFLOWS.has(patch.workflow as WorkflowStatus)) throw new Error("Choose a review status.");
-    if (patch.workflow === "approved") {
-      const missing = unverifiedRequired(application);
-      if (missing.length > 0) {
-        throw new Error(`Verify every required document first: ${missing.join(", ")}.`);
-      }
-    }
-    application.review.workflow = patch.workflow as WorkflowStatus;
+  if (patch.action === "workflow" || patch.action === "decision") {
+    application = applyDecision(application, {
+      workflow: patch.workflow ?? "",
+      // A plain status change keeps the saved amount, so approving still needs one.
+      approved_amount: patch.action === "decision" ? patch.award_amount : application.review.award_amount,
+      rejection_reason: patch.action === "decision" ? patch.rejection_reason : application.review.rejection_reason,
+      remarks: patch.remarks,
+      author: patch.author,
+    });
   } else if (patch.action === "award") {
     if (patch.award_amount === null || patch.award_amount === undefined) {
       application.review.award_amount = null;
@@ -388,7 +459,6 @@ export async function replaceReupload(
       : document,
   );
   found.application.documents = documents;
-  if (found.application.review.workflow === "incomplete") found.application.review.workflow = "submitted";
   await writeSubmission(found.application);
 }
 

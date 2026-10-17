@@ -28,10 +28,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ submission }, { headers: { "Cache-Control": "no-store" } });
     }
     const result = await updateApplicationReview(id, {
-      action: action as "workflow" | "award" | "category" | "remark" | "document" | "flag",
+      action: action as "workflow" | "decision" | "award" | "category" | "remark" | "document" | "flag",
       author: session.email,
       workflow: typeof record.workflow === "string" ? record.workflow : undefined,
       award_amount: typeof record.award_amount === "number" || record.award_amount === null ? record.award_amount : undefined,
+      rejection_reason: typeof record.rejection_reason === "string" ? record.rejection_reason : undefined,
+      remarks: typeof record.remarks === "string" ? record.remarks : undefined,
       export_category: typeof record.export_category === "string" ? record.export_category : undefined,
       text: typeof record.text === "string" ? record.text : undefined,
       slot: typeof record.slot === "string" ? record.slot : undefined,

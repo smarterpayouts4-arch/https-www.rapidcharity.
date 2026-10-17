@@ -1,7 +1,9 @@
 import { DEFAULT_APPLICATION_FORM } from "@/lib/content/schema/schedule";
 
 const DEFAULT_CYCLE = DEFAULT_APPLICATION_FORM.cycleId;
+import { occupationOptions } from "./catalogs";
 import { placeholderDocument } from "./documents";
+import { optionLabel } from "./labels";
 import { feeWithinTolerance, textContainsName } from "./fileRules";
 import { normalizeCnic, normalizePhone } from "./normalize";
 import type { ApplicationInput, Choice, DocumentChecks, ReviewItem, StoredApplication, StoredDocument } from "./types";
@@ -95,7 +97,10 @@ function storedDocuments(input: ApplicationInput): StoredDocument[] {
   return documents;
 }
 
-export function buildSubmission(input: ApplicationInput, meta: { id: string; submittedAt: string; cycle?: string }): StoredApplication {
+export function buildSubmission(
+  input: ApplicationInput,
+  meta: { id: string; submittedAt: string; cycle?: string; applicationNumber?: string },
+): StoredApplication {
   const cnic = normalizeCnic(input.cnic);
   const otherFields = collectOtherFields(input);
   const employed = input.employment_status === "Yes";
@@ -125,15 +130,30 @@ export function buildSubmission(input: ApplicationInput, meta: { id: string; sub
     input.siblings_other_count === null ||
     input.previous_completion_year === null ||
     input.study_years === null ||
-    input.completion_year === null
+    input.completion_year === null ||
+    (input.permanent_same !== "Yes" && input.permanent_same !== "No") ||
+    (input.guardian_relation !== "father" && input.guardian_relation !== "husband" && input.guardian_relation !== "guardian") ||
+    input.family_monthly_income === null ||
+    input.amount_requested === null
   ) {
     throw new Error("Application failed validation before it was stored.");
   }
 
   const fatherLate = input.father_status === "Late";
   const motherLate = input.mother_status === "Late";
+  const relation = input.guardian_relation;
+  const resolvedGuardianName =
+    relation === "father" ? input.father_name.trim() : relation === "husband" ? input.spouse_name.trim() : input.guardian_name.trim();
+  const resolvedGuardianOccupation =
+    relation === "father"
+      ? fatherLate
+        ? "Late"
+        : optionLabel(occupationOptions, input.father_occupation)
+      : input.guardian_occupation.trim();
+  const permanentSame = input.permanent_same === "Yes";
   return {
     id: meta.id,
+    application_number: meta.applicationNumber ?? "",
     cycle: meta.cycle ?? DEFAULT_CYCLE,
     cycle_cnic: `${meta.cycle ?? DEFAULT_CYCLE}_${cnic.digits}`,
     submitted_at: meta.submittedAt,
@@ -150,6 +170,7 @@ export function buildSubmission(input: ApplicationInput, meta: { id: string; sub
     spouse_name: married ? input.spouse_name.trim() : "",
     spouse_monthly_income: married ? input.spouse_monthly_income : null,
     religion: input.religion,
+    country: input.country,
     cnic: cnic.digits,
     cnic_raw: input.cnic.trim(),
     email: input.email.trim(),
@@ -158,6 +179,8 @@ export function buildSubmission(input: ApplicationInput, meta: { id: string; sub
     secondary_phone: input.secondary_phone.trim() ? mustPhone(input.secondary_phone) : "",
     secondary_phone_raw: input.secondary_phone.trim(),
     address_line: input.address_line.trim(),
+    permanent_same: input.permanent_same,
+    permanent_address: permanentSame ? input.address_line.trim() : input.permanent_address.trim(),
     city: input.city,
     province: input.province,
     employment_status: input.employment_status,
@@ -174,6 +197,10 @@ export function buildSubmission(input: ApplicationInput, meta: { id: string; sub
     mother_monthly_income: motherLate ? { amount: null, currency: "PKR", period: "month", value_state: "unknown" } : input.mother_monthly_income,
     guardian_phone: mustPhone(input.guardian_phone),
     guardian_phone_raw: input.guardian_phone.trim(),
+    guardian_relation: relation,
+    guardian_name: resolvedGuardianName,
+    guardian_occupation: resolvedGuardianOccupation,
+    family_monthly_income: input.family_monthly_income,
     siblings_count: input.siblings_count,
     siblings_studying_count: input.siblings_studying_count,
     siblings_working_count: input.siblings_working_count,
@@ -193,10 +220,20 @@ export function buildSubmission(input: ApplicationInput, meta: { id: string; sub
     completion_year: input.completion_year,
     roll_number: input.roll_number.trim(),
     terms: input.terms,
+    education: input.education.map((row) => ({
+      ...row,
+      qualification_other: row.qualification === "other" ? row.qualification_other.trim() : "",
+      institution: row.institution.trim(),
+      board: row.board.trim(),
+    })),
+    current_semester: input.current_semester,
+    current_gpa: input.current_gpa,
+    gpa_scale: input.current_gpa === null ? "" : input.gpa_scale,
     previous_institution: input.previous_institution,
     previous_qualification: input.previous_qualification,
     previous_completion_year: input.previous_completion_year,
     fee: input.fee,
+    amount_requested: input.amount_requested,
     fee_due_date: input.fee_due_date,
     institution_phone: input.institution_phone.trim() ? mustPhone(input.institution_phone) : "",
     institution_phone_raw: input.institution_phone.trim(),
@@ -229,6 +266,7 @@ export function buildSubmission(input: ApplicationInput, meta: { id: string; sub
     family_ref_phone_raw: input.family_ref_phone.trim(),
     family_ref_email: input.family_ref_email.trim(),
     attend_events: input.attend_events,
+    financial_need_statement: input.financial_need_statement.trim(),
     life_goal: input.life_goal.trim(),
     community_contribution: input.community_contribution.trim(),
     plan_if_denied: input.plan_if_denied.trim(),
@@ -243,11 +281,14 @@ export function buildSubmission(input: ApplicationInput, meta: { id: string; sub
       status: otherFields.length > 0 ? "needs_review" : "clear",
       other_fields: otherFields,
       workflow: "submitted",
+      legacy_workflow: "",
       award_amount: null,
       award_override: false,
+      rejection_reason: "",
       export_category: "",
       remarks: [],
       verified_flags: {},
+      history: [{ at: meta.submittedAt, from: "", to: "submitted", by: "Applicant", note: "" }],
     },
   };
 }

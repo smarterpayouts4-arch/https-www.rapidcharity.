@@ -114,14 +114,49 @@ export const OCCUPATIONS = [
   "Other",
 ] as const;
 
-export const RELIGIONS = [
-  "Christianity",
-  "Islam",
-  "Hinduism",
-  "Sikhism",
-  "Other",
-  "Prefer not to say",
+/**
+ * Community options, aligned with the scholarship portal (Christian, Hindu, Sikh).
+ * Option ids stay christianity / hinduism / sikhism so older answers keep their meaning.
+ */
+export const RELIGIONS = ["Christian", "Hindu", "Sikh", "Other"] as const;
+
+/** Ids used by the community list, by label. Older ids (islam, prefer_not_to_say) only appear in LEGACY_RELIGION_LABELS. */
+export const RELIGION_IDS: Record<(typeof RELIGIONS)[number], string> = {
+  Christian: "christianity",
+  Hindu: "hinduism",
+  Sikh: "sikhism",
+  Other: "other",
+};
+
+/** Labels for community values that are no longer offered, so older submissions stay readable. */
+export const LEGACY_RELIGION_LABELS: Record<string, string> = {
+  islam: "Islam",
+  prefer_not_to_say: "Prefer not to say",
+};
+
+export const COUNTRIES = ["Pakistan"] as const;
+
+export const GUARDIAN_RELATIONS = [
+  { id: "father", label: "Father" },
+  { id: "husband", label: "Husband" },
+  { id: "guardian", label: "Other guardian" },
 ] as const;
+
+export const EDUCATION_QUALIFICATIONS = [
+  { id: "matriculation", label: "Matriculation" },
+  { id: "intermediate", label: "Intermediate" },
+  { id: "bachelor", label: "Bachelor's Degree" },
+  { id: "other", label: "Other (O or A Levels, diploma)" },
+] as const;
+
+export const EDUCATION_STATUSES = [
+  { id: "completed", label: "Completed" },
+  { id: "in_progress", label: "In progress" },
+] as const;
+
+export const MAX_EDUCATION_ROWS = 6;
+
+export const GPA_SCALES = ["4.00", "5.00"] as const;
 
 export const EMPLOYMENT = [
   { id: "No", label: "No" },
@@ -227,15 +262,30 @@ export const RAPID_SEMESTERS = [
   "Fall 2026",
 ] as const;
 
+/** Application statuses, in the scholarship portal's order and wording. */
 export const WORKFLOW_STATUSES = [
+  { id: "draft", label: "Draft" },
   { id: "submitted", label: "Submitted" },
-  { id: "incomplete", label: "Incomplete" },
-  { id: "under_review", label: "Under review" },
+  { id: "under_review", label: "Under Review" },
   { id: "approved", label: "Approved" },
   { id: "rejected", label: "Rejected" },
-  { id: "did_not_reapply", label: "Did not re-apply" },
-  { id: "pass_out", label: "Pass-out" },
+  { id: "waitlisted", label: "Waitlisted" },
+  { id: "withdrawn", label: "Withdrawn" },
+  { id: "closed", label: "Closed" },
 ] as const;
+
+/** Statuses used before the portal alignment, and what they now mean. */
+export const LEGACY_WORKFLOW_MAP = {
+  incomplete: "under_review",
+  did_not_reapply: "withdrawn",
+  pass_out: "closed",
+} as const;
+
+export const LEGACY_WORKFLOW_LABELS: Record<string, string> = {
+  incomplete: "Incomplete (documents requested)",
+  did_not_reapply: "Did not re-apply",
+  pass_out: "Pass-out",
+};
 
 export const EXPORT_CATEGORY_OPTIONS = [
   { id: "", label: "Automatic" },

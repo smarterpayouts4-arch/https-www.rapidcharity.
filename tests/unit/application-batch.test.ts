@@ -13,7 +13,9 @@ import {
 import { rememberFile } from "../../lib/application/blobStore";
 import { emptyChecks } from "../../lib/application/documents";
 import { emptyApplication, emptyTerms } from "../../lib/application/empty";
+import { applicationSequence } from "../../lib/application/portal";
 import { buildSubmission } from "../../lib/application/record";
+import { portalFields } from "./helpers/portalFields";
 import { validateApplication } from "../../lib/application/schema";
 import {
   BatchClosedError,
@@ -103,6 +105,8 @@ test("archive and purge deletes one batch from local files and keeps the next ba
     assert.equal(stored?.status, "purged");
     assert.equal(stored?.purged_submissions, 1);
   } finally {
+    const seq = applicationSequence(submission.application_number);
+    if (seq !== null) await rm(path.join("data/submissions/numbers", String(seq)), { force: true });
     await rm(path.join("data/submissions", `${submission.id}.json`), { force: true });
     await rm(path.join("data/submissions/keys", submission.cycle_cnic), { force: true });
     await rm(path.join("data/uploads", cycle), { recursive: true, force: true });
@@ -120,6 +124,7 @@ function applicationFor(): ApplicationInput {
   const base = emptyApplication("ivy-azariah");
   return {
     ...base,
+    ...portalFields(),
     applicant_type: "new",
     first_name: "Ayesha",
     last_name: "Khan",

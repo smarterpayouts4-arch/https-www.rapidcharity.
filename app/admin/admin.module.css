@@ -580,7 +580,7 @@
 
 .pill[data-tone="rejected"],
 .pill[data-review="needs_review"] {
-  background: #fdecef;
+  background: #FFE8EE;
   color: var(--color-brand-deep);
 }
 
@@ -723,4 +723,210 @@
   cursor: pointer;
   font-weight: 600;
   color: var(--color-text-muted);
+}
+
+/* Portal-style applicant view. Palette: #B20F3A, #C81343, #8B0A24, #F7F4EF, #222222, #FFE8EE. */
+.appSummary > .appWho {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.appWho p {
+  overflow-wrap: anywhere;
+}
+
+.appNumber {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #8B0A24;
+  letter-spacing: 0.02em;
+}
+
+.applicantPhoto {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #FFE8EE;
+  color: #8B0A24;
+  font-weight: 700;
+  box-shadow: 0 0 0 1px #B20F3A;
+}
+
+.applicantPhoto[data-size="detail"] {
+  width: 94px;
+  height: 94px;
+  font-size: 1.6rem;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 2px #B20F3A;
+}
+
+.applicantPhoto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.detailHead {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 0.9rem;
+}
+
+.detailName {
+  min-width: 0;
+  flex: 1 1 14rem;
+}
+
+.detailName h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #222222;
+}
+
+.detailName p {
+  margin: 0.2rem 0 0;
+  color: #222222;
+  overflow-wrap: anywhere;
+}
+
+.legacyNote {
+  font-size: 0.8rem;
+  color: #8B0A24;
+}
+
+.detailSections {
+  display: grid;
+  gap: 0.9rem;
+}
+
+@media (min-width: 900px) {
+  .detailSections {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.detailSections section {
+  min-width: 0;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.75rem;
+  background: #F7F4EF;
+}
+
+.detailSections h4,
+.decision h4,
+.appDetail > h4 {
+  margin: 0.6rem 0 0.35rem;
+  font-size: 0.95rem;
+  color: #8B0A24;
+}
+
+.detailSections section h4 {
+  margin-top: 0;
+}
+
+.detailWide {
+  grid-column: 1 / -1;
+}
+
+.detailList {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0;
+}
+
+.detailList div {
+  display: grid;
+  grid-template-columns: minmax(7.5rem, 40%) 1fr;
+  gap: 0.6rem;
+}
+
+.detailList dt {
+  font-weight: 600;
+  color: #222222;
+}
+
+.detailList dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: #222222;
+}
+
+.statement {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.eduList {
+  margin: 0.5rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.decision {
+  display: grid;
+  gap: 0.6rem;
+  max-width: 34rem;
+  margin: 0.9rem 0;
+}
+
+.decision label {
+  display: grid;
+  gap: 0.3rem;
+  font-weight: 600;
+  color: #222222;
+}
+
+.decision select,
+.decision input,
+.decision textarea {
+  min-height: 44px;
+  font: inherit;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid #8B0A24;
+  border-radius: 0.6rem;
+  background: #fff;
+}
+
+.decision button {
+  justify-self: start;
+  min-height: 44px;
+}
+
+.formError {
+  margin: 0;
+  color: #B20F3A;
+  font-weight: 600;
+}
+
+.historyList {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.historyList span {
+  font-variant-numeric: tabular-nums;
+  color: #8B0A24;
+}
+
+.pill[data-tone="waitlisted"],
+.pill[data-tone="draft"] {
+  background: #F7F4EF;
+  color: #8B0A24;
+  box-shadow: inset 0 0 0 1px #C81343;
+}
+
+.pill[data-tone="withdrawn"],
+.pill[data-tone="closed"] {
+  background: #F7F4EF;
+  color: #222222;
 }

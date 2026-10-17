@@ -21,6 +21,7 @@
     "option_id": "christianity",
     "other_text": ""
   },
+  "country": "Pakistan",
   "cnic": "35202-0000101-2",
   "email": "sample.applicant+ivy@example.com",
   "email_confirm": "sample.applicant+ivy@example.com",
@@ -32,6 +33,8 @@
     "other_text": ""
   },
   "province": "Punjab",
+  "permanent_same": "Yes",
+  "permanent_address": "",
   "employment_status": "No",
   "employment_job": "",
   "employment_employer": "",
@@ -65,6 +68,10 @@
     "period": "month",
     "value_state": "zero"
   },
+  "guardian_relation": "guardian",
+  "guardian_name": "Samuel Khan",
+  "guardian_occupation": "Clerk",
+  "family_monthly_income": 52000,
   "guardian_phone": "+92 300 0000102",
   "siblings_count": 3,
   "siblings_studying_count": 2,
@@ -72,6 +79,38 @@
   "siblings_married_count": 0,
   "siblings_other_count": 0,
   "siblings_notes": "One younger sister is in Grade 9 and one brother is in FSc.",
+  "education": [
+    {
+      "qualification": "matriculation",
+      "qualification_other": "",
+      "institution": "St. Joseph's Girls High School, Lahore",
+      "board": "BISE Lahore",
+      "status": "completed",
+      "result_percent": 88.2,
+      "year": 2021,
+      "proof_index": null
+    },
+    {
+      "qualification": "intermediate",
+      "qualification_other": "",
+      "institution": "Lahore College for Women University",
+      "board": "BISE Lahore",
+      "status": "completed",
+      "result_percent": 81.5,
+      "year": 2024,
+      "proof_index": null
+    },
+    {
+      "qualification": "bachelor",
+      "qualification_other": "",
+      "institution": "Kinnaird College for Women, Lahore",
+      "board": "Kinnaird College for Women University",
+      "status": "in_progress",
+      "result_percent": null,
+      "year": 2029,
+      "proof_index": null
+    }
+  ],
   "current_institution": {
     "option_id": "kinnaird_college_for_women_university_lahore",
     "other_text": ""
@@ -96,6 +135,9 @@
   "completion_term": "Spring",
   "completion_year": 2029,
   "roll_number": "SAMPLE-IVY-001",
+  "current_semester": "3",
+  "current_gpa": 3.6,
+  "gpa_scale": "4.00",
   "terms": [
     {
       "term": "Spring 2026",
@@ -173,6 +215,7 @@
     "period": "semester",
     "value_state": "known"
   },
+  "amount_requested": 70000,
   "fee_due_date": "2027-01-15",
   "institution_phone": "",
   "institution_address": "",
@@ -223,6 +266,7 @@
   "family_ref_phone": "0300 0000105",
   "family_ref_email": "",
   "attend_events": "Yes",
+  "financial_need_statement": "My father drives a rickshaw and earns about 32,000 rupees a month, and my mother does not have paid work. My maternal uncle, who is my guardian for this application, adds about 20,000 rupees from his clerk salary. Together we pay rent, food and my brothers' school fees, and my nursing fee of 85,000 rupees a semester is beyond what the family can manage. With this help I can stay in the nursing program.",
   "life_goal": "My goal is to become a registered nurse and later a nursing teacher, so that more young women in my community can train for safe, respected work in hospitals and clinics.",
   "community_contribution": "I volunteer at our church health day, where I help older people check their blood pressure. After my degree I want to run free health awareness sessions for mothers in our area.",
   "plan_if_denied": "If this scholarship is not awarded, I will ask the college about an installment plan, take tuition students in the evenings, and keep studying while my father helps as much as he can.",

@@ -4,10 +4,10 @@ export const FORM_STEPS = [
     id: "personal",
     label: "Personal",
     fields: [
-      "first_name", "last_name", "full_name_as_on_cnic", "date_of_birth", "gender", "disability", "disability_other",
-      "marital_status", "spouse_name", "spouse_monthly_income", "religion", "cnic", "email", "email_confirm",
-      "mobile_phone", "secondary_phone", "address_line", "city", "province", "employment_status", "employment_job",
-      "employment_employer", "monthly_income",
+      "documents.photo", "reuse_photo", "first_name", "last_name", "full_name_as_on_cnic", "date_of_birth", "gender",
+      "disability", "disability_other", "marital_status", "spouse_name", "spouse_monthly_income", "religion", "country",
+      "cnic", "email", "email_confirm", "mobile_phone", "secondary_phone", "address_line", "city", "province",
+      "permanent_same", "permanent_address", "employment_status", "employment_job", "employment_employer", "monthly_income",
     ],
   },
   {
@@ -15,7 +15,8 @@ export const FORM_STEPS = [
     label: "Family",
     fields: [
       "father_name", "mother_name", "father_status", "mother_status", "father_occupation", "mother_occupation",
-      "father_monthly_income", "mother_monthly_income", "guardian_phone", "siblings_count", "siblings_studying_count",
+      "father_monthly_income", "mother_monthly_income", "guardian_relation", "guardian_name", "guardian_occupation",
+      "family_monthly_income", "guardian_phone", "siblings_count", "siblings_studying_count",
       "siblings_working_count", "siblings_married_count", "siblings_other_count", "siblings_notes",
     ],
   },
@@ -23,9 +24,10 @@ export const FORM_STEPS = [
     id: "academics",
     label: "Academics",
     fields: [
-      "current_institution", "campus_city", "degree_level", "field_of_study", "program_title", "program_track",
+      "education", "documents.education_proof", "current_institution", "campus_city", "degree_level", "field_of_study", "program_title", "program_track",
       "program_track_other", "specialization", "study_years", "completion_term", "completion_year", "roll_number",
-      "terms", "previous_institution", "previous_qualification", "previous_completion_year", "fee", "fee_due_date",
+      "current_semester", "current_gpa", "gpa_scale", "terms", "previous_institution", "previous_qualification",
+      "previous_completion_year", "fee", "fee_due_date", "amount_requested",
       "institution_phone", "institution_address",
     ],
   },
@@ -40,7 +42,15 @@ export const FORM_STEPS = [
       "family_ref_phone", "family_ref_email", "attend_events",
     ],
   },
-  { id: "essays", label: "Essays", fields: ["life_goal", "community_contribution", "plan_if_denied", "future_plan"] },
-  { id: "documents", label: "Documents", fields: ["documents", "reuse_photo", "reuse_cnic", "reuse_guardian"] },
+  { id: "essays", label: "Essays", fields: ["financial_need_statement", "life_goal", "community_contribution", "plan_if_denied", "future_plan"] },
+  { id: "documents", label: "Documents", fields: ["documents", "reuse_cnic", "reuse_guardian"] },
   { id: "consent", label: "Review", fields: ["consent_accepted", "consent_name"] },
 ] as const;
+
+/** Document slots that are asked outside the Documents step, by the step that owns them. */
+export const SLOT_STEP: Record<string, string> = { photo: "personal", education_proof: "academics" };
+
+/** Explicit dotted keys claimed by a step (for example documents.photo on Personal). */
+export const CLAIMED_KEYS: ReadonlySet<string> = new Set(
+  FORM_STEPS.flatMap((step) => step.fields.filter((field) => field.includes("."))),
+);

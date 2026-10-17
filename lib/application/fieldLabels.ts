@@ -13,18 +13,21 @@ const LABELS: Record<string, string> = {
   marital_status: "Marital status",
   spouse_name: "Spouse name",
   "spouse_monthly_income.amount": "Spouse monthly income",
-  "religion.option_id": "Religion",
-  "religion.other_text": "Religion",
-  cnic: "CNIC",
+  "religion.option_id": "Community",
+  "religion.other_text": "Community",
+  country: "Country",
+  cnic: "National ID (CNIC)",
   email: "Email",
   email_confirm: "Confirm email",
-  mobile_phone: "Mobile phone",
-  secondary_phone: "Secondary phone",
-  address_line: "Home address",
+  mobile_phone: "Mobile number",
+  secondary_phone: "Alternate mobile",
+  address_line: "Current address",
+  permanent_same: "Permanent address same as current",
+  permanent_address: "Permanent address",
   "city.option_id": "City",
   "city.other_text": "City",
   province: "Province",
-  employment_status: "Are you working?",
+  employment_status: "Are you currently employed?",
   employment_job: "Job title",
   employment_employer: "Employer",
   "monthly_income.amount": "Monthly income",
@@ -39,6 +42,16 @@ const LABELS: Record<string, string> = {
   "father_monthly_income.amount": "Father's monthly income",
   "mother_monthly_income.amount": "Mother's monthly income",
   guardian_phone: "Guardian phone",
+  guardian_relation: "Father/Husband/Guardian",
+  guardian_name: "Guardian name",
+  guardian_occupation: "Guardian occupation",
+  family_monthly_income: "Family monthly income (PKR)",
+  education: "Education history",
+  current_semester: "Current semester",
+  current_gpa: "Current GPA",
+  gpa_scale: "GPA scale",
+  amount_requested: "Amount requested (PKR)",
+  financial_need_statement: "Statement of financial need",
   siblings_count: "Siblings, excluding yourself",
   siblings_studying_count: "Siblings studying",
   siblings_working_count: "Siblings working",
@@ -53,7 +66,7 @@ const LABELS: Record<string, string> = {
   "degree_level.other_text": "Degree level",
   "field_of_study.option_id": "Field of study",
   "field_of_study.other_text": "Field of study",
-  program_title: "Program title",
+  program_title: "Degree program",
   program_track: "Nursing track",
   program_track_other: "Nursing track",
   specialization: "Specialization",
@@ -71,10 +84,10 @@ const LABELS: Record<string, string> = {
   fee_due_date: "Fee due date",
   institution_phone: "Institution phone",
   institution_address: "Institution address",
-  rapid_received: "Rapid scholarship before",
+  rapid_received: "Received a RAPID scholarship before",
   rapid_semesters: "Past terms",
   "rapid_amount.amount": "Amount received",
-  other_financial_support: "Any other scholarship",
+  other_financial_support: "Other scholarship or financial assistance",
   "support_provider.option_id": "Provider",
   "support_provider.other_text": "Provider",
   support_value_kind: "Support value",
@@ -105,7 +118,7 @@ const LABELS: Record<string, string> = {
   plan_if_denied: "Plan if this scholarship is not awarded",
   future_plan: "Plan after this program",
   documents: "Documents",
-  reuse_photo: "Passport photo reuse",
+  reuse_photo: "Passport-size Photo reuse",
   reuse_cnic: "CNIC reuse",
   reuse_guardian: "Guardian document reuse",
   consent_accepted: "I agree",
@@ -114,16 +127,17 @@ const LABELS: Record<string, string> = {
 };
 
 export const DOCUMENT_SLOT_LABELS: Record<string, string> = {
-  photo: "Passport photo",
+  photo: "Passport-size Photo",
   cnic: "Your CNIC or B-Form",
   guardian_cnic: "Father or guardian document",
-  admission_proof: "Admission proof",
-  result: "Latest result card",
+  admission_proof: "Admission or enrollment proof",
+  result: "Latest result or GPA transcript",
   fee_voucher: "Fee voucher",
-  pastor_letter: "Pastor or priest letter",
+  pastor_letter: "Recommendation letter from a priest, pastor or religious leader",
   income_proof: "Income proof",
   disability_certificate: "Disability certificate",
   other_award: "Other scholarship award letter",
+  education_proof: "Qualification proof",
 };
 
 const TERM_PARTS: Record<string, string> = {
@@ -143,13 +157,13 @@ export function documentSlotLabel(slot: string): string {
 
 /** Full sentence shown when a required slot is still empty. */
 export const DOCUMENT_UPLOAD_PROMPTS: Record<string, string> = {
-  photo: "Upload your passport photo.",
+  photo: "Add your passport-size photo.",
   cnic: "Upload your CNIC or B-Form, front and back.",
   guardian_cnic: "Upload your father or guardian CNIC, or a death certificate.",
-  admission_proof: "Upload your admission proof, enrolment letter, or student ID.",
-  result: "Upload your latest result card.",
+  admission_proof: "Upload your admission or enrollment proof, or your student ID.",
+  result: "Upload your latest result or GPA transcript.",
   fee_voucher: "Upload your current fee voucher or challan.",
-  pastor_letter: "Upload your pastor or priest recommendation letter.",
+  pastor_letter: "Upload the recommendation letter from your priest, pastor or religious leader.",
   income_proof: "Upload income proof.",
   disability_certificate: "Upload your disability certificate.",
   other_award: "Upload your other scholarship award letter.",
@@ -166,6 +180,20 @@ export function fieldLabel(key: string): string {
     const name = CYCLE_TERMS[Number(term[1])]?.term ?? `Term ${Number(term[1]) + 1}`;
     const part = TERM_PARTS[term[2] ?? ""] ?? (term[2] ?? "result");
     return `${name} ${part}`;
+  }
+  const edu = /^education\.(\d+)\.(.+)$/.exec(key);
+  if (edu) {
+    const part: Record<string, string> = {
+      qualification: "qualification",
+      qualification_other: "qualification name",
+      institution: "institution",
+      board: "board or university",
+      status: "status",
+      result_percent: "result (%)",
+      year: "year",
+      proof_index: "proof",
+    };
+    return `Qualification ${Number(edu[1]) + 1} ${part[edu[2] ?? ""] ?? edu[2]}`;
   }
   const file = /^documents\.(\d+)\./.exec(key);
   if (file) return `Uploaded file ${Number(file[1]) + 1}`;

@@ -26,13 +26,14 @@ import { buildSubmission } from "../../lib/application/record";
 import { validateApplication } from "../../lib/application/schema";
 import { inferProgramSelection, rankOptions, resolveTypedOption, SCHOOL_ALIASES, searchPrograms } from "../../lib/application/search";
 import type { DocumentInput } from "../../lib/application/types";
+import { portalFields } from "./helpers/portalFields";
 import { createHash } from "node:crypto";
 
 const fccu = "forman_christian_college_a_chartered_university_lahore";
 const kc = "kinnaird_college_for_women_university_lahore";
 
 test("typed catalog text resolves exact, close, and single matches", () => {
-  assert.equal(resolveTypedOption("Christian", religionOptions)?.label, "Christianity");
+  assert.equal(resolveTypedOption("Christian", religionOptions)?.label, "Christian");
   assert.equal(resolveTypedOption("Lahore", cityOptions)?.label, "Lahore");
   assert.equal(resolveTypedOption("lahor", cityOptions)?.label, "Lahore");
   assert.equal(resolveTypedOption("La", cityOptions), null);
@@ -121,7 +122,7 @@ test("excel rows use the review-sheet phrases", async () => {
     "3-2 studying, 1 working",
   );
 
-  const input = emptyApplication("ivy-azariah");
+  const input = { ...emptyApplication("ivy-azariah"), ...portalFields() };
   input.applicant_type = "new";
   input.first_name = "Ayesha";
   input.last_name = "Khan";

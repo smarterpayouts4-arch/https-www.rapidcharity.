@@ -4,8 +4,10 @@ import { useState } from "react";
 import styles from "@/app/admin/admin.module.css";
 import type { BatchRecord } from "@/lib/application/batches";
 import { APPLICATION_CYCLE, EXPORT_CATEGORY_OPTIONS, SCHOLARSHIPS, WORKFLOW_STATUSES } from "@/lib/application/constants";
+import { fieldLabel } from "@/lib/application/fieldLabels";
 import { FIELD_TO_PROMOTED_LIST } from "@/lib/application/record";
 import type { StoredApplication } from "@/lib/application/types";
+import { ApplicantPhoto, ApplicationOverview, DecisionForm } from "./ApplicationDetail";
 
 const labels = Object.fromEntries(SCHOLARSHIPS.map((item) => [item.id, item.label]));
 
@@ -222,8 +224,11 @@ export function ApplicationsPanel({
           <button type="button" className="btn-secondary btn-sm" onClick={() => void load()}>
             Refresh
           </button>
-          <a className="btn-secondary btn-sm" href={`/api/admin/applications/export?cycle=${batch?.cycle ?? cycle}`}>
+          <a className="btn-secondary btn-sm" href={`/api/admin/applications/export?cycle=${batch?.cycle ?? cycle}`} title="Same columns and order as the scholarship portal export">
             Download CSV
+          </a>
+          <a className="btn-secondary btn-sm" href={`/api/admin/applications/export?cycle=${batch?.cycle ?? cycle}&format=full`}>
+            Full data CSV
           </a>
           <a className="btn-secondary btn-sm" href={`/api/admin/applications/excel?cycle=${batch?.cycle ?? cycle}`}>
             Download Excel
@@ -331,10 +336,7 @@ export function ApplicationsPanel({
         {[
           ["all", "All"],
           ["review", "Needs review"],
-          ["submitted", "Submitted"],
-          ["under_review", "Under review"],
-          ["approved", "Approved"],
-          ["rejected", "Rejected"],
+          ...WORKFLOW_STATUSES.map((status) => [status.id, status.label]),
         ].map(([id, label]) => (
           <button key={id} type="button" className={styles.chip} data-on={filter === id} onClick={() => setFilter(id)}>
             {label}
@@ -352,10 +354,12 @@ export function ApplicationsPanel({
         {visible.map((item) => (
           <li key={item.id} className={styles.appCard}>
             <div className={styles.appSummary}>
-              <div>
+              <ApplicantPhoto item={item} size="list" />
+              <div className={styles.appWho}>
                 <strong>
                   {item.first_name} {item.last_name}
                 </strong>
+                {item.application_number ? <p className={styles.appNumber}>{item.application_number}</p> : null}
                 <p>
                   {labels[item.scholarship] ?? item.scholarship} · {item.email}
                 </p>
@@ -379,15 +383,8 @@ export function ApplicationsPanel({
             </div>
             {openId === item.id ? (
               <div className={styles.appDetail}>
-                <p>
-                  {item.field_of_study.option_id}
-                  {item.field_of_study.other_text ? ` (${item.field_of_study.other_text})` : ""} · {item.gender} ·{" "}
-                  {item.applicant_type}
-                </p>
-                <p>
-                  Phone {item.mobile_phone}
-                  {item.mobile_phone_raw ? ` (entered ${item.mobile_phone_raw})` : ""}
-                </p>
+                <ApplicationOverview item={item} />
+                <h4>Other answers</h4>
                 {item.review.other_fields.length === 0 ? <p>No free-text Other answers.</p> : null}
                 <ul>
                   {item.review.other_fields.map((field) => (
@@ -409,20 +406,7 @@ export function ApplicationsPanel({
                     </li>
                   ))}
                 </ul>
-                <label className={styles.appFilter}>
-                  Review status
-                  <select
-                    value={item.review.workflow}
-                    disabled={busy}
-                    onChange={(event) => void act({ id: item.id, action: "workflow", workflow: event.target.value })}
-                  >
-                    {WORKFLOW_STATUSES.map((status) => (
-                      <option key={status.id} value={status.id}>
-                        {status.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+                <DecisionForm key={`${item.id}-${item.review.workflow}-${item.review.history?.length ?? 0}-${item.review.remarks.length}`} item={item} busy={busy} onSave={(body) => void act(body)} />
                 <label className={styles.appFilter}>
                   Category sheet
                   <select
@@ -437,44 +421,13 @@ export function ApplicationsPanel({
                     ))}
                   </select>
                 </label>
-                <form
-                  onSubmit={(event) => {
-                    event.preventDefault();
-                    const form = new FormData(event.currentTarget);
-                    const amount = String(form.get("award") ?? "").trim();
-                    void act({ id: item.id, action: "award", award_amount: amount ? Number(amount) : null });
-                  }}
-                >
-                  <label>
-                    Award PKR (blank uses 50% of the fee)
-                    <input name="award" inputMode="numeric" defaultValue={item.review.award_amount ?? ""} />
-                  </label>
-                  <button type="submit" disabled={busy}>
-                    Save award
-                  </button>
-                </form>
-                <form
-                  onSubmit={(event) => {
-                    event.preventDefault();
-                    const form = new FormData(event.currentTarget);
-                    void act({ id: item.id, action: "remark", text: String(form.get("remark") ?? "") });
-                    event.currentTarget.reset();
-                  }}
-                >
-                  <label>
-                    Remark
-                    <input name="remark" maxLength={1000} />
-                  </label>
-                  <button type="submit" disabled={busy}>
-                    Add remark
-                  </button>
-                </form>
+                <h4>Documents</h4>
                 <ul>
                   {item.documents.map((document) => (
                     <li key={`${document.slot}-${document.index}`}>
                       <a href={`/api/admin/applications/file?id=${item.id}&slot=${document.slot}&index=${document.index}`}>
-                        {document.slot}
-                        {document.slot === "result" ? ` ${document.index}` : ""}
+                        {fieldLabel(`documents.${document.slot}`)}
+                        {document.slot === "result" || document.slot === "education_proof" ? ` ${document.index}` : ""}
                       </a>{" "}
                       · {document.review_state}
                       {document.reused ? " · reused" : ""}

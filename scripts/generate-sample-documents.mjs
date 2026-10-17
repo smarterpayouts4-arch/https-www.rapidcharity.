@@ -7,7 +7,7 @@
  * The HEIC file (phone-photo-sample.heic) needs Python with pillow-heif, which
  * is not a project dependency. It is committed, so you only need this if you
  * want to regenerate it: pass --heic and have `python3 -c "import pillow_heif"`
- * working.
+ * working. Pass --only=<file name> to regenerate a single file.
  */
 import { execFileSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
@@ -19,6 +19,8 @@ const OUT = join(process.cwd(), "tests/fixtures/sample-documents");
 mkdirSync(OUT, { recursive: true });
 
 const IMAGES = [
+  // Square passport-size photo, as the scholarship portal asks (600 x 600, under 500 KB).
+  { file: "passport-photo-sample.jpg", type: "image/jpeg", w: 600, h: 600, title: "SAMPLE", lines: ["Passport-size photo", "Not a real person"], face: true, square: true },
   { file: "photo-sample.jpg", type: "image/jpeg", w: 1200, h: 1500, title: "SAMPLE PASSPORT PHOTO", lines: ["Test applicant photo", "Not a real person"], face: true },
   { file: "cnic-front-sample.jpg", type: "image/jpeg", w: 1280, h: 820, title: "SAMPLE CNIC FRONT", lines: ["Islamic Republic of Pakistan", "National Identity Card (CNIC)", "NADRA test card, not valid", "Name: Sample Applicant", "35202-0000001-2"] },
   { file: "cnic-back-sample.jpg", type: "image/jpeg", w: 1280, h: 820, title: "SAMPLE CNIC BACK", lines: ["Islamic Republic of Pakistan", "CNIC reverse side, NADRA test", "Address: Sample Street, Lahore", "Not a real identity document"] },
@@ -40,7 +42,7 @@ const PDFS = [
 async function images() {
   const browser = await chromium.launch();
   const page = await browser.newPage();
-  for (const spec of IMAGES) {
+  for (const spec of IMAGES.filter(wanted)) {
     const dataUrl = await page.evaluate((s) => {
       const canvas = document.createElement("canvas");
       canvas.width = s.w;
@@ -57,6 +59,32 @@ async function images() {
       c.fillStyle = "#222222";
       c.font = "40px sans-serif";
       s.lines.forEach((line, i) => c.fillText(line, 70, 230 + i * 62));
+      if (s.square) {
+        // Simple placeholder: ivory square, crimson head and shoulders, and a SAMPLE band
+        // across the middle so the label stays readable inside a circular crop.
+        c.fillStyle = "#F7F4EF";
+        c.fillRect(0, 0, s.w, s.h);
+        c.fillStyle = "#FFE8EE";
+        c.fillRect(24, 24, s.w - 48, s.h - 48);
+        c.fillStyle = "#8B0A24";
+        c.beginPath();
+        c.arc(s.w / 2, s.h * 0.33, s.w * 0.13, 0, Math.PI * 2);
+        c.fill();
+        c.beginPath();
+        c.ellipse(s.w / 2, s.h * 0.98, s.w * 0.32, s.h * 0.4, 0, Math.PI, 0);
+        c.fill();
+        c.fillStyle = "#B20F3A";
+        c.fillRect(0, s.h * 0.5, s.w, s.h * 0.16);
+        c.fillStyle = "#FFFFFF";
+        c.font = "bold 84px sans-serif";
+        c.textAlign = "center";
+        c.textBaseline = "middle";
+        c.fillText("SAMPLE", s.w / 2, s.h * 0.58);
+        c.fillStyle = "#F7F4EF";
+        c.font = "26px sans-serif";
+        s.lines.forEach((line, i) => c.fillText(line, s.w / 2, s.h * 0.75 + i * 34));
+        return canvas.toDataURL(s.type, 0.88);
+      }
       if (s.face) {
         c.fillStyle = "#8B0A24";
         c.beginPath();
@@ -85,8 +113,13 @@ async function images() {
   await browser.close();
 }
 
+function wanted(spec) {
+  const only = process.argv.find((arg) => arg.startsWith("--only="));
+  return !only || only.slice(7) === spec.file;
+}
+
 async function pdfs() {
-  for (const spec of PDFS) {
+  for (const spec of PDFS.filter(wanted)) {
     const pdf = await PDFDocument.create();
     pdf.setTitle(spec.title);
     pdf.setProducer("Rapid Charity sample generator");

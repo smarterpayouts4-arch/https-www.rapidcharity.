@@ -6,6 +6,8 @@ const WIDTHS = [390, 1440] as const;
 const SHOTS = join(process.cwd(), "qa/apply-flow-shots");
 const ESSAY =
   "I want to finish this degree and use the training to teach and care for people in my neighborhood.";
+const NEED =
+  "My father earns a small monthly wage and my mother stays at home. The semester fee is more than the family can pay this term.";
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
@@ -94,23 +96,57 @@ async function continueTo(page: Page, heading: string) {
   await expect(page.getByRole("heading", { name: heading, level: 2 })).toBeVisible();
 }
 
-async function personal(page: Page, person: { first: string; last: string; email: string; cnic: string; phone: string; gender: "Female" | "Male" }) {
+async function passportPhoto(page: Page, token: string) {
+  await page.locator("#doc-photo").setInputFiles(await documentImage(page, token));
+  const field = page.locator("[data-field='documents.photo']");
+  await expect(field.getByText(/^Uploaded, \d+ KB$/)).toBeVisible({ timeout: 60000 });
+  await expect(field.getByTestId("photo-preview")).toBeVisible();
+}
+
+async function yesNo(page: Page, group: string, answer: string) {
+  await page.getByRole("group", { name: group, exact: true }).getByRole("radio", { name: answer, exact: true }).check();
+}
+
+async function personalBasics(page: Page, person: { first: string; last: string; email: string; cnic: string; phone: string; gender: "Female" | "Male" }) {
   await page.getByLabel("First name").fill(person.first);
   await page.getByLabel("Last name").fill(person.last);
   await page.getByLabel("Full name as on CNIC").fill(`${person.first} ${person.last}`);
+  await page.getByLabel("National ID (CNIC)").fill(person.cnic);
   await page.getByLabel("Date of birth").fill("2004-04-12");
   await page.getByRole("radio", { name: person.gender, exact: true }).check();
-  await page.getByRole("radio", { name: "None", exact: true }).check();
   await page.getByRole("radio", { name: "Single", exact: true }).check();
-  await pick(page, "Religion", "Christ", "Christianity");
-  await page.getByLabel("CNIC", { exact: true }).fill(person.cnic);
+  await yesNo(page, "Disability", "No");
   await page.getByLabel("Email", { exact: true }).fill(person.email);
   await page.getByLabel("Confirm email").fill(person.email);
-  await page.getByLabel("Mobile phone").fill(person.phone);
-  await page.getByLabel("Home address").fill("12 Church Road");
-  await pick(page, "City", "Lahore", "Lahore");
+  await page.getByLabel("Mobile number").fill(person.phone);
+  await page.getByLabel("Current address").fill("12 Church Road");
   await page.getByLabel("Province").selectOption("Punjab");
-  await page.getByRole("radio", { name: "No", exact: true }).check();
+  await yesNo(page, "Permanent address same as current?", "Yes");
+  await yesNo(page, "Are you currently employed?", "No");
+}
+
+async function personal(
+  page: Page,
+  person: { first: string; last: string; email: string; cnic: string; phone: string; gender: "Female" | "Male" },
+  reusePhoto = false,
+) {
+  if (reusePhoto) await page.getByRole("checkbox", { name: "Passport photo is unchanged" }).check();
+  else await passportPhoto(page, `${person.email} passport photo`);
+  await personalBasics(page, person);
+  await pick(page, "Community", "Christ", "Christian");
+  await pick(page, "City", "Lahore", "Lahore");
+}
+
+async function academicExtras(page: Page) {
+  const row = page.getByTestId("education-row").first();
+  await row.getByLabel("Institution").fill("Government Girls High School");
+  await row.getByLabel("Board or university").fill("BISE Lahore");
+  await row.getByRole("radio", { name: "Completed", exact: true }).check();
+  await row.getByLabel("Result (%)").fill("80");
+  await row.getByLabel("Year", { exact: true }).fill("2020");
+  await page.getByLabel("Current semester").selectOption("4");
+  await page.getByLabel("Current GPA").fill("3.2");
+  await page.getByLabel("Amount requested (PKR)").fill("40000");
 }
 
 async function family(page: Page, phone: string) {
@@ -122,6 +158,8 @@ async function family(page: Page, phone: string) {
   await page.getByRole("radio", { name: "Living" }).nth(1).check();
   await pick(page, "Mother's occupation", "Home", "Homemaker");
   await page.getByLabel("Mother's monthly income (PKR)").fill("0");
+  await yesNo(page, "Father / Husband / Guardian", "Father");
+  await page.getByLabel("Family monthly income (PKR)").fill("20000");
   await page.getByLabel("Guardian phone").fill(phone);
   await page.getByLabel("Siblings, excluding yourself").fill("0");
   await page.getByLabel("Studying").fill("0");
@@ -162,22 +200,23 @@ async function academics(page: Page, field: { query: string; option: string }, o
   await page.getByLabel("Previous completion year").fill("2022");
   await page.getByLabel("Fee for the upcoming term (PKR)").fill("85000");
   await page.getByLabel("Fee due date").fill("2026-11-15");
+  await academicExtras(page);
 }
 
 async function support(page: Page, continuing: boolean, phone: string) {
   if (continuing) {
-    await page.getByRole("radio", { name: /Yes, in these terms/ }).check();
+    await yesNo(page, "Received a RAPID scholarship before?", "Yes");
     await page.getByRole("checkbox", { name: "Fall 2025" }).check();
     await page.getByLabel("Amount received (PKR)").fill("40000");
   } else {
-    await page.getByRole("radio", { name: "Never", exact: true }).check();
+    await yesNo(page, "Received a RAPID scholarship before?", "No");
   }
-  await page.getByRole("group", { name: "Any other scholarship" }).getByLabel("No").check();
+  await yesNo(page, "Receiving any other scholarship?", "No");
   await pick(page, "How did you hear about Rapid?", "Web", "Website");
   await page.getByLabel("Church or place of worship").fill("St Andrew Church");
-  await page.getByLabel("Pastor or priest title").selectOption("Pastor");
-  await page.getByLabel("Pastor or priest name").fill("Pastor Daniel");
-  await page.getByLabel("Pastor phone").fill(phone);
+  await page.getByLabel("Priest or pastor title").selectOption("Pastor");
+  await page.getByLabel("Priest or pastor name").fill("Pastor Daniel");
+  await page.getByLabel("Priest or pastor contact number").fill(phone);
   await page.getByLabel("Faculty reference name").fill("Dr Hina");
   await page.getByLabel("Faculty designation").fill("Lecturer");
   await page.getByLabel("Faculty phone").fill(phone);
@@ -189,6 +228,7 @@ async function support(page: Page, continuing: boolean, phone: string) {
 }
 
 async function essays(page: Page) {
+  await page.getByLabel("Statement of financial need").fill(NEED);
   await page.getByLabel("What is your life goal?").fill(ESSAY);
   await page.getByLabel("How will you contribute to your community?").fill(ESSAY);
   await page.getByLabel("What is your plan if this scholarship is not awarded?").fill(ESSAY);
@@ -197,13 +237,12 @@ async function essays(page: Page) {
 
 async function documents(page: Page, id: string, reuse: boolean) {
   if (reuse) {
-    await page.getByRole("checkbox", { name: "Passport photo is unchanged" }).check();
     await page.getByRole("checkbox", { name: "My CNIC or B-Form is unchanged" }).check();
     await page.getByRole("checkbox", { name: "Father or guardian document is unchanged" }).check();
   }
   const slots = reuse
     ? ["admission_proof", "result", "fee_voucher", "pastor_letter"]
-    : ["photo", "cnic", "guardian_cnic", "admission_proof", "result", "fee_voucher", "pastor_letter"];
+    : ["cnic", "guardian_cnic", "admission_proof", "result", "fee_voucher", "pastor_letter"];
   const files = [];
   for (const slot of slots) {
     files.push({ slot, file: await documentImage(page, `${id} ${slot} document`) });
@@ -238,14 +277,18 @@ async function throughEssays(page: Page, opts: {
   const guardian = `+92${phone.slice(1)}`;
   await page.getByRole("radio", { name: opts.continuing ? /^Continuing/ : /^New$/ }).check();
   await continueTo(page, "Personal");
-  await personal(page, {
-    first: "Amina",
-    last: "Masih",
-    email: `${opts.id}@example.com`,
-    cnic: `35202${opts.id.slice(0, 8)}`,
-    phone,
-    gender: opts.gender,
-  });
+  await personal(
+    page,
+    {
+      first: "Amina",
+      last: "Masih",
+      email: `${opts.id}@example.com`,
+      cnic: `35202${opts.id.slice(0, 8)}`,
+      phone,
+      gender: opts.gender,
+    },
+    opts.continuing,
+  );
   await opts.capture?.("02-personal");
   if (opts.gender === "Male") return;
   await continueTo(page, "Family");
@@ -301,10 +344,10 @@ test("type-ahead commits an exact match on tab and offers other", async ({ page 
   await page.getByRole("radio", { name: /^New$/ }).check();
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByRole("heading", { name: "Personal", level: 2 })).toBeVisible();
-  const religion = page.getByRole("combobox", { name: "Religion" });
-  await religion.fill("christianity");
+  const religion = page.getByRole("combobox", { name: "Community" });
+  await religion.fill("christian");
   await religion.press("Tab");
-  await expect(religion).toHaveValue("Christianity");
+  await expect(religion).toHaveValue("Christian");
   const city = page.getByRole("combobox", { name: "City" });
   await city.fill("Lahore");
   await city.press("Tab");
@@ -312,22 +355,19 @@ test("type-ahead commits an exact match on tab and offers other", async ({ page 
   await page.getByRole("button", { name: "Continue" }).click();
   const alert = page.locator("[data-form-issues]");
   await expect(alert).toBeVisible();
-  await expect(alert).not.toContainText("Choose a religion.");
+  await expect(alert).not.toContainText("Choose a community.");
   await expect(alert).not.toContainText("Choose a city.");
-  await page.getByLabel("First name").fill("Amina");
-  await page.getByLabel("Last name").fill("Masih");
-  await page.getByLabel("Full name as on CNIC").fill("Amina Masih");
-  await page.getByLabel("Date of birth").fill("2004-04-12");
-  await page.getByRole("radio", { name: "Female", exact: true }).check();
-  await page.getByRole("radio", { name: "None", exact: true }).check();
-  await page.getByRole("radio", { name: "Single", exact: true }).check();
-  await page.getByLabel("CNIC", { exact: true }).fill("3520290324392");
-  await page.getByLabel("Email", { exact: true }).fill("tab-match@example.com");
-  await page.getByLabel("Confirm email").fill("tab-match@example.com");
-  await page.getByLabel("Mobile phone").fill("03001234567");
-  await page.getByLabel("Home address").fill("12 Church Road");
-  await page.getByLabel("Province").selectOption("Punjab");
-  await page.getByRole("radio", { name: "No", exact: true }).check();
+  // The passport-size photo is the first field and is required on this step.
+  await expect(alert).toContainText("Passport-size Photo");
+  await passportPhoto(page, "tab-match passport photo");
+  await personalBasics(page, {
+    first: "Amina",
+    last: "Masih",
+    email: "tab-match@example.com",
+    cnic: "3520290324392",
+    phone: "03001234567",
+    gender: "Female",
+  });
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByRole("heading", { name: "Family", level: 2 })).toBeVisible();
   const occupation = page.getByRole("combobox", { name: "Father's occupation" });
@@ -421,18 +461,13 @@ for (const width of WIDTHS) {
       await expect(page.getByRole("heading", { name: "Documents", level: 2 })).toBeVisible();
       await page.getByRole("button", { name: "Continue" }).click();
       const alert = page.locator("[data-form-issues]");
-      await expect(alert).toContainText("Passport photo");
-      await expect(alert).toContainText("Upload your passport photo.");
-      await expect(alert).toContainText("Upload your CNIC or B-Form, front and back.");
-      await expect(page.locator("[data-field='documents.photo'] [data-focus]")).toBeFocused();
-      await expect(page.getByRole("heading", { name: "Documents", level: 2 })).toBeVisible();
-      const photo = await documentImage(page, `${id} photo passport`);
-      await page.locator("#doc-photo").setInputFiles(photo);
-      await expect(page.locator("[data-field='documents.photo']").getByText(/Uploaded/)).toBeVisible({ timeout: 30000 });
-      await page.getByRole("button", { name: "Continue" }).click();
+      // The photo was added on the Personal step, so it is not asked again here.
+      await expect(alert).not.toContainText("Passport-size Photo");
       await expect(alert).toContainText("Upload your CNIC or B-Form, front and back.");
       await expect(alert).not.toContainText("Upload cnic.");
       await expect(page.locator("[data-field='documents.cnic'] [data-focus]")).toBeFocused();
+      await expect(page.getByRole("heading", { name: "Documents", level: 2 })).toBeVisible();
+      await expect(page.locator("#doc-photo")).toHaveCount(0);
       await shot(page, width, "invalid-missing-docs");
     });
 
@@ -484,6 +519,7 @@ for (const width of WIDTHS) {
       await page.getByLabel("Previous completion year").fill("2022");
       await page.getByLabel("Fee for the upcoming term (PKR)").fill("85000");
       await page.getByLabel("Fee due date").fill("2026-11-15");
+      await academicExtras(page);
       await shot(page, width, "other-school-degree");
       await continueTo(page, "Support");
     });

@@ -17,9 +17,13 @@ import {
   withPromoted,
 } from "@/lib/application/catalogs";
 import {
+  APPLICATION_CYCLE,
   DISABILITIES,
   EMPLOYMENT,
+  GPA_SCALES,
   GRADES,
+  GUARDIAN_RELATIONS,
+  SEMESTER_OPTIONS,
   PARENT_STATUSES,
   PASTOR_TITLES,
   PROVINCES,
@@ -37,25 +41,54 @@ import { eligibilitySuggestion } from "@/lib/application/eligibility";
 import { documentUploadPrompt, fieldLabel } from "@/lib/application/fieldLabels";
 import { missingRequiredDocuments } from "@/lib/application/documents";
 import { FORM_STEPS, errorsForStep, validateApplication } from "@/lib/application/schema";
+import { SLOT_STEP } from "@/lib/application/steps";
+import { sessionCode, sessionName } from "@/lib/application/portal";
 import { inferProgramSelection, SCHOOL_ALIASES } from "@/lib/application/search";
 import type { ApplicationInput, DocumentInput, PromotedOption } from "@/lib/application/types";
 import type { MockApplication } from "@/lib/application/mocks";
 import { demoHeaders, forgetDemoKey, syncDemoKeyFromUrl } from "@/lib/application/demoMode";
 import { DocumentFields } from "./DocumentFields";
+import { EducationRows } from "./EducationRows";
+import { PhotoField } from "./PhotoField";
 import { DraftNoticeView } from "./DraftNotice";
 import { ProgramField } from "./ProgramField";
 import {
   CnicField,
+  DecimalField,
   FieldError,
   MoneyField,
   NumberField,
   PhoneField,
   RadioField,
+  SegmentedField,
   SelectField,
   SelectOther,
   TextAreaField,
   TextField,
 } from "./widgets";
+
+const PHOTO_THUMB_KEY = "rapid-charity-photo-thumb";
+
+/** The small circular preview is kept per browser tab so Review and a resumed draft can show it. */
+function readThumb(clientId: string): string {
+  try {
+    const raw = window.sessionStorage.getItem(PHOTO_THUMB_KEY);
+    if (!raw) return "";
+    const parsed = JSON.parse(raw) as { id?: string; url?: string };
+    return parsed.id === clientId && typeof parsed.url === "string" ? parsed.url : "";
+  } catch {
+    return "";
+  }
+}
+
+function writeThumb(clientId: string, url: string) {
+  try {
+    if (url) window.sessionStorage.setItem(PHOTO_THUMB_KEY, JSON.stringify({ id: clientId, url }));
+    else window.sessionStorage.removeItem(PHOTO_THUMB_KEY);
+  } catch {
+    // Storage full or blocked: the preview simply is not remembered.
+  }
+}
 
 type Errors = Record<string, string>;
 type FormIssue = { key: string; label: string; message: string };
@@ -81,12 +114,15 @@ export function ApplicationForm({
   initialScholarship,
   promoted,
   cycleName = "Spring Semester 2027",
+  cycleId = APPLICATION_CYCLE,
   mocks,
   initialMock = "",
 }: {
   initialScholarship: ScholarshipId | "";
   promoted: PromotedOption[];
   cycleName?: string;
+  /** Admin cycle id such as spring-2027; the portal Session (Spring 2027, SP2027) is derived from it. */
+  cycleId?: string;
   /** Test-only sample applications. Passed by the server only when mocks are enabled. */
   mocks?: MockApplication[];
   initialMock?: string;
@@ -107,13 +143,17 @@ export function ApplicationForm({
   const [errors, setErrors] = useState<Errors>({});
   const [issues, setIssues] = useState<FormIssue[]>([]);
   const [busy, setBusy] = useState(false);
-  const [receipt, setReceipt] = useState<{ id: string; submitted_at: string } | null>(null);
+  const [receipt, setReceipt] = useState<{ id: string; submitted_at: string; application_number?: string } | null>(null);
   const [picking, setPicking] = useState(!initialScholarship && !startMock);
   const [touched, setTouched] = useState<Set<string>>(new Set());
   const [stepAttempted, setStepAttempted] = useState(false);
   const [returnToReview, setReturnToReview] = useState(false);
   const [draftDismissed, setDraftDismissed] = useState(Boolean(startMock));
   const [savedLabel, setSavedLabel] = useState("");
+  const [photoThumb, setPhotoThumbState] = useState("");
+  const [photoBusy, setPhotoBusy] = useState(false);
+  /** "Yes" was chosen for Disability but no type yet. The stored value stays "" until a type is picked. */
+  const [disabilityYes, setDisabilityYes] = useState(false);
   const ready = useSyncExternalStore(
     () => () => {},
     () => true,
@@ -129,6 +169,22 @@ export function ApplicationForm({
   const dataRef = useRef(data);
   const formRef = useRef<HTMLFormElement>(null);
   const pendingFocusRef = useRef<string | null>(null);
+
+  function setPhotoThumb(url: string) {
+    setPhotoThumbState(url);
+    writeThumb(dataRef.current.client_id, url);
+  }
+
+  useEffect(() => {
+    // Restore the preview for a draft resumed in the same tab.
+    const timer = window.setTimeout(() => {
+      if (!photoThumb && data.documents.some((item) => item.slot === "photo")) {
+        const stored = readThumb(data.client_id);
+        if (stored) setPhotoThumbState(stored);
+      }
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [data.client_id, data.documents, photoThumb]);
 
   const lists = useMemo(
     () => ({
@@ -219,6 +275,7 @@ export function ApplicationForm({
     const next = fromMock(mock);
     setSampleId(mock.id);
     setSampleUploading(false);
+    setPhotoThumbState("");
     dirty.current = true;
     dataRef.current = next;
     setData(next);
@@ -244,6 +301,7 @@ export function ApplicationForm({
     setData(next);
     setSampleId("");
     setSampleUploading(false);
+    setPhotoThumbState("");
     setStep(0);
     setPicking(true);
     setErrors({});
@@ -375,10 +433,9 @@ export function ApplicationForm({
     const stepFields = FORM_STEPS[step]?.fields ?? [];
     const stepErrors = errorsForStep(result.fieldErrors, stepFields);
     const mine: Errors = {};
-    if (stepFields.some((field) => field === "documents")) {
-      for (const slot of missingRequiredDocuments(currentData)) {
-        mine[`documents.${slot}`] = documentUploadPrompt(slot);
-      }
+    const stepId = FORM_STEPS[step]?.id ?? "";
+    for (const slot of missingRequiredDocuments(currentData)) {
+      if ((SLOT_STEP[slot] ?? "documents") === stepId) mine[`documents.${slot}`] = documentUploadPrompt(slot);
     }
     for (const [key, message] of Object.entries(stepErrors)) {
       if (!mine[key]) mine[key] = message;
@@ -457,6 +514,7 @@ export function ApplicationForm({
 
   function removeDocument(slot: string, index: number) {
     dirty.current = true;
+    if (slot === "photo") setPhotoThumb("");
     setData((current) => {
       const documents = current.documents.filter((item) => !(item.slot === slot && item.index === index));
       const next = { ...current, documents };
@@ -490,8 +548,10 @@ export function ApplicationForm({
       const body = (await response.json()) as {
         id?: string;
         submitted_at?: string;
+        application_number?: string;
         fieldErrors?: Errors;
         formError?: string;
+        sampleNotUploaded?: boolean;
       };
       if (!response.ok) {
         if (body.fieldErrors && Object.keys(body.fieldErrors).length > 0) {
@@ -509,7 +569,7 @@ export function ApplicationForm({
       }
       if (body.id && body.submitted_at) {
         clearDraft();
-        setReceipt({ id: body.id, submitted_at: body.submitted_at });
+        setReceipt({ id: body.id, submitted_at: body.submitted_at, application_number: body.application_number });
       }
     } catch {
       setIssues([{ key: "form", label: "Application", message: "The application could not be sent. Check your connection and try again." }]);
@@ -526,7 +586,7 @@ export function ApplicationForm({
         </div>
         <h2 className={styles.sectionTitle}>Application received</h2>
         <p>{cycleName}. Keep this reference. If a reviewer asks for a new file, they will give you a re-upload link.</p>
-        <p className={styles.ref}>{receipt.id}</p>
+        <p className={styles.ref}>{receipt.application_number || receipt.id}</p>
         <p className={styles.hint}>Submitted {new Date(receipt.submitted_at).toLocaleString()}</p>
         <a className="text-link" href="/apply">
           Return to the apply page
@@ -646,7 +706,7 @@ export function ApplicationForm({
       ) : null}
       {issues.length > 0 ? (
         <div className={styles.banner} role="alert" data-form-issues>
-          <p>These fields need attention:</p>
+          <p>{issues.every((issue) => issue.key === "form") ? "The application was not sent." : "These fields need attention:"}</p>
           <ul>
             {issues.map((issue) => (
               <li key={issue.key}>
@@ -687,18 +747,43 @@ export function ApplicationForm({
               options={SCHOLARSHIPS.map((item) => ({ id: item.id, label: item.label, detail: item.detail }))}
             />
           ) : null}
+          <p className={styles.sessionLine} data-testid="session-line">
+            <span className={styles.sessionLabel}>Session</span>
+            <span>
+              {sessionName(cycleId)}
+              {sessionCode(cycleId) ? ` (${sessionCode(cycleId)})` : ""}
+            </span>
+          </p>
         </div>
       ) : null}
 
       {step === 1 ? (
         <div className={styles.grid}>
+          <PhotoField
+            applicationId={data.client_id}
+            document={data.documents.find((item) => item.slot === "photo")}
+            thumb={photoThumb}
+            error={stepAttempted || touched.has("documents.photo") ? errors["documents.photo"] : undefined}
+            context={{ name: data.full_name_as_on_cnic, cnic: data.cnic, fatherName: data.father_name, fee: data.fee.amount }}
+            continuing={data.applicant_type === "continuing"}
+            reuse={data.reuse_photo}
+            onReuse={(reuse_photo) => patch({ reuse_photo })}
+            autoSample={Boolean(sampleId)}
+            onBusy={setPhotoBusy}
+            onUploaded={(document, thumb) => {
+              upsertDocument(document);
+              setPhotoThumb(thumb);
+            }}
+            onRemove={() => removeDocument("photo", 1)}
+          />
           <div className={styles.two}>
             <TextField label="First name" autoComplete="given-name" value={data.first_name} error={visible("first_name")} field="first_name" onChange={(first_name) => patch({ first_name })} />
             <TextField label="Last name" autoComplete="family-name" value={data.last_name} error={visible("last_name")} field="last_name" onChange={(last_name) => patch({ last_name })} />
           </div>
           <TextField label="Full name as on CNIC" hint="Use the name printed on the CNIC. Phone and email are separate fields below." value={data.full_name_as_on_cnic} error={visible("full_name_as_on_cnic")} field="full_name_as_on_cnic" onChange={(full_name_as_on_cnic) => patch({ full_name_as_on_cnic })} />
+          <CnicField value={data.cnic} error={visible("cnic")} field="cnic" onChange={(cnic) => patch({ cnic })} />
           <TextField label="Date of birth" type="date" autoComplete="bday" value={data.date_of_birth} error={visible("date_of_birth")} field="date_of_birth" onChange={(date_of_birth) => patch({ date_of_birth })} />
-          <RadioField legend="Gender" name="gender" field="gender" value={data.gender} error={data.scholarship === "ivy-azariah" && data.gender === "Male" && suggestion ? `Gender: ${suggestion.message}` : visible("gender")} onChange={(gender) => patch({ gender: gender as ApplicationInput["gender"] })} options={[{ id: "Female", label: "Female" }, { id: "Male", label: "Male" }]} />
+          <SegmentedField legend="Gender" name="gender" field="gender" value={data.gender} hint={data.scholarship === "ivy-azariah" ? "The Ivy Azariah Scholarship is for women." : undefined} error={data.scholarship === "ivy-azariah" && data.gender === "Male" && suggestion ? `Gender: ${suggestion.message}` : visible("gender")} onChange={(gender) => patch({ gender: gender as ApplicationInput["gender"] })} options={[{ id: "Female", label: "Female" }, { id: "Male", label: "Male" }]} />
           {step === 1 && data.scholarship === "ivy-azariah" && data.gender === "Male" && suggestion ? (
             <div className={styles.callout} role="status" data-callout tabIndex={-1}>
               <p>Gender: {suggestion.message}</p>
@@ -707,8 +792,8 @@ export function ApplicationForm({
               </button>
             </div>
           ) : null}
-          <RadioField legend="Disability" name="disability" value={data.disability} error={visible("disability")} field="disability" onChange={(disability) => patch({ disability: disability as ApplicationInput["disability"] })} options={DISABILITIES.map((item) => ({ id: item.id, label: item.label }))} />
-          {data.disability === "other" ? <TextField label="Disability" value={data.disability_other} error={visible("disability_other")} field="disability_other" onChange={(disability_other) => patch({ disability_other })} /> : null}
+          <SelectOther label="Community" options={lists.religions} value={data.religion} error={visible("religion.option_id", "religion.other_text")} field="religion.option_id" hint="Christian, Hindu or Sikh. Choose Other to type another minority community." onChange={(religion) => patch({ religion })} />
+          <SelectField label="Country" value={data.country} error={visible("country")} field="country" autoComplete="country-name" options={[{ id: "Pakistan", label: "Pakistan" }]} onChange={(country) => patch({ country: country as ApplicationInput["country"] })} />
           <RadioField legend="Marital status" name="marital_status" value={data.marital_status} error={visible("marital_status")} field="marital_status" onChange={(marital_status) => patch({ marital_status: marital_status as ApplicationInput["marital_status"] })} options={["Single", "Married", "Widowed", "Divorced"].map((id) => ({ id, label: id }))} />
           {data.marital_status === "Married" ? (
             <div className={styles.two}>
@@ -716,20 +801,37 @@ export function ApplicationForm({
               <MoneyField label="Spouse monthly income (PKR)" value={data.spouse_monthly_income} error={visible("spouse_monthly_income.amount")} field="spouse_monthly_income.amount" onChange={(spouse_monthly_income) => patch({ spouse_monthly_income })} />
             </div>
           ) : null}
-          <SelectOther label="Religion" options={lists.religions} value={data.religion} error={visible("religion.option_id", "religion.other_text")} field="religion.option_id" onChange={(religion) => patch({ religion })} />
-          <CnicField value={data.cnic} error={visible("cnic")} field="cnic" onChange={(cnic) => patch({ cnic })} />
+          <SegmentedField
+            legend="Disability"
+            name="disability_yes_no"
+            field="disability"
+            value={data.disability === "none" ? "No" : data.disability || disabilityYes ? "Yes" : ""}
+            error={data.disability === "" && !disabilityYes ? visible("disability") : undefined}
+            onChange={(answer) => {
+              setDisabilityYes(answer === "Yes");
+              patch(answer === "No" ? { disability: "none", disability_other: "" } : { disability: data.disability === "none" ? "" : data.disability });
+            }}
+          />
+          {(data.disability && data.disability !== "none") || (disabilityYes && data.disability === "") ? (
+            <RadioField legend="Type of disability" name="disability" value={data.disability} error={visible("disability")} field="disability_type" onChange={(disability) => patch({ disability: disability as ApplicationInput["disability"] })} options={DISABILITIES.filter((item) => item.id !== "none").map((item) => ({ id: item.id, label: item.label }))} />
+          ) : null}
+          {data.disability === "other" ? <TextField label="Describe the disability" value={data.disability_other} error={visible("disability_other")} field="disability_other" onChange={(disability_other) => patch({ disability_other })} /> : null}
+          <PhoneField label="Mobile number" value={data.mobile_phone} error={visible("mobile_phone")} field="mobile_phone" hint="Pakistan mobile only, for example 0300 1234567. Do not type an email in this box." onChange={(mobile_phone) => patch({ mobile_phone })} />
+          <PhoneField label="Alternate mobile (optional)" value={data.secondary_phone} error={visible("secondary_phone")} field="secondary_phone" hint="Optional Pakistan mobile." onChange={(secondary_phone) => patch({ secondary_phone })} />
           <div className={styles.two}>
             <TextField label="Email" type="email" autoComplete="email" value={data.email} error={visible("email")} field="email" onChange={(email) => patch({ email })} />
             <TextField label="Confirm email" type="email" autoComplete="email" value={data.email_confirm} error={visible("email_confirm")} field="email_confirm" onChange={(email_confirm) => patch({ email_confirm })} />
           </div>
-          <PhoneField label="Mobile phone" value={data.mobile_phone} error={visible("mobile_phone")} field="mobile_phone" hint="Pakistan mobile only, for example 0300 1234567. Do not type an email in this box." onChange={(mobile_phone) => patch({ mobile_phone })} />
-          <PhoneField label="Secondary phone (optional)" value={data.secondary_phone} error={visible("secondary_phone")} field="secondary_phone" hint="Optional Pakistan mobile." onChange={(secondary_phone) => patch({ secondary_phone })} />
-          <TextField label="Home address" autoComplete="street-address" value={data.address_line} error={visible("address_line")} field="address_line" onChange={(address_line) => patch({ address_line })} />
+          <TextField label="Current address" autoComplete="street-address" value={data.address_line} error={visible("address_line")} field="address_line" hint="House, street and area where you live now." onChange={(address_line) => patch({ address_line })} />
           <div className={styles.two}>
             <SelectOther label="City" options={lists.cities} value={data.city} error={visible("city.option_id", "city.other_text")} field="city.option_id" onChange={(city) => patch({ city })} />
             <SelectField label="Province" value={data.province} error={visible("province")} field="province" options={PROVINCES.map((id) => ({ id, label: id }))} onChange={(province) => patch({ province })} />
           </div>
-          <RadioField legend="Are you working?" name="employment_status" value={data.employment_status} error={visible("employment_status")} field="employment_status" hint="Choose Yes if you have any job. Reviewers ask about work that was left off the form." onChange={(employment_status) => patch({ employment_status: employment_status as ApplicationInput["employment_status"] })} options={EMPLOYMENT.map((item) => ({ id: item.id, label: item.label }))} />
+          <SegmentedField legend="Permanent address same as current?" name="permanent_same" field="permanent_same" value={data.permanent_same} error={visible("permanent_same")} onChange={(permanent_same) => patch({ permanent_same: permanent_same as ApplicationInput["permanent_same"], permanent_address: permanent_same === "Yes" ? "" : data.permanent_address })} />
+          {data.permanent_same === "No" ? (
+            <TextField label="Permanent address" value={data.permanent_address} error={visible("permanent_address")} field="permanent_address" hint="Include the city or village." maxLength={200} onChange={(permanent_address) => patch({ permanent_address })} />
+          ) : null}
+          <SegmentedField legend="Are you currently employed?" name="employment_status" value={data.employment_status} error={visible("employment_status")} field="employment_status" hint="Choose Yes if you have any job. Reviewers ask about work that was left off the form." onChange={(employment_status) => patch({ employment_status: employment_status as ApplicationInput["employment_status"] })} options={EMPLOYMENT.map((item) => ({ id: item.id, label: item.label })).reverse()} />
           {data.employment_status === "Yes" ? (
             <div className={styles.two}>
               <TextField label="Job title" value={data.employment_job} error={visible("employment_job")} field="employment_job" onChange={(employment_job) => patch({ employment_job })} />
@@ -761,6 +863,26 @@ export function ApplicationForm({
               <MoneyField label="Mother's monthly income (PKR)" allowUnknown value={data.mother_monthly_income} error={visible("mother_monthly_income.amount")} field="mother_monthly_income.amount" onChange={(mother_monthly_income) => patch({ mother_monthly_income })} />
             </>
           )}
+          <SegmentedField
+            legend="Father / Husband / Guardian"
+            name="guardian_relation"
+            field="guardian_relation"
+            hint="Whose name and occupation should appear on the application."
+            value={data.guardian_relation}
+            error={visible("guardian_relation")}
+            options={GUARDIAN_RELATIONS.map((item) => ({ id: item.id, label: item.id === "guardian" ? "Guardian" : item.label }))}
+            onChange={(guardian_relation) => patch({ guardian_relation: guardian_relation as ApplicationInput["guardian_relation"], guardian_name: guardian_relation === "guardian" ? data.guardian_name : "" })}
+          />
+          {data.guardian_relation === "husband" ? (
+            <p className={styles.hint}>Your husband&apos;s name is taken from Spouse name on the Personal step{data.spouse_name ? `: ${data.spouse_name}` : ""}.</p>
+          ) : null}
+          {data.guardian_relation === "guardian" ? (
+            <TextField label="Guardian name" value={data.guardian_name} error={visible("guardian_name")} field="guardian_name" onChange={(guardian_name) => patch({ guardian_name })} />
+          ) : null}
+          {data.guardian_relation === "husband" || data.guardian_relation === "guardian" ? (
+            <TextField label={data.guardian_relation === "husband" ? "Husband's occupation" : "Guardian occupation"} hint="For example Driver, Teacher, or Unemployed." value={data.guardian_occupation} error={visible("guardian_occupation")} field="guardian_occupation" maxLength={80} onChange={(guardian_occupation) => patch({ guardian_occupation })} />
+          ) : null}
+          <NumberField label="Family monthly income (PKR)" hint="Total from everyone in the household who earns, per month. Use 0 if there is none." max={100_000_000} value={data.family_monthly_income} error={visible("family_monthly_income")} field="family_monthly_income" onChange={(family_monthly_income) => patch({ family_monthly_income })} />
           <PhoneField label="Guardian phone" value={data.guardian_phone} error={visible("guardian_phone")} field="guardian_phone" hint="Mobile or landline, with country code if it is not a Pakistan number." onChange={(guardian_phone) => patch({ guardian_phone })} />
           <NumberField label="Siblings, excluding yourself" hint="Use 0 if you have none. Do not count yourself." max={20} value={data.siblings_count} error={visible("siblings_count")} field="siblings_count" onChange={(siblings_count) => patch({ siblings_count })} />
           <div className={styles.two}>
@@ -782,6 +904,18 @@ export function ApplicationForm({
             Do not mix the semester or a future plan into the program name, and do not type a grade or Yes.
             The fee is the whole number on the upcoming-term voucher, in PKR. Do not write “2 lakh” or a yearly figure in another currency.
           </p>
+          <EducationRows
+            rows={data.education}
+            documents={data.documents}
+            applicationId={data.client_id}
+            context={{ name: data.full_name_as_on_cnic, cnic: data.cnic, fatherName: data.father_name, fee: data.fee.amount }}
+            error={visible("education")}
+            visible={visible}
+            onChange={(education) => patch({ education })}
+            onUpsert={upsertDocument}
+            onRemoveDocument={removeDocument}
+          />
+          <h3 className={styles.subTitle}>Current program</h3>
           <SelectOther label="Current institution" aliases={SCHOOL_ALIASES} options={lists.schools} value={data.current_institution} error={visible("current_institution.option_id", "current_institution.other_text")} field="current_institution.option_id" hint="Type to search. Abbreviations and small typos are accepted. Choose Other if it is not listed." onChange={(current_institution) => patch({ current_institution })} />
           <SelectOther label="Campus city" options={lists.cities} value={data.campus_city} error={visible("campus_city.option_id", "campus_city.other_text")} field="campus_city.option_id" onChange={(campus_city) => patch({ campus_city })} />
           <SelectOther label="Degree level" options={lists.levels} value={data.degree_level} error={visible("degree_level.option_id", "degree_level.other_text")} field="degree_level.option_id" onChange={(degree_level) => patch({ degree_level })} />
@@ -834,6 +968,13 @@ export function ApplicationForm({
             <SelectField label="Completion term" value={data.completion_term} error={visible("completion_term")} field="completion_term" options={[{ id: "Spring", label: "Spring" }, { id: "Fall", label: "Fall" }]} onChange={(completion_term) => patch({ completion_term: completion_term as ApplicationInput["completion_term"] })} />
           </div>
           <NumberField label="Completion year" max={2100} value={data.completion_year} error={visible("completion_year")} field="completion_year" onChange={(completion_year) => patch({ completion_year })} />
+          <SelectField label="Current semester" value={data.current_semester} error={visible("current_semester")} field="current_semester" options={SEMESTER_OPTIONS.map((item) => ({ id: item.id, label: item.id === "not_started" ? item.label : `Semester ${item.label}` }))} onChange={(current_semester) => patch({ current_semester })} />
+          {data.current_semester && data.current_semester !== "not_started" && data.current_semester !== "1" ? (
+            <div className={styles.two}>
+              <DecimalField label="Current GPA" value={data.current_gpa} error={visible("current_gpa")} field="current_gpa" placeholder="e.g. 3.25" onChange={(current_gpa) => patch({ current_gpa })} />
+              <SegmentedField legend="GPA scale" name="gpa_scale" field="gpa_scale" value={data.gpa_scale} error={visible("gpa_scale")} options={GPA_SCALES.map((id) => ({ id, label: `Out of ${id}` }))} onChange={(gpa_scale) => patch({ gpa_scale: gpa_scale as ApplicationInput["gpa_scale"] })} />
+            </div>
+          ) : null}
           <TextField label="Roll number (optional)" value={data.roll_number} error={visible("roll_number")} field="roll_number" onChange={(roll_number) => patch({ roll_number })} />
           <p className={styles.noteBox}>
             These five terms are the last two, this term, and the next two. For a past term, choose the unit and a status.
@@ -885,6 +1026,7 @@ export function ApplicationForm({
           <SelectOther label="Previous qualification" options={lists.streams} value={data.previous_qualification} error={visible("previous_qualification.option_id", "previous_qualification.other_text")} field="previous_qualification.option_id" onChange={(previous_qualification) => patch({ previous_qualification })} />
           <NumberField label="Previous completion year" value={data.previous_completion_year} error={visible("previous_completion_year")} field="previous_completion_year" max={2100} onChange={(previous_completion_year) => patch({ previous_completion_year })} />
           <MoneyField label="Fee for the upcoming term (PKR)" value={data.fee} error={visible("fee.amount")} field="fee.amount" hint="The whole number printed on the current voucher. A blank is not zero." onChange={(fee) => patch({ fee: { ...fee, period: "semester", currency: "PKR" } })} />
+          <NumberField label="Amount requested (PKR)" hint="How much you are asking Rapid Charity to pay this term." max={10_000_000} value={data.amount_requested} error={visible("amount_requested")} field="amount_requested" onChange={(amount_requested) => patch({ amount_requested })} />
           <TextField label="Fee due date" type="date" value={data.fee_due_date} error={visible("fee_due_date")} field="fee_due_date" onChange={(fee_due_date) => patch({ fee_due_date })} />
           <PhoneField label="Institution phone (optional)" value={data.institution_phone} error={visible("institution_phone")} field="institution_phone" onChange={(institution_phone) => patch({ institution_phone })} />
           <TextField label="Institution address (optional)" value={data.institution_address} error={visible("institution_address")} field="institution_address" onChange={(institution_address) => patch({ institution_address })} />
@@ -896,7 +1038,7 @@ export function ApplicationForm({
           <p className={styles.noteBox}>
             Disclose every other scholarship and any job. Phone numbers and email addresses stay in their own fields.
           </p>
-          <RadioField legend="Rapid scholarship before" name="rapid_received" value={data.rapid_received} error={visible("rapid_received")} field="rapid_received" onChange={(rapid_received) => patch({ rapid_received: rapid_received as ApplicationInput["rapid_received"], rapid_semesters: rapid_received === "Yes" ? data.rapid_semesters : [] })} options={[{ id: "Never", label: "Never" }, { id: "Yes", label: "Yes, in these terms" }]} />
+          <SegmentedField legend="Received a RAPID scholarship before?" name="rapid_received" value={data.rapid_received} error={visible("rapid_received")} field="rapid_received" onChange={(rapid_received) => patch({ rapid_received: rapid_received as ApplicationInput["rapid_received"], rapid_semesters: rapid_received === "Yes" ? data.rapid_semesters : [] })} options={[{ id: "Yes", label: "Yes" }, { id: "Never", label: "No" }]} />
           {data.rapid_received === "Yes" ? (
             <>
               <fieldset className={styles.checks} data-field="rapid_semesters" aria-invalid={visible("rapid_semesters") ? true : undefined}>
@@ -922,7 +1064,7 @@ export function ApplicationForm({
               <MoneyField label="Amount received (PKR)" value={data.rapid_amount} error={visible("rapid_amount.amount")} field="rapid_amount.amount" onChange={(rapid_amount) => patch({ rapid_amount: { ...rapid_amount, period: "semester", currency: "PKR" } })} />
             </>
           ) : null}
-          <RadioField legend="Any other scholarship" name="other_financial_support" value={data.other_financial_support} error={visible("other_financial_support")} field="other_financial_support" hint="Choose Yes if another office is paying any part of the fee." onChange={(other_financial_support) => patch({ other_financial_support: other_financial_support as ApplicationInput["other_financial_support"] })} options={[{ id: "No", label: "No" }, { id: "Yes", label: "Yes" }]} />
+          <SegmentedField legend="Receiving any other scholarship?" name="other_financial_support" value={data.other_financial_support} error={visible("other_financial_support")} field="other_financial_support" hint="Choose Yes if another office is paying any part of the fee." onChange={(other_financial_support) => patch({ other_financial_support: other_financial_support as ApplicationInput["other_financial_support"] })} />
           {data.other_financial_support === "Yes" ? (
             <>
               <SelectOther label="Provider" options={lists.providers} value={data.support_provider} error={visible("support_provider.option_id", "support_provider.other_text")} field="support_provider.option_id" onChange={(support_provider) => patch({ support_provider })} />
@@ -938,11 +1080,11 @@ export function ApplicationForm({
           <SelectOther label="How did you hear about Rapid?" options={lists.heard} value={data.heard_about} error={visible("heard_about.option_id", "heard_about.other_text")} field="heard_about.option_id" onChange={(heard_about) => patch({ heard_about })} />
           <TextField label="Church or place of worship" value={data.church_name} error={visible("church_name")} field="church_name" onChange={(church_name) => patch({ church_name })} />
           <SelectOther label="Denomination (optional)" options={lists.denominations} value={data.denomination} error={visible("denomination.option_id", "denomination.other_text")} field="denomination.option_id" onChange={(denomination) => patch({ denomination })} />
-          <SelectField label="Pastor or priest title" value={data.pastor_title} error={visible("pastor_title")} field="pastor_title" options={PASTOR_TITLES.map((item) => ({ id: item.id, label: item.label }))} onChange={(pastor_title) => patch({ pastor_title: pastor_title as ApplicationInput["pastor_title"] })} />
+          <SelectField label="Priest or pastor title" value={data.pastor_title} error={visible("pastor_title")} field="pastor_title" options={PASTOR_TITLES.map((item) => ({ id: item.id, label: item.label }))} onChange={(pastor_title) => patch({ pastor_title: pastor_title as ApplicationInput["pastor_title"] })} />
           {data.pastor_title === "Other" ? <TextField label="Title" value={data.pastor_title_other} error={visible("pastor_title_other")} field="pastor_title_other" onChange={(pastor_title_other) => patch({ pastor_title_other })} /> : null}
-          <TextField label="Pastor or priest name" value={data.pastor_name} error={visible("pastor_name")} field="pastor_name" onChange={(pastor_name) => patch({ pastor_name })} />
-          <PhoneField label="Pastor phone" value={data.pastor_phone} error={visible("pastor_phone")} field="pastor_phone" onChange={(pastor_phone) => patch({ pastor_phone })} />
-          <TextField label="Pastor email (optional)" type="email" value={data.pastor_email} error={visible("pastor_email")} field="pastor_email" onChange={(pastor_email) => patch({ pastor_email })} />
+          <TextField label="Priest or pastor name" value={data.pastor_name} error={visible("pastor_name")} field="pastor_name" onChange={(pastor_name) => patch({ pastor_name })} />
+          <PhoneField label="Priest or pastor contact number" value={data.pastor_phone} error={visible("pastor_phone")} field="pastor_phone" onChange={(pastor_phone) => patch({ pastor_phone })} />
+          <TextField label="Priest or pastor email (optional)" type="email" value={data.pastor_email} error={visible("pastor_email")} field="pastor_email" onChange={(pastor_email) => patch({ pastor_email })} />
           <TextField label="Faculty reference name" value={data.faculty_ref_name} error={visible("faculty_ref_name")} field="faculty_ref_name" onChange={(faculty_ref_name) => patch({ faculty_ref_name })} />
           <TextField label="Faculty designation" value={data.faculty_ref_designation} error={visible("faculty_ref_designation")} field="faculty_ref_designation" onChange={(faculty_ref_designation) => patch({ faculty_ref_designation })} />
           <PhoneField label="Faculty phone" value={data.faculty_ref_phone} error={visible("faculty_ref_phone")} field="faculty_ref_phone" onChange={(faculty_ref_phone) => patch({ faculty_ref_phone })} />
@@ -957,7 +1099,8 @@ export function ApplicationForm({
 
       {step === 5 ? (
         <div className={styles.grid}>
-          <p className={styles.sectionLead}>Each answer needs 50 to 1500 characters.</p>
+          <p className={styles.sectionLead}>The statement of financial need needs 100 to 2000 characters. Each other answer needs 50 to 1500 characters.</p>
+          <TextAreaField label="Statement of financial need" hint="Explain your family's situation and why you need this scholarship now." value={data.financial_need_statement} error={visible("financial_need_statement")} field="financial_need_statement" maxLength={2000} onChange={(financial_need_statement) => patch({ financial_need_statement })} />
           <TextAreaField label="What is your life goal?" value={data.life_goal} error={visible("life_goal")} field="life_goal" maxLength={1500} onChange={(life_goal) => patch({ life_goal })} />
           <TextAreaField label="How will you contribute to your community?" value={data.community_contribution} error={visible("community_contribution")} field="community_contribution" maxLength={1500} onChange={(community_contribution) => patch({ community_contribution })} />
           <TextAreaField label="What is your plan if this scholarship is not awarded?" value={data.plan_if_denied} error={visible("plan_if_denied")} field="plan_if_denied" maxLength={1500} onChange={(plan_if_denied) => patch({ plan_if_denied })} />
@@ -970,8 +1113,7 @@ export function ApplicationForm({
           {data.applicant_type === "continuing" ? (
             <fieldset className={styles.checks}>
               <legend className={styles.legend}>Unchanged from the previous term</legend>
-              <p className={styles.hint}>Photo and CNICs can be reused. The result card, fee voucher, and pastor letter are required every term.</p>
-              <label className={styles.choice}><input type="checkbox" checked={data.reuse_photo} onChange={(event) => patch({ reuse_photo: event.target.checked })} /><span>Passport photo is unchanged</span></label>
+              <p className={styles.hint}>CNICs can be reused (the photo is on the Personal step). The result, fee voucher, and recommendation letter are required every term.</p>
               <label className={styles.choice}><input type="checkbox" checked={data.reuse_cnic} onChange={(event) => patch({ reuse_cnic: event.target.checked })} /><span>My CNIC or B-Form is unchanged</span></label>
               <label className={styles.choice}><input type="checkbox" checked={data.reuse_guardian} onChange={(event) => patch({ reuse_guardian: event.target.checked })} /><span>Father or guardian document is unchanged</span></label>
             </fieldset>
@@ -981,7 +1123,7 @@ export function ApplicationForm({
             documents={data.documents}
             error={
               Object.entries(errors)
-                .filter(([key]) => stepAttempted && (key === "documents" || key.startsWith("documents.")))
+                .filter(([key]) => stepAttempted && (key === "documents" || key.startsWith("documents.")) && !SLOT_STEP[key.split(".")[1] ?? ""])
                 .map(([key, message]) => `${fieldLabel(key)}: ${message}`)
                 .join(" ") || undefined
             }
@@ -1003,7 +1145,6 @@ export function ApplicationForm({
               under18: (ageInYears(data.date_of_birth, new Date()) ?? 18) < 18,
             }}
             hints={[
-              { slot: "photo", text: "A clear face photo on a plain background." },
               { slot: "fee_voucher", text: "The voucher must show the same whole-number fee you entered." },
               { slot: "pastor_letter", text: "Signed, on letterhead, and dated for this cycle." },
               { slot: "result", text: "Up to five files. Include the latest term you marked as declared." },
@@ -1011,7 +1152,7 @@ export function ApplicationForm({
               ...(data.disability && data.disability !== "none" ? [{ slot: "disability_certificate", text: "Required because a disability is selected." }] : []),
               ...(data.other_financial_support === "Yes" ? [{ slot: "other_award", text: "Required because another scholarship was declared." }] : []),
             ]}
-            sampleSlots={sampleList.length > 0 ? requiredDocumentSlots(data) : undefined}
+            sampleSlots={sampleList.length > 0 ? requiredDocumentSlots(data).filter((slot) => !SLOT_STEP[slot]) : undefined}
             autoSample={Boolean(sampleId)}
             onSampleBusy={setSampleUploading}
             onUpsert={upsertDocument}
@@ -1039,7 +1180,21 @@ export function ApplicationForm({
                   Edit
                 </button>
               </header>
-              <p>{reviewLine(item.id, data)}</p>
+              {item.id === "personal" ? (
+                <div className={styles.reviewPerson}>
+                  <span className={styles.reviewPhoto} data-empty={photoThumb ? undefined : "true"}>
+                    {photoThumb ? (
+                      // eslint-disable-next-line @next/next/no-img-element -- local preview
+                      <img src={photoThumb} alt="Passport-size photo" data-testid="review-photo" />
+                    ) : (
+                      <span>{data.reuse_photo ? "Previous photo" : "No photo"}</span>
+                    )}
+                  </span>
+                  <ReviewLines lines={reviewLines(item.id, data, cycleId)} />
+                </div>
+              ) : (
+                <ReviewLines lines={reviewLines(item.id, data, cycleId)} />
+              )}
             </article>
           ))}
           <p className={styles.noteBox}>
@@ -1072,8 +1227,8 @@ export function ApplicationForm({
           Back
         </button>
         {step < FORM_STEPS.length - 1 ? (
-          <button type="button" className="btn" disabled={blocked || !ready || (step === 6 && sampleUploading)} onClick={() => goNext()}>
-            {step === 6 && sampleUploading ? "Attaching sample files…" : returnToReview ? "Back to review" : "Continue"}
+          <button type="button" className="btn" disabled={blocked || !ready || (step === 6 && sampleUploading) || (step === 1 && photoBusy)} onClick={() => goNext()}>
+            {step === 6 && sampleUploading ? "Attaching sample files…" : step === 1 && photoBusy ? "Adding photo…" : returnToReview ? "Back to review" : "Continue"}
           </button>
         ) : (
           <button type="button" className="btn" disabled={busy || !ready} onClick={() => void submit()}>
@@ -1133,19 +1288,86 @@ function SampleChips({
   );
 }
 
-function reviewLine(id: string, data: ApplicationInput): string {
+function ReviewLines({ lines }: { lines: Array<[string, string]> }) {
+  return (
+    <dl className={styles.reviewList}>
+      {lines.map(([term, detail]) => (
+        <div key={term}>
+          <dt>{term}</dt>
+          <dd>{detail}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+function money(amount: number | null): string {
+  return amount === null ? "Not entered" : `PKR ${amount.toLocaleString("en-PK")}`;
+}
+
+function clip(text: string, length = 140): string {
+  const clean = text.trim();
+  return clean.length > length ? `${clean.slice(0, length).trimEnd()}…` : clean;
+}
+
+function reviewLines(id: string, data: ApplicationInput, cycleId: string): Array<[string, string]> {
+  const missing = "Not entered yet";
   if (id === "scholarship") {
     const name = SCHOLARSHIPS.find((item) => item.id === data.scholarship)?.label ?? "Not chosen";
-    const kind = data.applicant_type === "continuing" ? "Continuing" : data.applicant_type === "new" ? "New" : "Applicant type not chosen";
-    return `${kind} · ${name}`;
+    const kind = data.applicant_type === "continuing" ? "Continuing" : data.applicant_type === "new" ? "New" : "Not chosen";
+    return [
+      ["Scholarship", name],
+      ["Applicant", kind],
+      ["Session", `${sessionName(cycleId)}${sessionCode(cycleId) ? ` (${sessionCode(cycleId)})` : ""}`],
+    ];
   }
-  if (id === "personal") return [data.first_name, data.last_name].filter(Boolean).join(" ") || "Name not entered yet";
-  if (id === "family") return data.father_name ? `Father: ${data.father_name}` : "Family details not entered yet";
-  if (id === "academics") return data.program_title || data.field_of_study.other_text || data.field_of_study.option_id || "Program not entered yet";
-  if (id === "support") return data.church_name || data.pastor_name || "References not entered yet";
-  if (id === "essays") return data.life_goal ? `${data.life_goal.slice(0, 140)}${data.life_goal.length > 140 ? "…" : ""}` : "Essays not entered yet";
-  if (id === "documents") return data.documents.length ? `${data.documents.length} file${data.documents.length === 1 ? "" : "s"} uploaded` : "No files uploaded yet";
-  return "";
+  if (id === "personal") {
+    return [
+      ["Name", [data.first_name, data.last_name].filter(Boolean).join(" ") || missing],
+      ["CNIC", data.cnic || missing],
+      ["Mobile", data.mobile_phone || missing],
+      ["Email", data.email || missing],
+    ];
+  }
+  if (id === "family") {
+    const relation = data.guardian_relation === "husband" ? "Husband" : data.guardian_relation === "guardian" ? "Guardian" : "Father";
+    const name = data.guardian_relation === "husband" ? data.spouse_name : data.guardian_relation === "guardian" ? data.guardian_name : data.father_name;
+    return [
+      [relation, name || missing],
+      ["Family monthly income", money(data.family_monthly_income)],
+    ];
+  }
+  if (id === "academics") {
+    const rows = data.education.filter((row) => row.qualification);
+    const semester = data.current_semester === "not_started" ? "Not started yet" : data.current_semester ? `Semester ${data.current_semester}` : missing;
+    return [
+      ["Program", data.program_title || data.field_of_study.other_text || data.field_of_study.option_id || missing],
+      ["Education history", rows.length ? `${rows.length} qualification${rows.length === 1 ? "" : "s"}` : missing],
+      ["Current semester", data.current_gpa !== null && data.gpa_scale ? `${semester}, GPA ${data.current_gpa.toFixed(2)} of ${data.gpa_scale}` : semester],
+      ["Amount requested", money(data.amount_requested)],
+    ];
+  }
+  if (id === "support") {
+    return [
+      ["RAPID scholarship before", data.rapid_received === "Yes" ? "Yes" : data.rapid_received === "Never" ? "No" : missing],
+      ["Other scholarship", data.other_financial_support || missing],
+      ["Priest or pastor", data.pastor_name ? `${data.pastor_name}${data.pastor_phone ? `, ${data.pastor_phone}` : ""}` : missing],
+    ];
+  }
+  if (id === "essays") {
+    return [
+      ["Financial need", data.financial_need_statement ? clip(data.financial_need_statement) : missing],
+      ["Life goal", data.life_goal ? clip(data.life_goal, 90) : missing],
+    ];
+  }
+  if (id === "documents") {
+    const samples = data.documents.filter((item) => item.file_id.startsWith("sample-local:")).length;
+    const count = data.documents.length;
+    return [
+      ["Files", count ? `${count} file${count === 1 ? "" : "s"} attached${samples ? `, ${samples} sample file${samples === 1 ? "" : "s"} not uploaded` : ""}` : "No files uploaded yet"],
+    ];
+  }
+  return [];
 }
 
 function Numberish({

@@ -12,18 +12,56 @@ import { join } from "node:path";
  */
 const KEY = "rapid2027";
 const SHOTS = process.env.MOCK_SHOTS_DIR ?? join(process.cwd(), "qa/apply-flow-shots/mocks");
+/** Optional audit folder for the portal-alignment screenshots (Personal photo, education rows, Review). */
+const AUDIT = process.env.AUDIT_SHOTS_DIR ?? "";
 const STEPS = ["Scholarship", "Personal", "Family", "Academics", "Support", "Essays", "Documents", "Review"];
+// The passport-size photo is attached on the Personal step for every sample; these are the Documents step slots.
 const MOCKS = [
-  { id: "john-ivy", name: "Akram Naseem", label: "John-Ivy Azariah", slots: ["photo", "cnic", "guardian_cnic", "admission_proof", "result", "fee_voucher", "pastor_letter"] },
-  { id: "ivy", name: "Ayesha Khan", label: "Ivy Azariah", slots: ["photo", "cnic", "guardian_cnic", "admission_proof", "result", "fee_voucher", "pastor_letter"] },
+  { id: "john-ivy", name: "Akram Naseem", label: "John-Ivy Azariah", slots: ["cnic", "guardian_cnic", "admission_proof", "result", "fee_voucher", "pastor_letter"] },
+  { id: "ivy", name: "Ayesha Khan", label: "Ivy Azariah", slots: ["cnic", "guardian_cnic", "admission_proof", "result", "fee_voucher", "pastor_letter"] },
   { id: "robert", name: "Bilal Masih", label: "Robert Mathias", slots: ["guardian_cnic", "admission_proof", "result", "fee_voucher", "pastor_letter", "other_award"] },
 ];
 const VIEWPORTS = [
+  { name: "small360", width: 360, height: 780, mobile: true },
   { name: "iphone16", width: 393, height: 852, mobile: true },
   { name: "pixel7", width: 412, height: 915, mobile: true },
   { name: "tablet768", width: 768, height: 1024, mobile: false },
+  { name: "laptop1024", width: 1024, height: 768, mobile: false },
   { name: "desktop1440", width: 1440, height: 900, mobile: false },
 ];
+const FILE_DONE = /Uploaded|Result \d|Sample file \(not uploaded\)/;
+
+/** No horizontal page overflow, no clipped text, and 44 px tap targets inside the form card. */
+async function stepLayoutOk(page: Page, step: string) {
+  const report = await page.evaluate(() => {
+    const card = document.querySelector<HTMLElement>("form [data-form-issues], form h2")?.closest("div");
+    const root = card ?? document.body;
+    const clipped = [...root.querySelectorAll<HTMLElement>("label, legend, p, span, h2, h3, h4, dt, dd, button")]
+      .filter((el) => el.offsetParent !== null)
+      .filter((el) => {
+        const style = getComputedStyle(el);
+        const hides = style.overflow !== "visible" || style.textOverflow === "ellipsis";
+        return hides && el.scrollWidth > el.clientWidth + 1 && !el.closest("[aria-hidden='true']") && el.clientWidth > 0 && style.position !== "absolute";
+      })
+      .map((el) => (el.textContent ?? "").trim().slice(0, 60));
+    const small = [...root.querySelectorAll<HTMLElement>("button, [role='radio'], .btn-secondary, label[for]")]
+      .filter((el) => el.offsetParent !== null && !el.closest("[aria-hidden='true']"))
+      .filter((el) => el.matches("button, label[data-focus], label[for^='edu-proof-']"))
+      // The small clear (×) circle in a type-ahead has a 44px ::after tap area.
+      .filter((el) => getComputedStyle(el, "::after").content === "none" || getComputedStyle(el, "::after").position !== "absolute")
+      .filter((el) => el.getBoundingClientRect().height < 43.5)
+      .map((el) => (el.textContent ?? "").trim().slice(0, 40));
+    const segments = [...root.querySelectorAll<HTMLElement>("fieldset span")]
+      .filter((el) => el.previousElementSibling?.matches("input[type='radio']") && el.parentElement?.parentElement?.getAttribute("data-count"))
+      .filter((el) => el.getBoundingClientRect().height < 43.5)
+      .map((el) => el.textContent ?? "");
+    return { pageOverflow: document.documentElement.scrollWidth - window.innerWidth, clipped, small: [...small, ...segments] };
+  });
+  expect(report.pageOverflow, `${step}: page overflow`).toBeLessThanOrEqual(0);
+  expect(report.clipped, `${step}: clipped text`).toEqual([]);
+  expect(report.small, `${step}: tap targets under 44px`).toEqual([]);
+  await expect(page.locator("form [data-invalid='true']"), `${step}: invalid fields`).toHaveCount(0);
+}
 
 test.describe.configure({ timeout: 300_000 });
 
@@ -161,18 +199,40 @@ for (const viewport of VIEWPORTS) {
 
         for (let index = 0; index < STEPS.length - 1; index += 1) {
           await expect(page.getByRole("heading", { name: STEPS[index], level: 2 })).toBeVisible();
+          if (STEPS[index] === "Personal") {
+            // The sample photo is attached automatically and shown in the circle preview.
+            const photo = page.locator("[data-field='documents.photo']");
+            await expect(photo.getByText(/^Uploaded, \d+ KB$|^Sample file \(not uploaded\)$/)).toBeVisible({ timeout: 120_000 });
+            await expect(photo.getByTestId("photo-preview")).toBeVisible();
+            expect(await page.locator("form [data-field]").first().getAttribute("data-field")).toBe("documents.photo");
+            await expect(page.getByRole("button", { name: "Continue" })).toBeEnabled({ timeout: 60_000 });
+          }
           if (STEPS[index] === "Personal" && mock.id === "john-ivy") {
             await expect(page.getByLabel("First name")).toHaveValue("Akram");
             await page.screenshot({ path: join(SHOTS, `filled-personal-${viewport.name}.png`), animations: "disabled" });
             if (viewport.mobile) await page.screenshot({ path: join(SHOTS, `filled-personal-${viewport.name}-full.png`), fullPage: true, animations: "disabled" });
+            if (AUDIT && viewport.width === 393) {
+              mkdirSync(AUDIT, { recursive: true });
+              await page.locator("[data-field='documents.photo']").scrollIntoViewIfNeeded();
+              await page.screenshot({ path: join(AUDIT, "personal-photo-393.png"), animations: "disabled" });
+            }
+          }
+          if (STEPS[index] === "Academics") {
+            await expect(page.getByTestId("education-row")).toHaveCount(3);
+            if (AUDIT && viewport.width === 393 && mock.id === "john-ivy") {
+              await page.locator("#education-title").evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - 150));
+              await page.screenshot({ path: join(AUDIT, "education-rows-393.png"), animations: "disabled" });
+              await page.locator("[data-field='education']").screenshot({ path: join(AUDIT, "education-rows-393-section.png"), animations: "disabled" });
+            }
           }
           if (STEPS[index] === "Documents") {
             for (const slot of mock.slots) {
-              await expect(page.locator(`[data-field="documents.${slot}"]`).getByText(/Uploaded|Result \d/).first()).toBeVisible({ timeout: 180_000 });
+              await expect(page.locator(`[data-field="documents.${slot}"]`).getByText(FILE_DONE).first()).toBeVisible({ timeout: 180_000 });
             }
             await expect(page.getByRole("button", { name: "Continue" })).toBeEnabled({ timeout: 60_000 });
             if (viewport.name === "iphone16") await page.screenshot({ path: join(SHOTS, `${mock.id}-documents-${viewport.name}.png`), fullPage: true, animations: "disabled" });
           }
+          await stepLayoutOk(page, `${mock.id} ${STEPS[index]} at ${viewport.width}`);
           await page.getByRole("button", { name: "Continue" }).click();
           await expect(page.locator("[data-form-issues]")).toHaveCount(0);
         }
@@ -181,6 +241,13 @@ for (const viewport of VIEWPORTS) {
         await expect(page.getByLabel("Type your full name")).toHaveValue(mock.name);
         await expect(page.locator("[data-form-issues]")).toHaveCount(0);
         await expect(page.getByRole("button", { name: "Submit application" })).toBeEnabled();
+        await expect(page.getByTestId("review-photo")).toBeVisible();
+        await stepLayoutOk(page, `${mock.id} Review at ${viewport.width}`);
+        if (AUDIT && mock.id === "john-ivy" && (viewport.width === 393 || viewport.width === 1440)) {
+          await page.getByRole("heading", { name: "Review", level: 2 }).evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - 90));
+          await page.screenshot({ path: join(AUDIT, `review-${viewport.width}.png`), animations: "disabled" });
+          await page.screenshot({ path: join(AUDIT, `review-${viewport.width}-full.png`), fullPage: true, animations: "disabled" });
+        }
         if (viewport.name === "iphone16" || mock.id === "john-ivy") {
           await page.screenshot({ path: join(SHOTS, `${mock.id}-review-${viewport.name}.png`), fullPage: true, animations: "disabled" });
         }

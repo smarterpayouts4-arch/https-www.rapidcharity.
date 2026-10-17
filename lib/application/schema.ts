@@ -1,10 +1,11 @@
 import { z } from "zod";
 import { OPTION_LISTS, allowedIds } from "./catalogs";
-import { CURRENCIES, CYCLE_TERMS, GRADES, NURSING_FIELD_ID, PROVINCES, RAPID_SEMESTERS } from "./constants";
+import { CURRENCIES, CYCLE_TERMS, GRADES, MAX_EDUCATION_ROWS, NURSING_FIELD_ID, PROVINCES, RAPID_SEMESTERS } from "./constants";
 import { missingRequiredDocuments } from "./documents";
 import { documentSlotLabel, documentUploadPrompt } from "./fieldLabels";
 import { eligibilityIssues } from "./eligibility";
-import { MAX_FILE_BYTES, MAX_TOTAL_BYTES } from "./fileRules";
+import { MAX_FILE_BYTES, MAX_PHOTO_BYTES, MAX_TOTAL_BYTES } from "./fileRules";
+import { CLAIMED_KEYS } from "./steps";
 import { ageInYears, isE164, isPakistanMobile, normalizeCnic, normalizePhone } from "./normalize";
 import type { ApplicationInput, Choice, PromotedList, PromotedOption, ResultValue } from "./types";
 
@@ -90,12 +91,15 @@ export const applicationSchema = z.object({
   spouse_name: z.string().trim().max(120),
   spouse_monthly_income: moneySchema,
   religion: choiceSchema,
+  country: z.string(),
   cnic: z.string(),
   email: z.string().trim().email("Enter a valid email address."),
   email_confirm: z.string().trim(),
   mobile_phone: z.string(),
   secondary_phone: z.string(),
-  address_line: z.string().trim().min(1, "Enter your home address.").max(200),
+  address_line: z.string().trim().min(1, "Enter your current address.").max(200),
+  permanent_same: z.string(),
+  permanent_address: z.string().trim().max(200, "Use 200 characters or fewer."),
   city: choiceSchema,
   province: z.string(),
   employment_status: z.string(),
@@ -111,6 +115,10 @@ export const applicationSchema = z.object({
   father_monthly_income: moneySchema,
   mother_monthly_income: moneySchema,
   guardian_phone: z.string(),
+  guardian_relation: z.string(),
+  guardian_name: z.string().trim().max(60, "Use 60 characters or fewer."),
+  guardian_occupation: z.string().trim().max(80, "Use 80 characters or fewer."),
+  family_monthly_income: z.number().int().nonnegative().max(100_000_000).nullable(),
   siblings_count: z.number().int().min(0).max(20).nullable(),
   siblings_studying_count: z.number().int().min(0).max(20).nullable(),
   siblings_working_count: z.number().int().min(0).max(20).nullable(),
@@ -138,10 +146,28 @@ export const applicationSchema = z.object({
       result: resultSchema,
     }),
   ),
+  education: z
+    .array(
+      z.object({
+        qualification: z.string(),
+        qualification_other: z.string().trim().max(80, "Use 80 characters or fewer."),
+        institution: z.string().trim().max(120, "Use 120 characters or fewer."),
+        board: z.string().trim().max(120, "Use 120 characters or fewer."),
+        status: z.string(),
+        result_percent: z.number().nullable(),
+        year: z.number().int().nullable(),
+        proof_index: z.number().int().min(1).max(MAX_EDUCATION_ROWS).nullable(),
+      }),
+    )
+    .max(MAX_EDUCATION_ROWS, `Add at most ${MAX_EDUCATION_ROWS} qualifications.`),
+  current_semester: z.string(),
+  current_gpa: z.number().nullable(),
+  gpa_scale: z.string(),
   previous_institution: choiceSchema,
   previous_qualification: choiceSchema,
   previous_completion_year: z.number().int().nullable(),
   fee: moneySchema,
+  amount_requested: z.number().int().nullable(),
   fee_due_date: z.string(),
   institution_phone: z.string(),
   institution_address: z.string().trim().max(200),
@@ -170,6 +196,11 @@ export const applicationSchema = z.object({
   family_ref_phone: z.string(),
   family_ref_email: z.string().trim().max(120),
   attend_events: z.string(),
+  financial_need_statement: z
+    .string()
+    .trim()
+    .min(100, "Write at least 100 characters about your financial need.")
+    .max(2000, "Use 2000 characters or fewer."),
   life_goal: z.string().trim().min(50, "Write at least 50 characters.").max(1500, "Use 1500 characters or fewer."),
   community_contribution: z.string().trim().min(50, "Write at least 50 characters.").max(1500, "Use 1500 characters or fewer."),
   plan_if_denied: z.string().trim().min(50, "Write at least 50 characters.").max(1500, "Use 1500 characters or fewer."),
@@ -279,10 +310,11 @@ export function refineApplication(
       add(["spouse_monthly_income", "amount"], "Spouse income is PKR per month.");
     }
   }
-  const religion = choiceIssue(data.religion, "a religion", true);
+  const religion = choiceIssue(data.religion, "a community", true);
   if (religion) add(["religion", religion.path], religion.message);
+  if (data.country !== "Pakistan") add(["country"], "Choose Pakistan.");
   const cnic = normalizeCnic(data.cnic);
-  if (!cnic.ok) add(["cnic"], "Enter a 13-digit CNIC as #####-#######-#.");
+  if (!cnic.ok) add(["cnic"], "Enter a 13-digit CNIC like 35202-1234567-1.");
   if (data.email_confirm.trim().toLowerCase() !== data.email.trim().toLowerCase()) add(["email_confirm"], "Email addresses do not match.");
   const mobile = phoneIssue(data.mobile_phone, true);
   if (mobile) add(["mobile_phone"], mobile);
@@ -291,6 +323,8 @@ export function refineApplication(
   const city = choiceIssue(data.city, "a city", true);
   if (city) add(["city", city.path], city.message);
   if (!provinceSet.has(data.province)) add(["province"], "Choose a province.");
+  if (data.permanent_same !== "Yes" && data.permanent_same !== "No") add(["permanent_same"], "Choose Yes or No.");
+  if (data.permanent_same === "No" && !data.permanent_address.trim()) add(["permanent_address"], "Enter your permanent address.");
   if (data.employment_status !== "No" && data.employment_status !== "Yes") add(["employment_status"], "Choose No or Yes.");
   if (data.employment_status === "Yes") {
     if (!data.employment_job.trim()) add(["employment_job"], "Enter the job title.");
@@ -318,6 +352,20 @@ export function refineApplication(
     if (issue) add([key, "amount"], issue);
     else if (data[key].currency !== "PKR" || data[key].period !== "month") add([key, "amount"], "Family income is PKR per month.");
   }
+  if (!["father", "husband", "guardian"].includes(data.guardian_relation)) {
+    add(["guardian_relation"], "Choose Father, Husband, or Other guardian.");
+  }
+  if (data.guardian_relation === "husband" && data.marital_status !== "Married") {
+    add(["guardian_relation"], "Choose Husband only when your marital status is Married.");
+  }
+  if (data.guardian_relation === "guardian") {
+    const guardianName = personName("the guardian's name").safeParse(data.guardian_name);
+    if (!guardianName.success) add(["guardian_name"], guardianName.error.issues[0]?.message ?? "Enter the guardian's name.");
+  }
+  if ((data.guardian_relation === "husband" || data.guardian_relation === "guardian") && !data.guardian_occupation.trim()) {
+    add(["guardian_occupation"], "Enter the guardian's occupation, for example Driver or Unemployed.");
+  }
+  if (data.family_monthly_income === null) add(["family_monthly_income"], "Enter the total family income per month in PKR. Use 0 if there is none.");
   const guardian = phoneIssue(data.guardian_phone, false);
   if (guardian) add(["guardian_phone"], guardian);
   if (data.siblings_count === null) add(["siblings_count"], "Enter how many siblings you have, excluding yourself. Use 0 if none.");
@@ -380,6 +428,44 @@ export function refineApplication(
   });
   if (!declaredProgress) add(["terms"], "Enter at least one declared, awaited, delayed, or repeated term.");
 
+  if (data.education.length < 1) add(["education"], "Add your qualifications, starting with Matriculation.");
+  const proofIndexes = new Set<number>();
+  data.education.forEach((row, index) => {
+    if (!["matriculation", "intermediate", "bachelor", "other"].includes(row.qualification)) {
+      add(["education", index, "qualification"], "Choose a qualification.");
+    }
+    if (row.qualification === "other" && !row.qualification_other.trim()) add(["education", index, "qualification_other"], "Name the qualification.");
+    if (!row.institution.trim()) add(["education", index, "institution"], "Enter the school or college.");
+    if (!row.board.trim()) add(["education", index, "board"], "Enter the board or university.");
+    if (row.status !== "completed" && row.status !== "in_progress") add(["education", index, "status"], "Choose Completed or In progress.");
+    if (row.status === "completed") {
+      if (row.result_percent === null || row.result_percent < 0 || row.result_percent > 100 || !twoDecimals(row.result_percent)) {
+        add(["education", index, "result_percent"], "Enter the result as a percentage from 0 to 100.");
+      }
+    } else if (row.result_percent !== null && (row.result_percent < 0 || row.result_percent > 100)) {
+      add(["education", index, "result_percent"], "Enter the result as a percentage from 0 to 100.");
+    }
+    // Completed rows give the passing year; a row in progress gives the expected year, up to 8 years ahead.
+    const latest = row.status === "in_progress" ? year + 8 : year + 1;
+    if (row.year === null || row.year < 1990 || row.year > latest) add(["education", index, "year"], `Enter a year from 1990 to ${latest}.`);
+    if (row.proof_index !== null) {
+      if (proofIndexes.has(row.proof_index)) add(["education", index, "proof_index"], "Upload the proof for this row again.");
+      proofIndexes.add(row.proof_index);
+    }
+  });
+  const semesters = new Set(["not_started", ...Array.from({ length: 10 }, (_, index) => String(index + 1))]);
+  if (!semesters.has(data.current_semester)) add(["current_semester"], "Choose your current semester.");
+  const gpaOptional = data.current_semester === "not_started" || data.current_semester === "1";
+  if (data.current_gpa === null) {
+    if (!gpaOptional) add(["current_gpa"], "Enter your current GPA or CGPA.");
+  } else {
+    if (data.gpa_scale !== "4.00" && data.gpa_scale !== "5.00") add(["gpa_scale"], "Choose 4.00 or 5.00.");
+    const max = data.gpa_scale === "5.00" ? 5 : 4;
+    if (data.current_gpa < 0 || data.current_gpa > max || !twoDecimals(data.current_gpa)) add(["current_gpa"], `Enter a GPA from 0.00 to ${max.toFixed(2)}.`);
+  }
+  if (data.amount_requested === null || data.amount_requested < 1 || data.amount_requested > 10_000_000) {
+    add(["amount_requested"], "Enter the amount you are requesting as a whole number of PKR.");
+  }
   const previous = choiceIssue(data.previous_institution, "your previous institution", true);
   if (previous) add(["previous_institution", previous.path], previous.message);
   const stream = choiceIssue(data.previous_qualification, "your previous qualification", true);
@@ -463,8 +549,16 @@ export function refineApplication(
       add(["documents", index, "slot"], `${fileName} is unreadable or the wrong type. Replace that file.`);
     }
     if (!/^[a-f0-9]{64}$/.test(document.sha256)) add(["documents", index, "sha256"], `${fileName} was not checked. Upload it again.`);
-    if (document.bytes < 1 || document.bytes > MAX_FILE_BYTES) add(["documents", index, "bytes"], `${fileName} must be 5 MB or smaller.`);
-    if (!["image/jpeg", "image/png", "application/pdf"].includes(document.mime)) add(["documents", index, "mime"], `${fileName} must be a JPG, PNG, or PDF.`);
+    if (document.slot === "photo") {
+      if (document.bytes < 1 || document.bytes > MAX_PHOTO_BYTES) add(["documents.photo"], "The passport-size photo must be 500 KB or smaller. Choose it again and it will be resized.");
+      if (!["image/jpeg", "image/png"].includes(document.mime)) add(["documents.photo"], "The passport-size photo must be a JPG or PNG picture.");
+    } else {
+      if (document.bytes < 1 || document.bytes > MAX_FILE_BYTES) add(["documents", index, "bytes"], `${fileName} must be 5 MB or smaller.`);
+      if (!["image/jpeg", "image/png", "application/pdf"].includes(document.mime)) add(["documents", index, "mime"], `${fileName} must be a JPG, PNG, or PDF.`);
+    }
+    if (document.slot === "education_proof" && !data.education.some((row) => row.proof_index === document.index)) {
+      add(["documents", index, "slot"], "A qualification proof does not belong to any qualification row. Remove it and upload it again.");
+    }
     const previousSlot = seenSlots.get(document.sha256);
     if (previousSlot && previousSlot !== document.slot) {
       add(["documents", index, "sha256"], `${fileName} is the same file as another slot. Upload the document that belongs here.`);
@@ -541,7 +635,15 @@ export function validateApplication(
 
 export { FORM_STEPS } from "./steps";
 
-export function errorsForStep(fieldErrors: Record<string, string>, fields: readonly string[]): Record<string, string> {
+/** True when an error key belongs to a step. Explicit dotted keys (documents.photo) win over their root (documents). */
+export function keyInStep(key: string, fields: readonly string[]): boolean {
   const allowed = new Set(fields);
-  return Object.fromEntries(Object.entries(fieldErrors).filter(([key]) => allowed.has(key) || allowed.has(key.split(".")[0] ?? "")));
+  for (const claimed of CLAIMED_KEYS) {
+    if (key === claimed || key.startsWith(`${claimed}.`)) return allowed.has(claimed);
+  }
+  return allowed.has(key) || allowed.has(key.split(".")[0] ?? "");
+}
+
+export function errorsForStep(fieldErrors: Record<string, string>, fields: readonly string[]): Record<string, string> {
+  return Object.fromEntries(Object.entries(fieldErrors).filter(([key]) => keyInStep(key, fields)));
 }

@@ -19,10 +19,12 @@ import {
   parseMoneyPhrase,
   parseResultPhrase,
 } from "../../lib/application/normalize";
+import { applicationSequence } from "../../lib/application/portal";
 import { buildSubmission } from "../../lib/application/record";
 import { validateApplication } from "../../lib/application/schema";
 import { DuplicateCnicError, saveSubmission } from "../../lib/application/store";
 import type { ApplicationInput, DocumentInput } from "../../lib/application/types";
+import { portalFields } from "./helpers/portalFields";
 
 const now = new Date(Date.UTC(2026, 9, 16));
 const essay = "I want to finish my degree and serve patients in my city with steady care.";
@@ -130,7 +132,7 @@ function filled(patch: Partial<ApplicationInput> = {}): ApplicationInput {
   );
   base.consent_accepted = true;
   base.consent_name = "Ayesha Khan";
-  return { ...base, ...patch };
+  return { ...base, ...portalFields(), ...patch };
 }
 
 function e164(input: string): string {
@@ -325,5 +327,7 @@ test("a CNIC can be stored once per cycle", async () => {
   } finally {
     await rm(file, { force: true });
     await rm(key, { force: true });
+    const seq = applicationSequence(submission.application_number);
+    if (seq !== null) await rm(path.join("data/submissions/numbers", String(seq)), { force: true });
   }
 });

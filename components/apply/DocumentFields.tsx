@@ -2,9 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import styles from "@/app/apply/form/form.module.css";
-import { PDF_NOTE, prepareFile, mergeImagesToPdf } from "@/lib/application/prepareFile";
+import { PDF_NOTE, mergeImagesToPdf } from "@/lib/application/prepareFile";
+import { isLocalSampleDocument } from "@/lib/application/sampleDocuments";
 import type { DocumentInput } from "@/lib/application/types";
 import { demoHeaders } from "@/lib/application/demoMode";
+import { fetchSampleFile, uploadDocument } from "./uploadClient";
 
 /** Image types plus PDF, so phones open the photo picker. No `capture`: gallery and files only. */
 export const UPLOAD_ACCEPT =
@@ -22,13 +24,12 @@ function UploadIcon() {
 }
 
 const LABELS: Record<string, string> = {
-  photo: "Passport photo",
   cnic: "Your CNIC or B-Form, front and back",
   guardian_cnic: "Father or guardian CNIC, or a death certificate",
-  admission_proof: "Admission proof, enrolment letter, or student ID",
-  result: "Latest result card",
+  admission_proof: "Admission or enrollment proof (admission letter, enrollment letter, or student ID)",
+  result: "Latest result or GPA transcript",
   fee_voucher: "Current fee voucher or challan",
-  pastor_letter: "Pastor or priest recommendation letter",
+  pastor_letter: "Recommendation letter from your priest, pastor or religious leader",
   income_proof: "Income proof (recommended when income is above zero)",
   disability_certificate: "Disability certificate",
   other_award: "Other scholarship award letter",
@@ -92,55 +93,33 @@ export function DocumentFields({
     setBusySlots((current) => ({ ...current, [slot]: value }));
   }
 
-  function postFile(form: FormData, slot: string): Promise<{ ok: boolean; document?: DocumentInput; error?: string }> {
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", "/api/applications/upload");
-      xhr.upload.onprogress = (event) => {
-        if (!event.lengthComputable) return;
-        setProgress((current) => ({ ...current, [slot]: Math.round((event.loaded / event.total) * 100) }));
-      };
-      xhr.onload = () => {
-        try {
-          const body = JSON.parse(xhr.responseText) as { document?: DocumentInput; error?: string };
-          resolve({ ok: xhr.status >= 200 && xhr.status < 300, ...body });
-        } catch {
-          reject(new Error("The file was not accepted."));
-        }
-      };
-      xhr.onerror = () => reject(new Error("The file could not be uploaded."));
-      xhr.send(form);
-    });
-  }
-
-  async function upload(slot: string, index: number, file: File, displayName = file.name) {
+  async function upload(slot: string, index: number, file: File, displayName = file.name, sample = false) {
     markBusy(slot, true);
     setSlotError((current) => ({ ...current, [slot]: "" }));
     setProgress((current) => ({ ...current, [slot]: 8 }));
     setStatus("Checking the file…");
     try {
-      const prepared = await prepareFile(file, { slot, ...context });
-      const form = new FormData();
-      form.set("applicationId", applicationId);
-      form.set("slot", slot);
-      form.set("index", String(index));
-      form.set("checks", JSON.stringify(prepared.checks));
-      form.set("file", prepared.blob, prepared.name);
-      setProgress((current) => ({ ...current, [slot]: 20 }));
-      const body = await postFile(form, slot);
-      if (!body.ok || !body.document) {
-        const message = body.error || "The file was not accepted.";
-        setSlotError((current) => ({ ...current, [slot]: message }));
-        setStatus(message);
+      const result = await uploadDocument({
+        applicationId,
+        slot,
+        index,
+        file,
+        context,
+        sampleFallback: sample,
+        onProgress: (percent) => setProgress((current) => ({ ...current, [slot]: percent })),
+      });
+      if (!result.ok) {
+        setSlotError((current) => ({ ...current, [slot]: result.error }));
+        setStatus(result.error);
         setProgress((current) => ({ ...current, [slot]: 0 }));
         return;
       }
-      onUpsert(body.document);
-      const pdf = prepared.blob.type === "application/pdf";
-      rememberPreview(`${slot}-${index}`, { name: displayName, url: pdf ? "" : URL.createObjectURL(prepared.blob), pdf });
+      onUpsert(result.document);
+      const pdf = result.prepared.blob.type === "application/pdf";
+      rememberPreview(`${slot}-${index}`, { name: displayName, url: pdf ? "" : URL.createObjectURL(result.prepared.blob), pdf });
       setProgress((current) => ({ ...current, [slot]: 100 }));
-      const warnings = body.document.checks.warnings;
-      setStatus(warnings.length ? warnings[0] ?? "" : "File accepted.");
+      const warnings = result.document.checks.warnings;
+      setStatus(result.localSample ? "Sample file attached in this browser. File storage is not set up here, so it was not uploaded." : warnings.length ? warnings[0] ?? "" : "File accepted.");
     } catch (reason) {
       const message = reason instanceof Error ? reason.message : "The file could not be checked.";
       setSlotError((current) => ({ ...current, [slot]: message }));
@@ -151,7 +130,7 @@ export function DocumentFields({
     }
   }
 
-  async function onPick(slot: string, index: number, picked: ArrayLike<File> | null) {
+  async function onPick(slot: string, index: number, picked: ArrayLike<File> | null, sample = false) {
     // Copy first: the input's live FileList is cleared right after onChange.
     const list = picked ? Array.from(picked) : [];
     if (list.length === 0) return;
@@ -165,6 +144,7 @@ export function DocumentFields({
           index,
           new File([merged], `${slot}.pdf`, { type: "application/pdf" }),
           `${(list[0] as File).name} + ${(list[1] as File).name}`,
+          sample,
         );
       } catch (reason) {
         setStatus(reason instanceof Error ? reason.message : "The two photos could not be combined.");
@@ -172,7 +152,7 @@ export function DocumentFields({
       }
       return;
     }
-    await upload(slot, index, list[0] as File);
+    await upload(slot, index, list[0] as File, (list[0] as File).name, sample);
   }
 
   async function uploadSamples() {
@@ -185,16 +165,8 @@ export function DocumentFields({
         if (documents.some((item) => item.slot === slot)) continue;
         const names = SAMPLE_DOCUMENT_FILES[slot] ?? [];
         const files: File[] = [];
-        for (const name of names) {
-          const response = await fetch(`/api/dev/sample-documents?file=${encodeURIComponent(name)}`, {
-            headers: demoHeaders(),
-            cache: "no-store",
-          });
-          if (!response.ok) throw new Error(`Sample file ${name} is not available.`);
-          const blob = await response.blob();
-          files.push(new File([blob], name, { type: blob.type }));
-        }
-        if (files.length) await onPick(slot, 1, files);
+        for (const name of names) files.push(await fetchSampleFile(name, demoHeaders()));
+        if (files.length) await onPick(slot, 1, files, true);
       }
     } catch (reason) {
       setStatus(reason instanceof Error ? reason.message : "The sample files could not be loaded.");
@@ -217,8 +189,8 @@ export function DocumentFields({
     return () => window.clearTimeout(timer);
   }, [autoSample, sampleSlots, documents]);
 
+  // The passport-size photo is asked first on the Personal step; qualification proofs sit on each education row.
   const slots = [
-    "photo",
     "cnic",
     "guardian_cnic",
     "admission_proof",
@@ -337,8 +309,9 @@ export function DocumentFields({
               const preview = previews[key];
               const pdf = preview ? preview.pdf : file.mime === "application/pdf";
               const showThumb = Boolean(preview?.url) || pdf;
+              const localSample = isLocalSampleDocument(file);
               const notes = [
-                file.slot === "result" ? `Result ${file.index}, uploaded` : "Uploaded",
+                localSample ? "Sample file (not uploaded)" : file.slot === "result" ? `Result ${file.index}, uploaded` : "Uploaded",
                 `${Math.ceil(file.bytes / 1024)} KB`,
                 file.checks.warnings[0] ?? "",
               ].filter(Boolean);
@@ -348,6 +321,7 @@ export function DocumentFields({
                 className={styles.fileRow}
                 data-has-thumb={showThumb ? "true" : "false"}
                 data-error={file.checks.warnings.some((item) => item !== PDF_NOTE) ? "true" : "false"}
+                data-local-sample={localSample ? "true" : undefined}
               >
                 {preview?.url ? (
                   // eslint-disable-next-line @next/next/no-img-element -- local object URL preview of the picked file

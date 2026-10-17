@@ -21,7 +21,7 @@ test("a preselected scholarship does not fail scholarship validation", () => {
   if (result.ok) return;
   assert.equal(result.fieldErrors.scholarship, undefined);
   assert.equal(result.fieldErrors.applicant_type, "Choose New or Continuing.");
-  assert.equal(fieldLabel("documents.photo"), "Passport photo");
+  assert.equal(fieldLabel("documents.photo"), "Passport-size Photo");
   assert.equal(result.fieldErrors["documents.photo"], documentUploadPrompt("photo"));
   assert.equal(result.fieldErrors["documents.cnic"], "Upload your CNIC or B-Form, front and back.");
   assert.equal(documentUploadPrompt("cnic"), "Upload your CNIC or B-Form, front and back.");

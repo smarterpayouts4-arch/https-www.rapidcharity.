@@ -41,8 +41,11 @@ for (const mock of MOCK_APPLICATIONS) {
     const empty = validateApplication({ ...mock.data, client_id: crypto.randomUUID() });
     const fieldErrors = empty.ok ? {} : empty.fieldErrors;
     for (const step of FORM_STEPS) {
-      const errors = errorsForStep(fieldErrors, step.fields);
-      if (step.id === "documents") continue; // documents are uploaded in the browser
+      // Files (the photo on Personal, proofs on Documents) are uploaded in the browser.
+      const errors = Object.fromEntries(
+        Object.entries(errorsForStep(fieldErrors, step.fields)).filter(([key]) => !key.startsWith("documents")),
+      );
+      if (step.id === "documents") continue;
       assert.deepEqual(errors, {}, `${mock.id} step ${step.label}`);
     }
     const full = validateApplication(withDocuments(mock.data));

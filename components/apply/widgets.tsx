@@ -32,6 +32,8 @@ export function TextField({
   maxLength,
   list,
   field,
+  placeholder,
+  inputMode,
 }: {
   label: string;
   value: string;
@@ -43,6 +45,8 @@ export function TextField({
   maxLength?: number;
   list?: string;
   field?: string;
+  placeholder?: string;
+  inputMode?: "text" | "numeric" | "decimal" | "tel" | "email";
 }) {
   const id = useId();
   const described = [hint ? `${id}-hint` : "", error ? `${id}-error` : ""].filter(Boolean).join(" ") || undefined;
@@ -58,6 +62,8 @@ export function TextField({
         autoComplete={autoComplete}
         maxLength={maxLength}
         list={list}
+        placeholder={placeholder}
+        inputMode={inputMode}
         aria-invalid={error ? true : undefined}
         aria-describedby={described}
         onChange={(event) => onChange(event.target.value)}
@@ -74,6 +80,7 @@ export function TextAreaField({
   error,
   maxLength,
   field,
+  hint,
 }: {
   label: string;
   value: string;
@@ -81,11 +88,13 @@ export function TextAreaField({
   error?: string;
   maxLength: number;
   field?: string;
+  hint?: string;
 }) {
   const id = useId();
   return (
     <div className={styles.field} data-field={field} data-invalid={error ? "true" : undefined}>
       <label htmlFor={id}>{label}</label>
+      {hint ? <p className={styles.hint}>{hint}</p> : null}
       <textarea
         id={id}
         className={styles.textarea}
@@ -408,12 +417,14 @@ export function CnicField({
 }) {
   return (
     <TextField
-      label="CNIC"
+      label="National ID (CNIC)"
       field={field}
       value={value}
       error={error}
       autoComplete="off"
-      hint="13 digits, shown as #####-#######-#."
+      placeholder="35202-1234567-1"
+      inputMode="numeric"
+      hint="13 digits, for example 35202-1234567-1. B-Form number if you are under 18."
       onChange={(next) => onChange(formatCnic(next))}
     />
   );
@@ -535,6 +546,108 @@ export function NumberField({
           const next = Number(raw);
           if (max !== undefined && next > max) return;
           onChange(next);
+        }}
+      />
+      <FieldError id={`${id}-error`} message={error} />
+    </div>
+  );
+}
+
+/** Yes / No (or any two or three short options) as a segmented toggle built from real radio inputs. */
+export function SegmentedField({
+  legend,
+  name,
+  value,
+  onChange,
+  error,
+  hint,
+  field,
+  options = [
+    { id: "Yes", label: "Yes" },
+    { id: "No", label: "No" },
+  ],
+}: {
+  legend: string;
+  name: string;
+  value: string;
+  onChange: (value: string) => void;
+  error?: string;
+  hint?: string;
+  field?: string;
+  options?: Array<{ id: string; label: string }>;
+}) {
+  const id = useId();
+  return (
+    <fieldset
+      className={styles.radios}
+      data-field={field}
+      data-invalid={error ? "true" : undefined}
+      aria-invalid={error ? true : undefined}
+      aria-describedby={error ? `${id}-error` : undefined}
+      tabIndex={error ? -1 : undefined}
+    >
+      <legend className={styles.legend}>{legend}</legend>
+      {hint ? <p className={styles.hint}>{hint}</p> : null}
+      <div className={styles.segmented} data-count={options.length}>
+        {options.map((option) => (
+          <label key={option.id} className={styles.segment}>
+            <input
+              type="radio"
+              name={name}
+              value={option.id}
+              checked={value === option.id}
+              onChange={() => onChange(option.id)}
+            />
+            <span>{option.label}</span>
+          </label>
+        ))}
+      </div>
+      <FieldError id={`${id}-error`} message={error} />
+    </fieldset>
+  );
+}
+
+/** Decimal input with up to two places (GPA, percentages). */
+export function DecimalField({
+  label,
+  value,
+  onChange,
+  error,
+  hint,
+  field,
+  placeholder,
+}: {
+  label: string;
+  value: number | null;
+  onChange: (value: number | null) => void;
+  error?: string;
+  hint?: string;
+  field?: string;
+  placeholder?: string;
+}) {
+  const id = useId();
+  const [text, setText] = useState(value === null ? "" : String(value));
+  const parsed = text === "" || text === "." ? null : Number(text);
+  // Show what was typed (keeps "3." while typing) unless the value was changed from outside.
+  const shown = parsed === value || (parsed !== null && Number.isNaN(parsed) && value === null) ? text : value === null ? "" : String(value);
+  return (
+    <div className={styles.field} data-field={field} data-invalid={error ? "true" : undefined}>
+      <label htmlFor={id}>{label}</label>
+      {hint ? <p className={styles.hint}>{hint}</p> : null}
+      <input
+        id={id}
+        className={styles.control}
+        inputMode="decimal"
+        value={shown}
+        placeholder={placeholder}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${id}-error` : undefined}
+        onChange={(event) => {
+          const raw = event.target.value.trim();
+          if (!/^\d{0,3}(\.\d{0,2})?$/.test(raw)) return;
+          setText(raw);
+          const next = raw === "" || raw === "." ? null : Number(raw);
+          onChange(next !== null && Number.isFinite(next) ? next : null);
         }}
       />
       <FieldError id={`${id}-error`} message={error} />

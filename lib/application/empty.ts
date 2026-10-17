@@ -1,5 +1,5 @@
 import { CYCLE_TERMS } from "./constants";
-import type { ApplicationInput, ResultValue, TermRow } from "./types";
+import type { ApplicationInput, EducationRow, ResultValue, TermRow } from "./types";
 
 function emptyResult(): ResultValue {
   return { type: "CGPA", value: null, max: 4, grade: "" };
@@ -13,6 +13,19 @@ export function emptyTerms(): TermRow[] {
     status: item.future ? "future" : "",
     result: emptyResult(),
   }));
+}
+
+export function emptyEducationRow(qualification: EducationRow["qualification"] = ""): EducationRow {
+  return {
+    qualification,
+    qualification_other: "",
+    institution: "",
+    board: "",
+    status: "",
+    result_percent: null,
+    year: null,
+    proof_index: null,
+  };
 }
 
 export function emptyChoice() {
@@ -39,12 +52,15 @@ export function emptyApplication(scholarship: ApplicationInput["scholarship"] = 
     spouse_name: "",
     spouse_monthly_income: emptyMoney("month"),
     religion: emptyChoice(),
+    country: "Pakistan",
     cnic: "",
     email: "",
     email_confirm: "",
     mobile_phone: "",
     secondary_phone: "",
     address_line: "",
+    permanent_same: "",
+    permanent_address: "",
     city: emptyChoice(),
     province: "",
     employment_status: "",
@@ -60,6 +76,10 @@ export function emptyApplication(scholarship: ApplicationInput["scholarship"] = 
     father_monthly_income: emptyMoney("month"),
     mother_monthly_income: emptyMoney("month"),
     guardian_phone: "",
+    guardian_relation: "",
+    guardian_name: "",
+    guardian_occupation: "",
+    family_monthly_income: null,
     siblings_count: null,
     siblings_studying_count: null,
     siblings_working_count: null,
@@ -79,10 +99,15 @@ export function emptyApplication(scholarship: ApplicationInput["scholarship"] = 
     completion_year: null,
     roll_number: "",
     terms: emptyTerms(),
+    education: [emptyEducationRow("matriculation")],
+    current_semester: "",
+    current_gpa: null,
+    gpa_scale: "4.00",
     previous_institution: emptyChoice(),
     previous_qualification: emptyChoice(),
     previous_completion_year: null,
     fee: emptyMoney("semester"),
+    amount_requested: null,
     fee_due_date: "",
     institution_phone: "",
     institution_address: "",
@@ -111,6 +136,7 @@ export function emptyApplication(scholarship: ApplicationInput["scholarship"] = 
     family_ref_phone: "",
     family_ref_email: "",
     attend_events: "",
+    financial_need_statement: "",
     life_goal: "",
     community_contribution: "",
     plan_if_denied: "",

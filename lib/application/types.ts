@@ -74,14 +74,44 @@ export type StoredDocument = DocumentInput & {
   reupload_token: string;
 };
 
+/** Portal-aligned application statuses (scholarship.rapidcharity.org). */
 export type WorkflowStatus =
+  | "draft"
   | "submitted"
-  | "incomplete"
   | "under_review"
   | "approved"
   | "rejected"
-  | "did_not_reapply"
-  | "pass_out";
+  | "waitlisted"
+  | "withdrawn"
+  | "closed";
+
+/** Statuses written before the portal alignment. Read-only: they are migrated on read. */
+export type LegacyWorkflowStatus = "incomplete" | "did_not_reapply" | "pass_out";
+
+export type StatusHistoryEntry = {
+  at: string;
+  from: WorkflowStatus | LegacyWorkflowStatus | "";
+  to: WorkflowStatus;
+  by: string;
+  note: string;
+};
+
+export type EducationQualification = "" | "matriculation" | "intermediate" | "bachelor" | "other";
+
+export type EducationRow = {
+  qualification: EducationQualification;
+  qualification_other: string;
+  institution: string;
+  board: string;
+  status: "" | "completed" | "in_progress";
+  result_percent: number | null;
+  year: number | null;
+  /** Index of the optional `education_proof` document for this row (1 to 6), or null. */
+  proof_index: number | null;
+};
+
+export type GuardianRelation = "" | "father" | "husband" | "guardian";
+export type YesNo = "" | "Yes" | "No";
 
 export type PromotedList =
   | "schools"
@@ -126,12 +156,15 @@ export type ApplicationInput = {
   spouse_name: string;
   spouse_monthly_income: Money;
   religion: Choice;
+  country: "" | "Pakistan";
   cnic: string;
   email: string;
   email_confirm: string;
   mobile_phone: string;
   secondary_phone: string;
   address_line: string;
+  permanent_same: YesNo;
+  permanent_address: string;
   city: Choice;
   province: string;
   employment_status: "" | "No" | "Yes";
@@ -147,6 +180,10 @@ export type ApplicationInput = {
   father_monthly_income: Money;
   mother_monthly_income: Money;
   guardian_phone: string;
+  guardian_relation: GuardianRelation;
+  guardian_name: string;
+  guardian_occupation: string;
+  family_monthly_income: number | null;
   siblings_count: number | null;
   siblings_studying_count: number | null;
   siblings_working_count: number | null;
@@ -166,10 +203,15 @@ export type ApplicationInput = {
   completion_year: number | null;
   roll_number: string;
   terms: TermRow[];
+  education: EducationRow[];
+  current_semester: string;
+  current_gpa: number | null;
+  gpa_scale: "" | "4.00" | "5.00";
   previous_institution: Choice;
   previous_qualification: Choice;
   previous_completion_year: number | null;
   fee: Money;
+  amount_requested: number | null;
   fee_due_date: string;
   institution_phone: string;
   institution_address: string;
@@ -198,6 +240,7 @@ export type ApplicationInput = {
   family_ref_phone: string;
   family_ref_email: string;
   attend_events: "Yes" | "No" | "Maybe" | "";
+  financial_need_statement: string;
   life_goal: string;
   community_contribution: string;
   plan_if_denied: string;
@@ -213,6 +256,8 @@ export type ApplicationInput = {
 
 export type StoredApplication = {
   id: string;
+  /** RAPID-<SESSIONCODE>-000001. Empty on applications stored before numbering existed. */
+  application_number?: string;
   cycle: string;
   cycle_cnic: string;
   submitted_at: string;
@@ -229,6 +274,7 @@ export type StoredApplication = {
   spouse_name: string;
   spouse_monthly_income: Money | null;
   religion: Choice;
+  country?: string;
   cnic: string;
   cnic_raw: string;
   email: string;
@@ -237,6 +283,8 @@ export type StoredApplication = {
   secondary_phone: string;
   secondary_phone_raw: string;
   address_line: string;
+  permanent_same?: "Yes" | "No";
+  permanent_address?: string;
   city: Choice;
   province: string;
   employment_status: "No" | "Yes";
@@ -253,6 +301,12 @@ export type StoredApplication = {
   mother_monthly_income: Money;
   guardian_phone: string;
   guardian_phone_raw: string;
+  guardian_relation?: Exclude<GuardianRelation, "">;
+  /** Resolved Father/Husband/Guardian name (father, spouse, or the typed guardian). */
+  guardian_name?: string;
+  /** Resolved guardian occupation (father occupation label, or the typed text). */
+  guardian_occupation?: string;
+  family_monthly_income?: number | null;
   siblings_count: number;
   siblings_studying_count: number;
   siblings_working_count: number;
@@ -272,10 +326,15 @@ export type StoredApplication = {
   completion_year: number;
   roll_number: string;
   terms: TermRow[];
+  education?: EducationRow[];
+  current_semester?: string;
+  current_gpa?: number | null;
+  gpa_scale?: "" | "4.00" | "5.00";
   previous_institution: Choice;
   previous_qualification: Choice;
   previous_completion_year: number;
   fee: Money;
+  amount_requested?: number | null;
   fee_due_date: string;
   institution_phone: string;
   institution_phone_raw: string;
@@ -308,6 +367,7 @@ export type StoredApplication = {
   family_ref_phone_raw: string;
   family_ref_email: string;
   attend_events: "Yes" | "No" | "Maybe";
+  financial_need_statement?: string;
   life_goal: string;
   community_contribution: string;
   plan_if_denied: string;
@@ -322,7 +382,12 @@ export type StoredApplication = {
     status: "clear" | "needs_review" | "reviewed";
     other_fields: ReviewItem[];
     workflow: WorkflowStatus;
+    /** Original value when an older status was migrated on read (e.g. pass_out). */
+    legacy_workflow?: LegacyWorkflowStatus | "";
+    /** Approved scholarship amount (PKR). Required when approving. */
     award_amount: number | null;
+    rejection_reason?: string;
+    history?: StatusHistoryEntry[];
     award_override: boolean;
     export_category: string;
     remarks: { at: string; author: string; text: string }[];

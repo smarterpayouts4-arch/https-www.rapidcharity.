@@ -329,7 +329,7 @@
   margin: 0 0 0.9rem;
   padding: 0.7rem 0.8rem;
   border-radius: 0.75rem;
-  background: #fdecef;
+  background: #FFE8EE;
   color: var(--color-brand-deep);
   font-size: 0.9rem;
 }
@@ -448,7 +448,7 @@
 
 .drop[data-error="true"] {
   border-color: var(--color-brand-primary);
-  background: #fdecef;
+  background: #FFE8EE;
 }
 
 .fileRow {
@@ -465,7 +465,7 @@
 
 .fileRow[data-error="true"] {
   border-color: var(--color-brand-primary);
-  background: #fdecef;
+  background: #FFE8EE;
 }
 
 .bar {
@@ -930,4 +930,264 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.95rem;
   word-break: break-all;
+}
+
+/* Portal alignment: photo, segmented Yes / No, education cards, session line.
+   Palette: #B20F3A, #C81343, #8B0A24, ivory #F7F4EF, #222222, #FFE8EE. */
+.fieldLabel {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #222222;
+}
+
+.subTitle {
+  margin: 0.4rem 0 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #222222;
+}
+
+.photoRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.photoCircle,
+.reviewPhoto {
+  flex: none;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: #FFE8EE;
+  color: #8B0A24;
+  border: 2px solid #FFE8EE;
+  box-shadow: 0 0 0 1px #B20F3A;
+}
+
+.photoCircle img,
+.reviewPhoto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.photoCircle svg {
+  width: 56%;
+  height: 56%;
+}
+
+.photoActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
+  min-width: 0;
+  flex: 1 1 12rem;
+}
+
+.field .photoActions label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.photoActions label[aria-disabled="true"] {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.photoActions button,
+.eduHead button,
+.eduProof button {
+  min-height: 44px;
+}
+
+.photoNote {
+  margin: 0;
+  font-size: 0.86rem;
+  color: #222222;
+  overflow-wrap: anywhere;
+}
+
+.segmented {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  max-width: 26rem;
+  border: 1px solid #8B0A24;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: #fff;
+}
+
+.segment {
+  position: relative;
+  display: flex;
+}
+
+.segment + .segment {
+  border-left: 1px solid #8B0A24;
+}
+
+.segment input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.segment span {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+  font-weight: 600;
+  color: #222222;
+  text-align: center;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.segment input:checked + span {
+  background: #B20F3A;
+  color: #fff;
+}
+
+.segment:hover input:not(:checked) + span {
+  background: #FFE8EE;
+}
+
+.segment input:focus-visible + span {
+  outline: 3px solid #C81343;
+  outline-offset: -3px;
+}
+
+[data-invalid="true"] > .segmented {
+  border-color: #B20F3A;
+  box-shadow: 0 0 0 1px #B20F3A;
+}
+
+.eduSection {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.eduCard {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1rem;
+  border: 1px solid #FFE8EE;
+  border-left: 4px solid #B20F3A;
+  border-radius: 0.9rem;
+  background: #F7F4EF;
+  min-width: 0;
+}
+
+.eduHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.eduHead h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #8B0A24;
+  overflow-wrap: anywhere;
+}
+
+.eduProof {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.eduProof label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.eduAdd {
+  justify-self: start;
+  min-height: 44px;
+}
+
+.sessionLine {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.6rem;
+  margin: 0;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.75rem;
+  background: #FFE8EE;
+  color: #222222;
+}
+
+.sessionLabel {
+  font-weight: 600;
+  color: #8B0A24;
+}
+
+.reviewPerson {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.reviewPhoto {
+  width: 72px;
+  height: 72px;
+}
+
+.reviewPhoto span {
+  font-size: 0.7rem;
+  text-align: center;
+  padding: 0.25rem;
+}
+
+.reviewList {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0;
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+.reviewList div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.5rem;
+}
+
+.reviewList dt {
+  font-weight: 600;
+  color: #222222;
+}
+
+.reviewList dt::after {
+  content: ":";
+}
+
+.reviewList dd {
+  margin: 0;
+  color: #222222;
+  overflow-wrap: anywhere;
+  min-width: 0;
 }

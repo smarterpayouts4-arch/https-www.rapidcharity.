@@ -105,12 +105,12 @@ export function summaryMatrix(items: StoredApplication[], usdRate: number): { la
     label,
     ...SUMMARY_COLUMNS.map((column) => pick(groups[column.key] ?? [])),
   ];
-  const complete = (group: StoredApplication[]) => group.filter((item) => item.review.workflow !== "incomplete");
+  const complete = (group: StoredApplication[]) => group.filter((item) => item.review.workflow !== "draft" && item.review.legacy_workflow !== "incomplete");
   const approved = (group: StoredApplication[]) => group.filter((item) => item.review.workflow === "approved");
   const rows = [
     line("Approved last term", () => 0),
-    line("Did not re-apply", (group) => group.filter((item) => item.review.workflow === "did_not_reapply").length),
-    line("Pass-outs", (group) => group.filter((item) => item.review.workflow === "pass_out").length),
+    line("Did not re-apply (Withdrawn)", (group) => group.filter((item) => item.review.workflow === "withdrawn").length),
+    line("Pass-outs (Closed)", (group) => group.filter((item) => item.review.workflow === "closed").length),
     line("Received online applications", (group) => group.length),
     line(
       "Continuing w/ complete info",

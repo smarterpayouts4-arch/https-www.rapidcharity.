@@ -2,11 +2,11 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { NextResponse, type NextRequest } from "next/server";
 import { DEMO_HEADER, DEMO_PARAM, sampleModeAllowed } from "@/lib/application/mockGate";
-import { SAMPLE_DOCUMENT_FILES } from "@/lib/application/sampleDocuments";
+import { EXTRA_SAMPLE_FILES, SAMPLE_DOCUMENT_FILES } from "@/lib/application/sampleDocuments";
 
 export const dynamic = "force-dynamic";
 
-const ALLOWED = new Set(Object.values(SAMPLE_DOCUMENT_FILES).flat());
+const ALLOWED = new Set([...Object.values(SAMPLE_DOCUMENT_FILES).flat(), ...EXTRA_SAMPLE_FILES]);
 const TYPES: Record<string, string> = { ".jpg": "image/jpeg", ".png": "image/png", ".pdf": "application/pdf" };
 
 /**

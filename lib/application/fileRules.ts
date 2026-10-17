@@ -1,4 +1,9 @@
 export const MAX_FILE_BYTES = 5 * 1024 * 1024;
+/** Scholarship portal limit for the passport-size photo. The browser resizes larger photos before upload. */
+export const MAX_PHOTO_BYTES = 500 * 1024;
+/** The photo is resized to fit inside this square (600 x 600, as the portal recommends). */
+export const PHOTO_MAX_SIDE = 600;
+export const PHOTO_MIN_SIDE = 200;
 export const MAX_TOTAL_BYTES = 25 * 1024 * 1024;
 export const MAX_PDF_PAGES = 10;
 export const MIN_IMAGE_WIDTH = 800;
@@ -15,6 +20,7 @@ const DOC_SLOTS = [
   "income_proof",
   "disability_certificate",
   "other_award",
+  "education_proof",
 ] as const;
 
 export type DocSlot = (typeof DOC_SLOTS)[number];

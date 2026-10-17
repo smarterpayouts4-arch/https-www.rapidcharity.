@@ -55,6 +55,7 @@ export async function ApplicationScreen({
           initialScholarship={initialScholarship}
           promoted={promoted}
           cycleName={form.cycleName}
+          cycleId={form.cycleId}
           {...(sampleMode ? { mocks: MOCK_APPLICATIONS, initialMock } : {})}
         />
       </div>

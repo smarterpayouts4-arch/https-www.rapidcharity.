@@ -21,6 +21,16 @@ export class UploadStorageError extends Error {
   }
 }
 
+/** True when uploaded files have somewhere to go (Drive, Cloudinary, or local files outside Vercel). */
+export function documentStorageReady(): boolean {
+  try {
+    storageProvider();
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function storageProvider(): StorageName {
   if (process.env.GOOGLE_DRIVE_UPLOAD_URL && process.env.GOOGLE_DRIVE_UPLOAD_SECRET) return "google-drive";
   if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
@@ -86,7 +96,7 @@ export function safeObjectPath(
   assertCycle(cycle);
   if (!/^[0-9a-f-]{36}$/i.test(applicationId)) throw new UploadStorageError("Invalid application id.");
   if (!isDocSlot(slot)) throw new UploadStorageError("Unknown document type.");
-  if (!Number.isInteger(index) || index < 1 || index > 5) throw new UploadStorageError("Invalid file number.");
+  if (!Number.isInteger(index) || index < 1 || index > 6) throw new UploadStorageError("Invalid file number.");
   const extension = extensionFor(mime);
   if (!extension || mime === "image/heic") throw new UploadStorageError("Save HEIC photos as JPG before storing.");
   return `${cycle}/${applicationId}/${slot}-${index}.${extension}`;
@@ -122,7 +132,8 @@ export async function assertOwnedFiles(
 ): Promise<string | null> {
   const files = await filesForApplication(applicationId);
   for (const document of documents) {
-    if (document.reused || !document.path) continue;
+    if (document.reused) continue;
+    if (!document.path) return "Upload each document again before submitting. A file is missing from storage.";
     const found = files.some((item) => item.path === document.path && item.sha256 === document.sha256);
     if (!found) return "Upload each document again before submitting. A file is missing from storage.";
   }

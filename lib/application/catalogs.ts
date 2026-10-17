@@ -5,6 +5,7 @@ import {
   DENOMINATIONS,
   HEARD_ABOUT,
   OCCUPATIONS,
+  RELIGION_IDS,
   RELIGIONS,
   RELATIONSHIPS,
   SUPPORT_PROVIDERS,
@@ -45,7 +46,10 @@ export const programTitles: string[] = [...degreesJson.programs];
 
 export const cityOptions = fromLabels([...CITIES, "Other"]);
 export const occupationOptions = fromLabels(OCCUPATIONS);
-export const religionOptions = fromLabels(RELIGIONS);
+export const religionOptions: CatalogOption[] = RELIGIONS.map((label) => ({
+  id: RELIGION_IDS[label],
+  label: label === "Other" ? "Other (please specify)" : label,
+}));
 export const heardAboutOptions = fromLabels(HEARD_ABOUT);
 export const denominationOptions = fromLabels(DENOMINATIONS);
 export const relationshipOptions = fromLabels(RELATIONSHIPS);

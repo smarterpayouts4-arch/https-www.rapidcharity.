@@ -1,3 +1,4 @@
+import { normalizeStored, PORTAL_CSV_HEADERS, portalRow } from "./portal";
 import type { Choice, Money, StoredApplication } from "./types";
 
 function cell(value: unknown): string {
@@ -25,9 +26,11 @@ function money(prefix: string, value: Money | null): Record<string, string | num
 }
 
 /** Stable column order. Other text stays beside the option id and is never dropped. */
-export function submissionToRow(item: StoredApplication): Record<string, string | number> {
+export function submissionToRow(input: StoredApplication): Record<string, string | number> {
+  const item = normalizeStored(input);
   return {
     id: item.id,
+    application_number: item.application_number ?? "",
     submitted_at: item.submitted_at,
     cycle: item.cycle,
     scholarship: item.scholarship,
@@ -41,6 +44,7 @@ export function submissionToRow(item: StoredApplication): Record<string, string 
     spouse_name: item.spouse_name,
     ...money("spouse_monthly_income", item.spouse_monthly_income),
     ...choice("religion", item.religion),
+    country: item.country ?? "",
     cnic: item.cnic,
     cnic_raw: item.cnic_raw,
     email: item.email,
@@ -49,6 +53,8 @@ export function submissionToRow(item: StoredApplication): Record<string, string 
     secondary_phone: item.secondary_phone,
     secondary_phone_raw: item.secondary_phone_raw,
     address_line: item.address_line,
+    permanent_same: item.permanent_same ?? "",
+    permanent_address: item.permanent_address ?? "",
     ...choice("city", item.city),
     province: item.province,
     disability: item.disability,
@@ -66,6 +72,10 @@ export function submissionToRow(item: StoredApplication): Record<string, string 
     ...money("mother_monthly_income", item.mother_monthly_income),
     guardian_phone: item.guardian_phone,
     guardian_phone_raw: item.guardian_phone_raw,
+    guardian_relation: item.guardian_relation ?? "",
+    guardian_name: item.guardian_name ?? "",
+    guardian_occupation: item.guardian_occupation ?? "",
+    family_monthly_income: item.family_monthly_income ?? "",
     siblings_count: item.siblings_count,
     siblings_studying_count: item.siblings_studying_count,
     siblings_working_count: item.siblings_working_count,
@@ -85,6 +95,13 @@ export function submissionToRow(item: StoredApplication): Record<string, string 
     completion_year: item.completion_year,
     roll_number: item.roll_number,
     terms: item.terms.map((term) => `${term.term}:${term.status}:${term.number ?? ""}`).join("; "),
+    education: (item.education ?? [])
+      .map((row) => [row.qualification === "other" ? row.qualification_other : row.qualification, row.institution, row.board, row.status, row.result_percent ?? "", row.year ?? ""].join(":"))
+      .join("; "),
+    current_semester: item.current_semester ?? "",
+    current_gpa: item.current_gpa ?? "",
+    gpa_scale: item.gpa_scale ?? "",
+    amount_requested: item.amount_requested ?? "",
     ...choice("previous_institution", item.previous_institution),
     ...choice("previous_qualification", item.previous_qualification),
     previous_completion_year: item.previous_completion_year,
@@ -120,6 +137,7 @@ export function submissionToRow(item: StoredApplication): Record<string, string 
     family_ref_phone_raw: item.family_ref_phone_raw,
     family_ref_email: item.family_ref_email,
     attend_events: item.attend_events,
+    financial_need_statement: item.financial_need_statement ?? "",
     life_goal: item.life_goal,
     community_contribution: item.community_contribution,
     plan_if_denied: item.plan_if_denied,
@@ -129,6 +147,9 @@ export function submissionToRow(item: StoredApplication): Record<string, string 
     consent_accepted_at: item.consent_accepted_at,
     review_status: item.review.status,
     review_workflow: item.review.workflow,
+    review_legacy_workflow: item.review.legacy_workflow ?? "",
+    approved_amount: item.review.award_amount ?? "",
+    rejection_reason: item.review.rejection_reason ?? "",
     export_category: item.review.export_category,
     review_other_fields: item.review.other_fields
       .map((field) => `${field.field}=${field.other_text}${field.reviewed ? " (reviewed)" : ""}`)
@@ -264,5 +285,16 @@ export function submissionsToCsv(items: StoredApplication[]): string {
   const headers = Object.keys(rows[0] ?? submissionToRow(headerSource));
   const lines = [headers.join(",")];
   for (const row of rows) lines.push(headers.map((header) => cell(row[header])).join(","));
+  return `${lines.join("\n")}\n`;
+}
+
+/** CSV in the scholarship portal's exact column order and header text, for import there. */
+export function submissionsToPortalCsv(items: StoredApplication[]): string {
+  // Same quoting as the portal's own export: headers with a space are quoted.
+  const lines = [PORTAL_CSV_HEADERS.map((header) => (/[ ,"]/.test(header) ? `"${header}"` : header)).join(",")];
+  for (const item of items) {
+    const row = portalRow(item);
+    lines.push(PORTAL_CSV_HEADERS.map((header) => cell(row[header])).join(","));
+  }
   return `${lines.join("\n")}\n`;
 }

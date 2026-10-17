@@ -10,7 +10,12 @@ import {
   loadPromoted,
   saveSubmission,
   StorageNotConfiguredError,
+  submissionStorageReady,
 } from "@/lib/application/store";
+import { isLocalSampleDocument } from "@/lib/application/sampleDocuments";
+
+const STORAGE_DOWN =
+  "Applications cannot be submitted right now because storage is not set up. Your answers stay saved in this browser. Please try again later or contact us.";
 
 export const dynamic = "force-dynamic";
 
@@ -48,6 +53,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ fieldErrors: result.fieldErrors }, { status: 400 });
   }
 
+  if (result.data.documents.some(isLocalSampleDocument)) {
+    return NextResponse.json(
+      {
+        formError:
+          "This sample used sample files that were not uploaded, because file storage is not set up here. Nothing was submitted.",
+        sampleNotUploaded: true,
+      },
+      { status: 409 },
+    );
+  }
+  if (!submissionStorageReady()) {
+    console.error("[applications] submit refused: application storage is not configured (Firestore credentials missing).");
+    return NextResponse.json({ formError: STORAGE_DOWN }, { status: 503 });
+  }
+
   const id = result.data.client_id || crypto.randomUUID();
   try {
     const existing = await getSubmission(id);
@@ -61,10 +81,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ formError: error.message }, { status: 503 });
     }
     if (error instanceof StorageNotConfiguredError) {
-      return NextResponse.json(
-        { formError: "Applications cannot be stored until Firestore is configured." },
-        { status: 503 },
-      );
+      return NextResponse.json({ formError: STORAGE_DOWN }, { status: 503 });
     }
     throw error;
   }
@@ -88,11 +105,9 @@ export async function POST(request: Request) {
       );
     }
     if (error instanceof StorageNotConfiguredError) {
-      return NextResponse.json(
-        { formError: "Applications cannot be stored until Firestore is configured." },
-        { status: 503 },
-      );
+      return NextResponse.json({ formError: STORAGE_DOWN }, { status: 503 });
     }
+    console.error("[applications] could not save the application", error);
     return NextResponse.json(
       { formError: "The application could not be saved. Try again in a moment." },
       { status: 500 },
@@ -100,7 +115,7 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json(
-    { id: submission.id, submitted_at: submission.submitted_at },
+    { id: submission.id, submitted_at: submission.submitted_at, application_number: submission.application_number ?? "" },
     { status: 201, headers: { "Cache-Control": "no-store" } },
   );
 }
