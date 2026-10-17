@@ -16,7 +16,7 @@ export const FORM_STEPS = [
     fields: [
       "father_name", "mother_name", "father_status", "mother_status", "father_occupation", "mother_occupation",
       "father_monthly_income", "mother_monthly_income", "guardian_relation", "guardian_name", "guardian_occupation",
-      "family_monthly_income", "guardian_phone", "siblings_count", "siblings_studying_count",
+      "family_monthly_income", "household_members", "earning_members", "house_status", "guardian_phone", "siblings_count", "siblings_studying_count",
       "siblings_working_count", "siblings_married_count", "siblings_other_count", "siblings_notes",
     ],
   },

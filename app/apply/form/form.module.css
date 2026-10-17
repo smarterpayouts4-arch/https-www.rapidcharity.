@@ -142,11 +142,15 @@
   color: var(--color-text-primary);
 }
 
+.layout {
+  --field-gap: 0.9rem;
+}
+
 .sectionLead,
 .hint,
 .grid {
   display: grid;
-  gap: 0.9rem;
+  gap: var(--field-gap);
 }
 
 .hint {
@@ -159,7 +163,8 @@
 
 .two {
   display: grid;
-  gap: 0.9rem;
+  gap: var(--field-gap);
+  min-width: 0;
 }
 
 @media (min-width: 720px) {
@@ -168,11 +173,32 @@
   }
 }
 
+/* Short paired answers (first and last name, GPA and scale, result and year): two columns from 360px. */
+.pair {
+  display: grid;
+  gap: var(--field-gap);
+  min-width: 0;
+}
+
+@media (min-width: 360px) {
+  .pair {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 0.6rem;
+    align-items: end;
+  }
+}
+
 .field {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.3rem;
   min-width: 0;
+}
+
+/* Keep a focused or error-scrolled field clear of the sticky progress bar and the sticky Back / Continue bar. */
+.card :is(input, select, textarea, [data-focus], [data-field]) {
+  scroll-margin-top: calc(var(--header-h, 4rem) + 4.5rem);
+  scroll-margin-bottom: 6.5rem;
 }
 
 .field label,
@@ -208,6 +234,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
+  min-width: 0;
   border: 0;
   margin: 0;
   padding: 0;
@@ -859,19 +886,45 @@
   }
   .control,
   .choice {
-    min-height: 48px;
+    min-height: 44px;
   }
   .actions > * { flex: 1 1 0; }
 }
 
+/* Phones: one steady rhythm, 44px controls, 16px text in inputs (no iOS zoom). */
+@media (max-width: 720px) {
+  .layout { --field-gap: 0.75rem; }
+  .card { padding: 0.9rem 0.85rem 0; border-radius: 1rem; }
+  .sectionTitle { font-size: 1.45rem; margin-bottom: 0.2rem; }
+  .control { padding: 0.5rem 0.7rem; min-height: 44px; font-size: 16px; }
+  .textarea { min-height: 7.5rem; font-size: 16px; padding: 0.55rem 0.7rem; }
+  .field label,
+  .legend { font-size: 0.9rem; line-height: 1.3; }
+  .hint { font-size: 0.86rem; line-height: 1.4; }
+  .chip { min-height: 44px; padding: 0.3rem 0.5rem 0.3rem 0.8rem; font-size: 0.92rem; }
+  .mobileProgress { padding: 0.5rem 0 0.55rem; margin-bottom: 0.55rem; gap: 0.35rem; }
+  .eduCard { padding: 0.75rem; gap: var(--field-gap); }
+  .reviewCard { padding: 0.7rem 0.8rem; }
+  .drop { min-height: 56px; padding: 0.6rem 0.75rem; gap: 0.65rem; }
+  .dropIcon { width: 2.1rem; height: 2.1rem; }
+  .sessionLine { padding: 0.6rem 0.75rem; }
+  .banner { margin-bottom: 0.6rem; }
+  .actions {
+    margin-top: 1rem;
+    margin-inline: -0.85rem;
+    padding: 0.6rem 0.85rem calc(0.6rem + env(safe-area-inset-bottom));
+  }
+  .subTitle { margin-top: 0.25rem; font-size: 1.02rem; }
+}
+
 .noteBox {
-  margin: 0 0 1rem;
-  padding: 0.85rem 0.9rem;
-  border-radius: 0.85rem;
+  margin: 0;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.75rem;
   background: var(--color-background-alt);
   color: var(--color-text-secondary);
-  line-height: 1.5;
-  font-size: 0.92rem;
+  line-height: 1.45;
+  font-size: 0.9rem;
 }
 
 .hp {
@@ -1017,30 +1070,37 @@
   overflow-wrap: anywhere;
 }
 
+/* Short choices as chips: real radio (or checkbox) inputs, wrapping onto a new row when space runs out. */
 .segmented {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 1fr;
-  max-width: 26rem;
-  border: 1px solid #8B0A24;
-  border-radius: 0.75rem;
-  overflow: hidden;
-  background: #fff;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
 }
 
 .segment {
   position: relative;
   display: flex;
+  flex: 0 1 auto;
+  min-width: 3.25rem;
 }
 
-.segment + .segment {
-  border-left: 1px solid #8B0A24;
+/* Two or three answers share the row evenly, up to a comfortable width. */
+.segmented[data-count="2"],
+.segmented[data-count="3"] {
+  max-width: 24rem;
+}
+
+.segmented[data-count="2"] .segment,
+.segmented[data-count="3"] .segment {
+  flex: 1 1 0;
 }
 
 .segment input {
   position: absolute;
   opacity: 0;
   inset: 0;
+  width: 100%;
+  height: 100%;
   margin: 0;
   cursor: pointer;
 }
@@ -1051,16 +1111,21 @@
   align-items: center;
   justify-content: center;
   min-height: 44px;
-  padding: 0.5rem 0.75rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid #8B0A24;
+  border-radius: 999px;
+  background: #fff;
   font-weight: 600;
+  font-size: 0.92rem;
   color: #222222;
   text-align: center;
-  line-height: 1.25;
+  line-height: 1.2;
   overflow-wrap: anywhere;
 }
 
 .segment input:checked + span {
   background: #B20F3A;
+  border-color: #B20F3A;
   color: #fff;
 }
 
@@ -1070,12 +1135,157 @@
 
 .segment input:focus-visible + span {
   outline: 3px solid #C81343;
-  outline-offset: -3px;
+  outline-offset: 2px;
 }
 
-[data-invalid="true"] > .segmented {
+[data-invalid="true"] > .segmented .segment span {
   border-color: #B20F3A;
   box-shadow: 0 0 0 1px #B20F3A;
+}
+
+/* "Unknown" beside an amount: a checkbox chip on the same row as the input. */
+.inlineRow {
+  display: flex;
+  gap: 0.45rem;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.inlineRow > .control {
+  flex: 1 1 6rem;
+  min-width: 0;
+}
+
+.toggleChip {
+  position: relative;
+  display: flex;
+  flex: none;
+}
+
+.field .toggleChip {
+  font-weight: 600;
+}
+
+.toggleChip input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.toggleChip span {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #8B0A24;
+  border-radius: 999px;
+  background: #fff;
+  color: #222222;
+  font-size: 0.92rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.toggleChip input:checked + span {
+  background: #B20F3A;
+  border-color: #B20F3A;
+  color: #fff;
+}
+
+.toggleChip input:focus-visible + span {
+  outline: 3px solid #C81343;
+  outline-offset: 2px;
+}
+
+.control:disabled {
+  background: #F7F4EF;
+  color: #222222;
+}
+
+/* Label with a counter on the right (essays). */
+.labelRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.labelRow .counter {
+  flex: none;
+}
+
+.parent {
+  display: grid;
+  gap: var(--field-gap);
+}
+
+.parent + .parent {
+  padding-top: var(--field-gap);
+  border-top: 1px solid var(--color-border);
+}
+
+.countGroup {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* Five small counts: three per row from 360px, two below that. */
+.counts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 0.6rem;
+}
+
+@media (min-width: 360px) {
+  .counts {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 720px) {
+  .counts {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+.counts .field label {
+  font-weight: 500;
+}
+
+.termCard {
+  display: grid;
+  gap: 0.6rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0.7rem 0.8rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.85rem;
+}
+
+.termCard > legend {
+  padding: 0 0.3rem;
+}
+
+/* Title (short select) beside the name. */
+.titleName {
+  display: grid;
+  grid-template-columns: minmax(6.5rem, 0.4fr) minmax(0, 1fr);
+  gap: 0.6rem;
+  align-items: end;
+}
+
+@media (max-width: 339px) {
+  .titleName {
+    grid-template-columns: 1fr;
+  }
 }
 
 .eduSection {
@@ -1190,4 +1400,48 @@
   color: #222222;
   overflow-wrap: anywhere;
   min-width: 0;
+}
+
+.eduHeadActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  justify-content: flex-end;
+}
+
+.eduCard[data-folded="true"] {
+  padding-block: 0.55rem;
+}
+
+.eduSummary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.eduSummary p {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.35;
+  color: #222222;
+}
+
+.eduSummary strong {
+  color: #8B0A24;
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
+}
+
+.eduSummary span {
+  overflow-wrap: anywhere;
+}
+
+.eduSummary button {
+  flex: none;
+  min-height: 44px;
 }

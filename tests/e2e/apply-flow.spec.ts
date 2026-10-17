@@ -134,7 +134,7 @@ async function personal(
   else await passportPhoto(page, `${person.email} passport photo`);
   await personalBasics(page, person);
   await pick(page, "Community", "Christ", "Christian");
-  await pick(page, "City", "Lahore", "Lahore");
+  await pick(page, "City or district", "Lahore", "Lahore");
 }
 
 async function academicExtras(page: Page) {
@@ -161,11 +161,12 @@ async function family(page: Page, phone: string) {
   await yesNo(page, "Father / Husband / Guardian", "Father");
   await page.getByLabel("Family monthly income (PKR)").fill("20000");
   await page.getByLabel("Guardian phone").fill(phone);
-  await page.getByLabel("Siblings, excluding yourself").fill("0");
-  await page.getByLabel("Studying").fill("0");
-  await page.getByLabel("Working").fill("0");
-  await page.getByLabel("Married").fill("0");
-  await page.getByLabel("Other", { exact: true }).fill("0");
+  const counts = page.locator("[data-field='siblings']");
+  await counts.getByRole("textbox", { name: "Siblings", exact: true }).fill("0");
+  await counts.getByRole("textbox", { name: "Studying", exact: true }).fill("0");
+  await counts.getByRole("textbox", { name: "Working", exact: true }).fill("0");
+  await counts.getByRole("textbox", { name: "Married", exact: true }).fill("0");
+  await counts.getByRole("textbox", { name: "Other", exact: true }).fill("0");
 }
 
 async function academics(page: Page, field: { query: string; option: string }, other = false) {
@@ -182,8 +183,8 @@ async function academics(page: Page, field: { query: string; option: string }, o
   if (field.option === "Nursing") {
     await page.getByRole("radio", { name: /Generic BSN/ }).check();
   }
-  await page.getByLabel("Period of study (years)").fill("4");
-  await page.getByLabel("Completion term").selectOption("Spring");
+  await page.getByLabel("Years of study").fill("4");
+  await page.getByRole("group", { name: "Completion term", exact: true }).getByRole("radio", { name: "Spring", exact: true }).check();
   await page.getByRole("textbox", { name: "Completion year", exact: true }).fill("2028");
   for (const [term, number] of [["Spring 2026", "2"], ["Fall 2026", "3"], ["Spring 2027", "4"]] as const) {
     const group = page.getByRole("group", { name: term });
@@ -198,7 +199,7 @@ async function academics(page: Page, field: { query: string; option: string }, o
   await pick(page, "Previous institution", "Forman", "Forman Christian College (A Chartered University), Lahore");
   await pick(page, "Previous qualification", "FSc", "FSc Pre-Medical");
   await page.getByLabel("Previous completion year").fill("2022");
-  await page.getByLabel("Fee for the upcoming term (PKR)").fill("85000");
+  await page.getByLabel("Term fee (PKR)").fill("85000");
   await page.getByLabel("Fee due date").fill("2026-11-15");
   await academicExtras(page);
 }
@@ -214,16 +215,16 @@ async function support(page: Page, continuing: boolean, phone: string) {
   await yesNo(page, "Receiving any other scholarship?", "No");
   await pick(page, "How did you hear about Rapid?", "Web", "Website");
   await page.getByLabel("Church or place of worship").fill("St Andrew Church");
-  await page.getByLabel("Priest or pastor title").selectOption("Pastor");
+  await page.getByLabel("Title", { exact: true }).selectOption("Pastor");
   await page.getByLabel("Priest or pastor name").fill("Pastor Daniel");
-  await page.getByLabel("Priest or pastor contact number").fill(phone);
-  await page.getByLabel("Faculty reference name").fill("Dr Hina");
-  await page.getByLabel("Faculty designation").fill("Lecturer");
+  await page.getByLabel("Priest or pastor phone").fill(phone);
+  await page.getByLabel("Faculty name").fill("Dr Hina");
+  await page.getByLabel("Designation").fill("Lecturer");
   await page.getByLabel("Faculty phone").fill(phone);
   await page.getByLabel("Faculty email").fill("hina@example.com");
   await page.getByLabel("Family reference name").fill("Uncle Riaz");
   await pick(page, "Relationship", "Uncle", "Uncle");
-  await page.getByLabel("Family reference phone").fill(phone);
+  await page.getByLabel("Reference phone").fill(phone);
   await page.getByRole("group", { name: "Can you attend Rapid events?" }).getByLabel("Yes").check();
 }
 
@@ -348,7 +349,7 @@ test("type-ahead commits an exact match on tab and offers other", async ({ page 
   await religion.fill("christian");
   await religion.press("Tab");
   await expect(religion).toHaveValue("Christian");
-  const city = page.getByRole("combobox", { name: "City" });
+  const city = page.getByRole("combobox", { name: "City or district" });
   await city.fill("Lahore");
   await city.press("Tab");
   await expect(city).toHaveValue("Lahore");
@@ -501,8 +502,8 @@ for (const width of WIDTHS) {
       await pickOther(page, "Degree level", "Bridge year");
       await pickOther(page, "Field of study", "Community health");
       await pick(page, "Campus city", "Lahore", "Lahore");
-      await page.getByLabel("Period of study (years)").fill("4");
-      await page.getByLabel("Completion term").selectOption("Spring");
+      await page.getByLabel("Years of study").fill("4");
+      await page.getByRole("group", { name: "Completion term", exact: true }).getByRole("radio", { name: "Spring", exact: true }).check();
       await page.getByRole("textbox", { name: "Completion year", exact: true }).fill("2028");
       for (const [term, number] of [["Spring 2026", "2"], ["Fall 2026", "3"], ["Spring 2027", "4"]] as const) {
         const group = page.getByRole("group", { name: term });
@@ -517,7 +518,7 @@ for (const width of WIDTHS) {
       await pick(page, "Previous institution", "Forman", "Forman Christian College (A Chartered University), Lahore");
       await pick(page, "Previous qualification", "FSc", "FSc Pre-Medical");
       await page.getByLabel("Previous completion year").fill("2022");
-      await page.getByLabel("Fee for the upcoming term (PKR)").fill("85000");
+      await page.getByLabel("Term fee (PKR)").fill("85000");
       await page.getByLabel("Fee due date").fill("2026-11-15");
       await academicExtras(page);
       await shot(page, width, "other-school-degree");

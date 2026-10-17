@@ -1,5 +1,7 @@
 import type { ScholarshipId } from "./constants";
 
+export type HouseStatus = "" | "owned" | "rented" | "other";
+
 export type Currency = "PKR" | "USD" | "GBP" | "CAD";
 export type MoneyPeriod = "month" | "semester" | "year";
 export type ValueState = "known" | "zero" | "unknown";
@@ -184,6 +186,12 @@ export type ApplicationInput = {
   guardian_name: string;
   guardian_occupation: string;
   family_monthly_income: number | null;
+  /** Optional: people living in the household, including the applicant (asked on PEEF, HEC and NUST forms). */
+  household_members?: number | null;
+  /** Optional: how many of them earn. */
+  earning_members?: number | null;
+  /** Optional: house owned, rented, or other (Ehsaas, HEC and NUST forms ask this). */
+  house_status?: HouseStatus;
   siblings_count: number | null;
   siblings_studying_count: number | null;
   siblings_working_count: number | null;
@@ -307,6 +315,9 @@ export type StoredApplication = {
   /** Resolved guardian occupation (father occupation label, or the typed text). */
   guardian_occupation?: string;
   family_monthly_income?: number | null;
+  household_members?: number | null;
+  earning_members?: number | null;
+  house_status?: HouseStatus;
   siblings_count: number;
   siblings_studying_count: number;
   siblings_working_count: number;

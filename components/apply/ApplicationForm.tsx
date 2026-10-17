@@ -45,6 +45,7 @@ import { SLOT_STEP } from "@/lib/application/steps";
 import { sessionCode, sessionName } from "@/lib/application/portal";
 import { inferProgramSelection, SCHOOL_ALIASES } from "@/lib/application/search";
 import type { ApplicationInput, DocumentInput, PromotedOption } from "@/lib/application/types";
+import type { CatalogOption } from "@/lib/application/catalogs";
 import type { MockApplication } from "@/lib/application/mocks";
 import { demoHeaders, forgetDemoKey, syncDemoKeyFromUrl } from "@/lib/application/demoMode";
 import { DocumentFields } from "./DocumentFields";
@@ -164,7 +165,8 @@ export function ApplicationForm({
     () => readDraftSnapshot(),
     () => null,
   );
-  const pendingDraft = draftDismissed ? null : storedDraft;
+  // Only offer to resume a draft from an earlier visit, never the one being typed right now (autosave writes it).
+  const pendingDraft = draftDismissed || !storedDraft || storedDraft.data.client_id === data.client_id ? null : storedDraft;
   const dirty = useRef(Boolean(startMock));
   const dataRef = useRef(data);
   const formRef = useRef<HTMLFormElement>(null);
@@ -205,12 +207,12 @@ export function ApplicationForm({
 
 
   function updateTerm(index: number, partial: Partial<ApplicationInput["terms"][number]>) {
-    setData((current) => {
-      const terms = current.terms.map((term, termIndex) => (termIndex === index ? { ...term, ...partial } : term));
-      const next = { ...current, terms };
-      dataRef.current = next;
-      return next;
-    });
+    // Read and write dataRef synchronously so a patch() in the same tick cannot overwrite this change.
+    const current = dataRef.current;
+    const terms = current.terms.map((term, termIndex) => (termIndex === index ? { ...term, ...partial } : term));
+    const next = { ...current, terms };
+    dataRef.current = next;
+    setData(next);
   }
 
   function patch(partial: Partial<ApplicationInput>) {
@@ -493,15 +495,16 @@ export function ApplicationForm({
 
   function upsertDocument(document: DocumentInput) {
     dirty.current = true;
-    setData((current) => {
-      const documents = [
-        ...current.documents.filter((item) => !(item.slot === document.slot && item.index === document.index)),
-        document,
-      ];
-      const next = { ...current, documents };
-      dataRef.current = next;
-      return next;
-    });
+    // Synchronous: EducationRows calls this and then patch({ education }) in the same tick; an updater
+    // function here ran after that patch and the uploaded proof was lost on slow connections.
+    const current = dataRef.current;
+    const documents = [
+      ...current.documents.filter((item) => !(item.slot === document.slot && item.index === document.index)),
+      document,
+    ];
+    const next = { ...current, documents };
+    dataRef.current = next;
+    setData(next);
     setErrors((current) => {
       const next = { ...current };
       for (const key of Object.keys(next)) {
@@ -515,12 +518,11 @@ export function ApplicationForm({
   function removeDocument(slot: string, index: number) {
     dirty.current = true;
     if (slot === "photo") setPhotoThumb("");
-    setData((current) => {
-      const documents = current.documents.filter((item) => !(item.slot === slot && item.index === index));
-      const next = { ...current, documents };
-      dataRef.current = next;
-      return next;
-    });
+    const current = dataRef.current;
+    const documents = current.documents.filter((item) => !(item.slot === slot && item.index === index));
+    const next = { ...current, documents };
+    dataRef.current = next;
+    setData(next);
   }
 
   async function submit() {
@@ -681,8 +683,10 @@ export function ApplicationForm({
           step={pendingDraft.step}
           savedAt={pendingDraft.savedAt}
           onResume={() => {
-            dataRef.current = pendingDraft.data;
-            setData(pendingDraft.data);
+            // Older drafts may miss fields added later; fill them from an empty application.
+            const resumed = { ...emptyApplication(pendingDraft.data.scholarship as ScholarshipId | ""), ...pendingDraft.data };
+            dataRef.current = resumed;
+            setData(resumed);
             setStep(Math.min(pendingDraft.step, FORM_STEPS.length - 1));
             setPicking(!pendingDraft.data.scholarship);
             dirty.current = true;
@@ -723,7 +727,7 @@ export function ApplicationForm({
 
       {step === 0 ? (
         <div className={styles.grid}>
-          <RadioField
+          <SegmentedField
             legend="New or Continuing applicant"
             name="applicant_type"
             field="applicant_type"
@@ -733,7 +737,7 @@ export function ApplicationForm({
             onChange={(value) => patch({ applicant_type: value as ApplicationInput["applicant_type"] })}
             options={[
               { id: "new", label: "New" },
-              { id: "continuing", label: "Continuing", detail: "Received a Rapid scholarship before" },
+              { id: "continuing", label: "Continuing" },
             ]}
           />
           {picking || !data.scholarship ? (
@@ -776,11 +780,11 @@ export function ApplicationForm({
             }}
             onRemove={() => removeDocument("photo", 1)}
           />
-          <div className={styles.two}>
-            <TextField label="First name" autoComplete="given-name" value={data.first_name} error={visible("first_name")} field="first_name" onChange={(first_name) => patch({ first_name })} />
-            <TextField label="Last name" autoComplete="family-name" value={data.last_name} error={visible("last_name")} field="last_name" onChange={(last_name) => patch({ last_name })} />
+          <div className={styles.pair}>
+            <TextField label="First name" autoComplete="given-name" autoCapitalize="words" spellCheck={false} value={data.first_name} error={visible("first_name")} field="first_name" onChange={(first_name) => patch({ first_name })} />
+            <TextField label="Last name" autoComplete="family-name" autoCapitalize="words" spellCheck={false} value={data.last_name} error={visible("last_name")} field="last_name" onChange={(last_name) => patch({ last_name })} />
           </div>
-          <TextField label="Full name as on CNIC" hint="Use the name printed on the CNIC. Phone and email are separate fields below." value={data.full_name_as_on_cnic} error={visible("full_name_as_on_cnic")} field="full_name_as_on_cnic" onChange={(full_name_as_on_cnic) => patch({ full_name_as_on_cnic })} />
+          <TextField label="Full name as on CNIC" autoComplete="name" autoCapitalize="words" spellCheck={false} hint="Exactly as printed on the CNIC or B-Form." value={data.full_name_as_on_cnic} error={visible("full_name_as_on_cnic")} field="full_name_as_on_cnic" onChange={(full_name_as_on_cnic) => patch({ full_name_as_on_cnic })} />
           <CnicField value={data.cnic} error={visible("cnic")} field="cnic" onChange={(cnic) => patch({ cnic })} />
           <TextField label="Date of birth" type="date" autoComplete="bday" value={data.date_of_birth} error={visible("date_of_birth")} field="date_of_birth" onChange={(date_of_birth) => patch({ date_of_birth })} />
           <SegmentedField legend="Gender" name="gender" field="gender" value={data.gender} hint={data.scholarship === "ivy-azariah" ? "The Ivy Azariah Scholarship is for women." : undefined} error={data.scholarship === "ivy-azariah" && data.gender === "Male" && suggestion ? `Gender: ${suggestion.message}` : visible("gender")} onChange={(gender) => patch({ gender: gender as ApplicationInput["gender"] })} options={[{ id: "Female", label: "Female" }, { id: "Male", label: "Male" }]} />
@@ -792,12 +796,14 @@ export function ApplicationForm({
               </button>
             </div>
           ) : null}
-          <SelectOther label="Community" options={lists.religions} value={data.religion} error={visible("religion.option_id", "religion.other_text")} field="religion.option_id" hint="Christian, Hindu or Sikh. Choose Other to type another minority community." onChange={(religion) => patch({ religion })} />
-          <SelectField label="Country" value={data.country} error={visible("country")} field="country" autoComplete="country-name" options={[{ id: "Pakistan", label: "Pakistan" }]} onChange={(country) => patch({ country: country as ApplicationInput["country"] })} />
-          <RadioField legend="Marital status" name="marital_status" value={data.marital_status} error={visible("marital_status")} field="marital_status" onChange={(marital_status) => patch({ marital_status: marital_status as ApplicationInput["marital_status"] })} options={["Single", "Married", "Widowed", "Divorced"].map((id) => ({ id, label: id }))} />
+          <div className={styles.pair}>
+            <SelectOther label="Community" options={lists.religions} value={data.religion} error={visible("religion.option_id", "religion.other_text")} field="religion.option_id" onChange={(religion) => patch({ religion })} />
+            <SelectField label="Country" value={data.country} error={visible("country")} field="country" autoComplete="country-name" options={[{ id: "Pakistan", label: "Pakistan" }]} onChange={(country) => patch({ country: country as ApplicationInput["country"] })} />
+          </div>
+          <RadioField legend="Marital status" name="marital_status" value={data.marital_status} error={visible("marital_status")} field="marital_status" onChange={(marital_status) => patch({ marital_status: marital_status as ApplicationInput["marital_status"], guardian_relation: marital_status !== "Married" && data.guardian_relation === "husband" ? "" : data.guardian_relation })} options={["Single", "Married", "Widowed", "Divorced"].map((id) => ({ id, label: id }))} />
           {data.marital_status === "Married" ? (
             <div className={styles.two}>
-              <TextField label="Spouse name" value={data.spouse_name} error={visible("spouse_name")} field="spouse_name" onChange={(spouse_name) => patch({ spouse_name })} />
+              <TextField label="Spouse name" autoCapitalize="words" spellCheck={false} value={data.spouse_name} error={visible("spouse_name")} field="spouse_name" onChange={(spouse_name) => patch({ spouse_name })} />
               <MoneyField label="Spouse monthly income (PKR)" value={data.spouse_monthly_income} error={visible("spouse_monthly_income.amount")} field="spouse_monthly_income.amount" onChange={(spouse_monthly_income) => patch({ spouse_monthly_income })} />
             </div>
           ) : null}
@@ -807,6 +813,7 @@ export function ApplicationForm({
             field="disability"
             value={data.disability === "none" ? "No" : data.disability || disabilityYes ? "Yes" : ""}
             error={data.disability === "" && !disabilityYes ? visible("disability") : undefined}
+            options={[{ id: "No", label: "No" }, { id: "Yes", label: "Yes" }]}
             onChange={(answer) => {
               setDisabilityYes(answer === "Yes");
               patch(answer === "No" ? { disability: "none", disability_other: "" } : { disability: data.disability === "none" ? "" : data.disability });
@@ -816,24 +823,26 @@ export function ApplicationForm({
             <RadioField legend="Type of disability" name="disability" value={data.disability} error={visible("disability")} field="disability_type" onChange={(disability) => patch({ disability: disability as ApplicationInput["disability"] })} options={DISABILITIES.filter((item) => item.id !== "none").map((item) => ({ id: item.id, label: item.label }))} />
           ) : null}
           {data.disability === "other" ? <TextField label="Describe the disability" value={data.disability_other} error={visible("disability_other")} field="disability_other" onChange={(disability_other) => patch({ disability_other })} /> : null}
-          <PhoneField label="Mobile number" value={data.mobile_phone} error={visible("mobile_phone")} field="mobile_phone" hint="Pakistan mobile only, for example 0300 1234567. Do not type an email in this box." onChange={(mobile_phone) => patch({ mobile_phone })} />
-          <PhoneField label="Alternate mobile (optional)" value={data.secondary_phone} error={visible("secondary_phone")} field="secondary_phone" hint="Optional Pakistan mobile." onChange={(secondary_phone) => patch({ secondary_phone })} />
-          <div className={styles.two}>
-            <TextField label="Email" type="email" autoComplete="email" value={data.email} error={visible("email")} field="email" onChange={(email) => patch({ email })} />
-            <TextField label="Confirm email" type="email" autoComplete="email" value={data.email_confirm} error={visible("email_confirm")} field="email_confirm" onChange={(email_confirm) => patch({ email_confirm })} />
+          <div className={styles.pair}>
+            <PhoneField label="Mobile number" autoComplete="tel" value={data.mobile_phone} error={visible("mobile_phone")} field="mobile_phone" onChange={(mobile_phone) => patch({ mobile_phone })} />
+            <PhoneField label="Alternate (optional)" value={data.secondary_phone} error={visible("secondary_phone")} field="secondary_phone" onChange={(secondary_phone) => patch({ secondary_phone })} />
           </div>
-          <TextField label="Current address" autoComplete="street-address" value={data.address_line} error={visible("address_line")} field="address_line" hint="House, street and area where you live now." onChange={(address_line) => patch({ address_line })} />
           <div className={styles.two}>
-            <SelectOther label="City" options={lists.cities} value={data.city} error={visible("city.option_id", "city.other_text")} field="city.option_id" onChange={(city) => patch({ city })} />
-            <SelectField label="Province" value={data.province} error={visible("province")} field="province" options={PROVINCES.map((id) => ({ id, label: id }))} onChange={(province) => patch({ province })} />
+            <TextField label="Email" type="email" inputMode="email" autoComplete="email" autoCapitalize="none" spellCheck={false} value={data.email} error={visible("email")} field="email" onChange={(email) => patch({ email })} />
+            <TextField label="Confirm email" type="email" inputMode="email" autoComplete="email" autoCapitalize="none" spellCheck={false} value={data.email_confirm} error={visible("email_confirm")} field="email_confirm" onChange={(email_confirm) => patch({ email_confirm })} />
+          </div>
+          <TextField label="Current address" autoComplete="street-address" value={data.address_line} error={visible("address_line")} field="address_line" placeholder="House, street, area or village" maxLength={200} onChange={(address_line) => patch({ address_line })} />
+          <div className={styles.two}>
+            <SelectOther label="City or district" options={lists.cities} value={data.city} error={visible("city.option_id", "city.other_text")} field="city.option_id" onChange={(city) => patch({ city })} />
+            <SelectField label="Province" value={data.province} error={visible("province")} field="province" autoComplete="address-level1" options={PROVINCES.map((id) => ({ id, label: id }))} onChange={(province) => patch({ province })} />
           </div>
           <SegmentedField legend="Permanent address same as current?" name="permanent_same" field="permanent_same" value={data.permanent_same} error={visible("permanent_same")} onChange={(permanent_same) => patch({ permanent_same: permanent_same as ApplicationInput["permanent_same"], permanent_address: permanent_same === "Yes" ? "" : data.permanent_address })} />
           {data.permanent_same === "No" ? (
-            <TextField label="Permanent address" value={data.permanent_address} error={visible("permanent_address")} field="permanent_address" hint="Include the city or village." maxLength={200} onChange={(permanent_address) => patch({ permanent_address })} />
+            <TextField label="Permanent address" value={data.permanent_address} error={visible("permanent_address")} field="permanent_address" placeholder="Include the city or village" maxLength={200} onChange={(permanent_address) => patch({ permanent_address })} />
           ) : null}
-          <SegmentedField legend="Are you currently employed?" name="employment_status" value={data.employment_status} error={visible("employment_status")} field="employment_status" hint="Choose Yes if you have any job. Reviewers ask about work that was left off the form." onChange={(employment_status) => patch({ employment_status: employment_status as ApplicationInput["employment_status"] })} options={EMPLOYMENT.map((item) => ({ id: item.id, label: item.label })).reverse()} />
+          <SegmentedField legend="Are you currently employed?" name="employment_status" value={data.employment_status} error={visible("employment_status")} field="employment_status" hint="Any job, including part-time." onChange={(employment_status) => patch({ employment_status: employment_status as ApplicationInput["employment_status"] })} options={EMPLOYMENT.map((item) => ({ id: item.id, label: item.label })).reverse()} />
           {data.employment_status === "Yes" ? (
-            <div className={styles.two}>
+            <div className={styles.pair}>
               <TextField label="Job title" value={data.employment_job} error={visible("employment_job")} field="employment_job" onChange={(employment_job) => patch({ employment_job })} />
               <TextField label="Employer" value={data.employment_employer} error={visible("employment_employer")} field="employment_employer" onChange={(employment_employer) => patch({ employment_employer })} />
             </div>
@@ -844,55 +853,70 @@ export function ApplicationForm({
       {step === 2 ? (
         <div className={styles.grid}>
           <p className={styles.noteBox}>
-            A retired parent who receives a pension is Retired, not Unemployed with 0. Enter the monthly pension if you know it.
-            Sibling counts exclude you. Enter numbers, not a sentence.
+            Retired with a pension: choose Retired and enter the pension. Counts do not include you unless they say so.
           </p>
-          <TextField label="Father's name" hint="The name reviewers should see, without occupation or income." value={data.father_name} error={visible("father_name")} field="father_name" onChange={(father_name) => patch({ father_name })} />
-          <RadioField legend="Father's status" name="father_status" value={data.father_status} error={visible("father_status")} field="father_status" onChange={(father_status) => patch({ father_status: father_status as ApplicationInput["father_status"] })} options={PARENT_STATUSES.map((item) => ({ id: item.id, label: item.label }))} />
-          {data.father_status === "Late" ? null : (
-            <>
-              <SelectOther label="Father's occupation" options={lists.occupations} value={data.father_occupation} error={visible("father_occupation.option_id", "father_occupation.other_text")} field="father_occupation.option_id" onChange={(father_occupation) => patch({ father_occupation })} />
-              <MoneyField label="Father's monthly income (PKR)" allowUnknown value={data.father_monthly_income} error={visible("father_monthly_income.amount")} field="father_monthly_income.amount" onChange={(father_monthly_income) => patch({ father_monthly_income })} />
-            </>
-          )}
-          <TextField label="Mother's name" value={data.mother_name} error={visible("mother_name")} field="mother_name" onChange={(mother_name) => patch({ mother_name })} />
-          <RadioField legend="Mother's status" name="mother_status" value={data.mother_status} error={visible("mother_status")} field="mother_status" onChange={(mother_status) => patch({ mother_status: mother_status as ApplicationInput["mother_status"] })} options={PARENT_STATUSES.map((item) => ({ id: item.id, label: item.label }))} />
-          {data.mother_status === "Late" ? null : (
-            <>
-              <SelectOther label="Mother's occupation" options={lists.occupations} value={data.mother_occupation} error={visible("mother_occupation.option_id", "mother_occupation.other_text")} field="mother_occupation.option_id" onChange={(mother_occupation) => patch({ mother_occupation })} />
-              <MoneyField label="Mother's monthly income (PKR)" allowUnknown value={data.mother_monthly_income} error={visible("mother_monthly_income.amount")} field="mother_monthly_income.amount" onChange={(mother_monthly_income) => patch({ mother_monthly_income })} />
-            </>
-          )}
+          <ParentBlock
+            who="Father"
+            name={data.father_name}
+            status={data.father_status}
+            occupation={data.father_occupation}
+            income={data.father_monthly_income}
+            occupations={lists.occupations}
+            visible={visible}
+            prefix="father"
+            onChange={(partial) => patch(partial)}
+          />
+          <ParentBlock
+            who="Mother"
+            name={data.mother_name}
+            status={data.mother_status}
+            occupation={data.mother_occupation}
+            income={data.mother_monthly_income}
+            occupations={lists.occupations}
+            visible={visible}
+            prefix="mother"
+            onChange={(partial) => patch(partial)}
+          />
           <SegmentedField
             legend="Father / Husband / Guardian"
             name="guardian_relation"
             field="guardian_relation"
-            hint="Whose name and occupation should appear on the application."
+            hint="Whose name goes on the application."
             value={data.guardian_relation}
             error={visible("guardian_relation")}
-            options={GUARDIAN_RELATIONS.map((item) => ({ id: item.id, label: item.id === "guardian" ? "Guardian" : item.label }))}
+            options={GUARDIAN_RELATIONS.filter((item) => item.id !== "husband" || data.marital_status === "Married" || data.guardian_relation === "husband").map((item) => ({ id: item.id, label: item.id === "guardian" ? "Guardian" : item.label }))}
             onChange={(guardian_relation) => patch({ guardian_relation: guardian_relation as ApplicationInput["guardian_relation"], guardian_name: guardian_relation === "guardian" ? data.guardian_name : "" })}
           />
           {data.guardian_relation === "husband" ? (
-            <p className={styles.hint}>Your husband&apos;s name is taken from Spouse name on the Personal step{data.spouse_name ? `: ${data.spouse_name}` : ""}.</p>
-          ) : null}
-          {data.guardian_relation === "guardian" ? (
-            <TextField label="Guardian name" value={data.guardian_name} error={visible("guardian_name")} field="guardian_name" onChange={(guardian_name) => patch({ guardian_name })} />
+            <p className={styles.hint}>Husband&apos;s name comes from the Personal step{data.spouse_name ? `: ${data.spouse_name}` : ""}.</p>
           ) : null}
           {data.guardian_relation === "husband" || data.guardian_relation === "guardian" ? (
-            <TextField label={data.guardian_relation === "husband" ? "Husband's occupation" : "Guardian occupation"} hint="For example Driver, Teacher, or Unemployed." value={data.guardian_occupation} error={visible("guardian_occupation")} field="guardian_occupation" maxLength={80} onChange={(guardian_occupation) => patch({ guardian_occupation })} />
+            <div className={styles.two}>
+              {data.guardian_relation === "guardian" ? (
+                <TextField label="Guardian name" autoCapitalize="words" spellCheck={false} value={data.guardian_name} error={visible("guardian_name")} field="guardian_name" onChange={(guardian_name) => patch({ guardian_name })} />
+              ) : null}
+              <TextField label={data.guardian_relation === "husband" ? "Husband's occupation" : "Guardian occupation"} placeholder="e.g. Driver, Teacher, Unemployed" value={data.guardian_occupation} error={visible("guardian_occupation")} field="guardian_occupation" maxLength={80} onChange={(guardian_occupation) => patch({ guardian_occupation })} />
+            </div>
           ) : null}
-          <NumberField label="Family monthly income (PKR)" hint="Total from everyone in the household who earns, per month. Use 0 if there is none." max={100_000_000} value={data.family_monthly_income} error={visible("family_monthly_income")} field="family_monthly_income" onChange={(family_monthly_income) => patch({ family_monthly_income })} />
-          <PhoneField label="Guardian phone" value={data.guardian_phone} error={visible("guardian_phone")} field="guardian_phone" hint="Mobile or landline, with country code if it is not a Pakistan number." onChange={(guardian_phone) => patch({ guardian_phone })} />
-          <NumberField label="Siblings, excluding yourself" hint="Use 0 if you have none. Do not count yourself." max={20} value={data.siblings_count} error={visible("siblings_count")} field="siblings_count" onChange={(siblings_count) => patch({ siblings_count })} />
-          <div className={styles.two}>
-            <NumberField label="Studying" max={20} value={data.siblings_studying_count} error={visible("siblings_studying_count")} field="siblings_studying_count" onChange={(siblings_studying_count) => patch({ siblings_studying_count })} />
-            <NumberField label="Working" max={20} value={data.siblings_working_count} error={visible("siblings_working_count")} field="siblings_working_count" onChange={(siblings_working_count) => patch({ siblings_working_count })} />
+          <PhoneField label="Guardian phone" value={data.guardian_phone} error={visible("guardian_phone")} field="guardian_phone" hint="Mobile or landline. Add the country code if abroad." onChange={(guardian_phone) => patch({ guardian_phone })} />
+          <h3 className={styles.subTitle}>Household</h3>
+          <div className={styles.pair}>
+            <NumberField label="People at home" placeholder="Optional" max={40} value={data.household_members ?? null} error={visible("household_members")} field="household_members" onChange={(household_members) => patch({ household_members })} />
+            <NumberField label="Earning members" placeholder="Optional" max={40} value={data.earning_members ?? null} error={visible("earning_members")} field="earning_members" onChange={(earning_members) => patch({ earning_members })} />
           </div>
-          <div className={styles.two}>
-            <NumberField label="Married" max={20} value={data.siblings_married_count} error={visible("siblings_married_count")} field="siblings_married_count" onChange={(siblings_married_count) => patch({ siblings_married_count })} />
-            <NumberField label="Other" max={20} value={data.siblings_other_count} error={visible("siblings_other_count")} field="siblings_other_count" onChange={(siblings_other_count) => patch({ siblings_other_count })} />
-          </div>
+          <NumberField label="Family monthly income (PKR)" thousands hint="Everyone who earns, per month. Use 0 if none." max={100_000_000} value={data.family_monthly_income} error={visible("family_monthly_income")} field="family_monthly_income" onChange={(family_monthly_income) => patch({ family_monthly_income })} />
+          <SegmentedField legend="House (optional)" name="house_status" field="house_status" value={data.house_status ?? ""} error={visible("house_status")} options={[{ id: "owned", label: "Owned" }, { id: "rented", label: "Rented" }, { id: "other", label: "Other" }]} onChange={(house_status) => patch({ house_status: house_status as ApplicationInput["house_status"] })} />
+          <fieldset className={styles.countGroup} data-field="siblings">
+            <legend className={styles.legend}>Brothers and sisters, not counting you</legend>
+            <div className={styles.counts}>
+              <NumberField label="Siblings" max={20} value={data.siblings_count} error={visible("siblings_count")} field="siblings_count" onChange={(siblings_count) => patch({ siblings_count })} />
+              <NumberField label="Studying" max={20} value={data.siblings_studying_count} error={visible("siblings_studying_count")} field="siblings_studying_count" onChange={(siblings_studying_count) => patch({ siblings_studying_count })} />
+              <NumberField label="Working" max={20} value={data.siblings_working_count} error={visible("siblings_working_count")} field="siblings_working_count" onChange={(siblings_working_count) => patch({ siblings_working_count })} />
+              <NumberField label="Married" max={20} value={data.siblings_married_count} error={visible("siblings_married_count")} field="siblings_married_count" onChange={(siblings_married_count) => patch({ siblings_married_count })} />
+              <NumberField label="Other" max={20} value={data.siblings_other_count} error={visible("siblings_other_count")} field="siblings_other_count" onChange={(siblings_other_count) => patch({ siblings_other_count })} />
+            </div>
+            <p className={styles.hint}>Use 0 when none.</p>
+          </fieldset>
           <TextField label="Notes about siblings (optional)" maxLength={300} value={data.siblings_notes} error={visible("siblings_notes")} field="siblings_notes" onChange={(siblings_notes) => patch({ siblings_notes })} />
         </div>
       ) : null}
@@ -900,9 +924,7 @@ export function ApplicationForm({
       {step === 3 ? (
         <div className={styles.grid}>
           <p className={styles.noteBox}>
-            Choose the institution and program from the lists. FCCU and Kinnaird can be found by typing FCCU or KC.
-            Do not mix the semester or a future plan into the program name, and do not type a grade or Yes.
-            The fee is the whole number on the upcoming-term voucher, in PKR. Do not write “2 lakh” or a yearly figure in another currency.
+            Type to search the institution and program. Short names like FCCU, PU or GCUF work. The fee is the whole PKR amount on the voucher.
           </p>
           <EducationRows
             rows={data.education}
@@ -916,9 +938,11 @@ export function ApplicationForm({
             onRemoveDocument={removeDocument}
           />
           <h3 className={styles.subTitle}>Current program</h3>
-          <SelectOther label="Current institution" aliases={SCHOOL_ALIASES} options={lists.schools} value={data.current_institution} error={visible("current_institution.option_id", "current_institution.other_text")} field="current_institution.option_id" hint="Type to search. Abbreviations and small typos are accepted. Choose Other if it is not listed." onChange={(current_institution) => patch({ current_institution })} />
-          <SelectOther label="Campus city" options={lists.cities} value={data.campus_city} error={visible("campus_city.option_id", "campus_city.other_text")} field="campus_city.option_id" onChange={(campus_city) => patch({ campus_city })} />
-          <SelectOther label="Degree level" options={lists.levels} value={data.degree_level} error={visible("degree_level.option_id", "degree_level.other_text")} field="degree_level.option_id" onChange={(degree_level) => patch({ degree_level })} />
+          <SelectOther label="Current institution" aliases={SCHOOL_ALIASES} options={lists.schools} value={data.current_institution} error={visible("current_institution.option_id", "current_institution.other_text")} field="current_institution.option_id" hint="Type to search. Choose Other if it is not listed." onChange={(current_institution) => patch({ current_institution })} />
+          <div className={styles.two}>
+            <SelectOther label="Campus city" options={lists.cities} value={data.campus_city} error={visible("campus_city.option_id", "campus_city.other_text")} field="campus_city.option_id" onChange={(campus_city) => patch({ campus_city })} />
+            <SelectOther label="Degree level" options={lists.levels} value={data.degree_level} error={visible("degree_level.option_id", "degree_level.other_text")} field="degree_level.option_id" onChange={(degree_level) => patch({ degree_level })} />
+          </div>
           <SelectOther
             label="Field of study"
             options={lists.fields}
@@ -962,30 +986,33 @@ export function ApplicationForm({
               ) : null}
             </>
           ) : null}
-          <TextField label="Specialization (optional)" maxLength={80} value={data.specialization} error={visible("specialization")} field="specialization" hint="For example Marketing or Clinical Psychology. Keep this out of the program title." onChange={(specialization) => patch({ specialization })} />
-          <div className={styles.two}>
-            <NumberField label="Period of study (years)" max={7} value={data.study_years} error={visible("study_years")} field="study_years" onChange={(study_years) => patch({ study_years })} />
-            <SelectField label="Completion term" value={data.completion_term} error={visible("completion_term")} field="completion_term" options={[{ id: "Spring", label: "Spring" }, { id: "Fall", label: "Fall" }]} onChange={(completion_term) => patch({ completion_term: completion_term as ApplicationInput["completion_term"] })} />
+          <TextField label="Specialization (optional)" maxLength={80} value={data.specialization} error={visible("specialization")} field="specialization" placeholder="e.g. Marketing" onChange={(specialization) => patch({ specialization })} />
+          <div className={styles.pair}>
+            <NumberField label="Years of study" max={7} value={data.study_years} error={visible("study_years")} field="study_years" placeholder="e.g. 4" onChange={(study_years) => patch({ study_years })} />
+            <SegmentedField legend="Completion term" name="completion_term" value={data.completion_term} error={visible("completion_term")} field="completion_term" options={[{ id: "Spring", label: "Spring" }, { id: "Fall", label: "Fall" }]} onChange={(completion_term) => patch({ completion_term: completion_term as ApplicationInput["completion_term"] })} />
           </div>
-          <NumberField label="Completion year" max={2100} value={data.completion_year} error={visible("completion_year")} field="completion_year" onChange={(completion_year) => patch({ completion_year })} />
-          <SelectField label="Current semester" value={data.current_semester} error={visible("current_semester")} field="current_semester" options={SEMESTER_OPTIONS.map((item) => ({ id: item.id, label: item.id === "not_started" ? item.label : `Semester ${item.label}` }))} onChange={(current_semester) => patch({ current_semester })} />
+          <div className={styles.pair}>
+            <NumberField label="Completion year" max={2100} value={data.completion_year} error={visible("completion_year")} field="completion_year" placeholder="e.g. 2028" onChange={(completion_year) => patch({ completion_year })} />
+            <SelectField label="Current semester" value={data.current_semester} error={visible("current_semester")} field="current_semester" options={SEMESTER_OPTIONS.map((item) => ({ id: item.id, label: item.id === "not_started" ? "Not started" : `Semester ${item.label}` }))} onChange={(current_semester) => patch({ current_semester })} />
+          </div>
           {data.current_semester && data.current_semester !== "not_started" && data.current_semester !== "1" ? (
-            <div className={styles.two}>
+            <div className={styles.pair}>
               <DecimalField label="Current GPA" value={data.current_gpa} error={visible("current_gpa")} field="current_gpa" placeholder="e.g. 3.25" onChange={(current_gpa) => patch({ current_gpa })} />
-              <SegmentedField legend="GPA scale" name="gpa_scale" field="gpa_scale" value={data.gpa_scale} error={visible("gpa_scale")} options={GPA_SCALES.map((id) => ({ id, label: `Out of ${id}` }))} onChange={(gpa_scale) => patch({ gpa_scale: gpa_scale as ApplicationInput["gpa_scale"] })} />
+              <SegmentedField legend="Out of" name="gpa_scale" field="gpa_scale" value={data.gpa_scale} error={visible("gpa_scale")} options={GPA_SCALES.map((id) => ({ id, label: id }))} onChange={(gpa_scale) => patch({ gpa_scale: gpa_scale as ApplicationInput["gpa_scale"] })} />
             </div>
           ) : null}
-          <TextField label="Roll number (optional)" value={data.roll_number} error={visible("roll_number")} field="roll_number" onChange={(roll_number) => patch({ roll_number })} />
-          <p className={styles.noteBox}>
-            These five terms are the last two, this term, and the next two. For a past term, choose the unit and a status.
-            If the result is awaited or delayed, say so. Do not invent a GPA. Future terms only need the semester you expect to be in.
+          <h3 className={styles.subTitle}>Recent terms</h3>
+          <p className={styles.hint}>
+            Last two terms, this term, and the next two. If a result is awaited or delayed, say so. Future terms only need the number.
           </p>
           {visible("terms") ? <p className={styles.error} data-field="terms">{visible("terms")}</p> : null}
           {data.terms.map((term, index) => (
-            <fieldset key={term.term} className={styles.checks} data-field={`terms.${index}`}>
+            <fieldset key={term.term} className={styles.termCard} data-field={`terms.${index}`}>
               <legend className={styles.legend}>{term.term}{term.status === "future" ? " (expected)" : ""}</legend>
-              <SelectField label="Progress unit" value={term.unit} error={visible(`terms.${index}.unit`)} field={`terms.${index}.unit`} options={TERM_UNITS.map((item) => ({ id: item.id, label: item.label }))} onChange={(unit) => updateTerm(index, { unit: unit as ApplicationInput["terms"][number]["unit"] })} />
-              <NumberField label="Number" max={12} value={term.number} error={visible(`terms.${index}.number`)} field={`terms.${index}.number`} onChange={(number) => updateTerm(index, { number })} />
+              <div className={styles.pair}>
+                <SelectField label="Progress unit" value={term.unit} error={visible(`terms.${index}.unit`)} field={`terms.${index}.unit`} options={TERM_UNITS.map((item) => ({ id: item.id, label: item.label }))} onChange={(unit) => updateTerm(index, { unit: unit as ApplicationInput["terms"][number]["unit"] })} />
+                <NumberField label="Number" max={12} value={term.number} error={visible(`terms.${index}.number`)} field={`terms.${index}.number`} onChange={(number) => updateTerm(index, { number })} />
+              </div>
               {term.status === "future" ? null : (
                 <SelectField
                   label="Result status"
@@ -1005,7 +1032,7 @@ export function ApplicationForm({
                 <>
                   <RadioField legend="Result type" name={`result-${index}`} value={term.result.type} onChange={(type) => updateTerm(index, { result: { type: type as ApplicationInput["terms"][number]["result"]["type"], value: null, max: type === "CGPA" ? 4 : type === "Percentage" ? 100 : null, grade: "" } })} options={["CGPA", "Percentage", "Grade", "Marks"].map((id) => ({ id, label: id }))} />
                   {term.result.type === "CGPA" ? (
-                    <div className={styles.two}>
+                    <div className={styles.pair}>
                       <Numberish label="CGPA" value={term.result.value} error={visible(`terms.${index}.result.value`)} field={`terms.${index}.result.value`} onChange={(value) => updateTerm(index, { result: { ...term.result, value } })} />
                       <SelectField label="Out of" value={String(term.result.max ?? "")} options={[{ id: "4", label: "4" }, { id: "5", label: "5" }]} error={visible(`terms.${index}.result.max`)} field={`terms.${index}.result.max`} onChange={(max) => updateTerm(index, { result: { ...term.result, max: Number(max) } })} />
                     </div>
@@ -1013,7 +1040,7 @@ export function ApplicationForm({
                   {term.result.type === "Percentage" ? <Numberish label="Percentage" value={term.result.value} error={visible(`terms.${index}.result.value`)} field={`terms.${index}.result.value`} onChange={(value) => updateTerm(index, { result: { ...term.result, value, max: 100 } })} /> : null}
                   {term.result.type === "Grade" ? <SelectField label="Grade" value={term.result.grade} error={visible(`terms.${index}.result.grade`)} field={`terms.${index}.result.grade`} options={GRADES.map((id) => ({ id, label: id }))} onChange={(grade) => updateTerm(index, { result: { ...term.result, grade, value: null, max: null } })} /> : null}
                   {term.result.type === "Marks" ? (
-                    <div className={styles.two}>
+                    <div className={styles.pair}>
                       <NumberField label="Marks obtained" value={term.result.value} error={visible(`terms.${index}.result.value`)} field={`terms.${index}.result.value`} onChange={(value) => updateTerm(index, { result: { ...term.result, value } })} />
                       <NumberField label="Out of" value={term.result.max} error={visible(`terms.${index}.result.max`)} field={`terms.${index}.result.max`} onChange={(max) => updateTerm(index, { result: { ...term.result, max } })} />
                     </div>
@@ -1022,85 +1049,115 @@ export function ApplicationForm({
               ) : null}
             </fieldset>
           ))}
+          <h3 className={styles.subTitle}>Previous study and fee</h3>
           <SelectOther aliases={SCHOOL_ALIASES} label="Previous institution" options={lists.schools} value={data.previous_institution} error={visible("previous_institution.option_id", "previous_institution.other_text")} field="previous_institution.option_id" onChange={(previous_institution) => patch({ previous_institution })} />
-          <SelectOther label="Previous qualification" options={lists.streams} value={data.previous_qualification} error={visible("previous_qualification.option_id", "previous_qualification.other_text")} field="previous_qualification.option_id" onChange={(previous_qualification) => patch({ previous_qualification })} />
-          <NumberField label="Previous completion year" value={data.previous_completion_year} error={visible("previous_completion_year")} field="previous_completion_year" max={2100} onChange={(previous_completion_year) => patch({ previous_completion_year })} />
-          <MoneyField label="Fee for the upcoming term (PKR)" value={data.fee} error={visible("fee.amount")} field="fee.amount" hint="The whole number printed on the current voucher. A blank is not zero." onChange={(fee) => patch({ fee: { ...fee, period: "semester", currency: "PKR" } })} />
-          <NumberField label="Amount requested (PKR)" hint="How much you are asking Rapid Charity to pay this term." max={10_000_000} value={data.amount_requested} error={visible("amount_requested")} field="amount_requested" onChange={(amount_requested) => patch({ amount_requested })} />
-          <TextField label="Fee due date" type="date" value={data.fee_due_date} error={visible("fee_due_date")} field="fee_due_date" onChange={(fee_due_date) => patch({ fee_due_date })} />
-          <PhoneField label="Institution phone (optional)" value={data.institution_phone} error={visible("institution_phone")} field="institution_phone" onChange={(institution_phone) => patch({ institution_phone })} />
-          <TextField label="Institution address (optional)" value={data.institution_address} error={visible("institution_address")} field="institution_address" onChange={(institution_address) => patch({ institution_address })} />
+          <div className={styles.two}>
+            <SelectOther label="Previous qualification" options={lists.streams} value={data.previous_qualification} error={visible("previous_qualification.option_id", "previous_qualification.other_text")} field="previous_qualification.option_id" onChange={(previous_qualification) => patch({ previous_qualification })} />
+            <NumberField label="Previous completion year" value={data.previous_completion_year} error={visible("previous_completion_year")} field="previous_completion_year" max={2100} placeholder="e.g. 2022" onChange={(previous_completion_year) => patch({ previous_completion_year })} />
+          </div>
+          <div className={styles.pair}>
+            <MoneyField label="Term fee (PKR)" value={data.fee} error={visible("fee.amount")} field="fee.amount" onChange={(fee) => patch({ fee: { ...fee, period: "semester", currency: "PKR" } })} />
+            <NumberField label="Amount requested (PKR)" thousands max={10_000_000} value={data.amount_requested} error={visible("amount_requested")} field="amount_requested" onChange={(amount_requested) => patch({ amount_requested })} />
+          </div>
+          <p className={styles.hint}>Term fee: the whole number on the current voucher. Amount requested: what you ask Rapid to pay this term.</p>
+          <div className={styles.pair}>
+            <TextField label="Fee due date" type="date" value={data.fee_due_date} error={visible("fee_due_date")} field="fee_due_date" onChange={(fee_due_date) => patch({ fee_due_date })} />
+            <TextField label="Roll no. (optional)" autoCapitalize="characters" spellCheck={false} value={data.roll_number} error={visible("roll_number")} field="roll_number" onChange={(roll_number) => patch({ roll_number })} />
+          </div>
+          <div className={styles.two}>
+            <PhoneField label="Institution phone (optional)" value={data.institution_phone} error={visible("institution_phone")} field="institution_phone" onChange={(institution_phone) => patch({ institution_phone })} />
+            <TextField label="Institution address (optional)" value={data.institution_address} error={visible("institution_address")} field="institution_address" onChange={(institution_address) => patch({ institution_address })} />
+          </div>
         </div>
       ) : null}
 
       {step === 4 ? (
         <div className={styles.grid}>
           <p className={styles.noteBox}>
-            Disclose every other scholarship and any job. Phone numbers and email addresses stay in their own fields.
+            Declare every other scholarship and any job.
           </p>
           <SegmentedField legend="Received a RAPID scholarship before?" name="rapid_received" value={data.rapid_received} error={visible("rapid_received")} field="rapid_received" onChange={(rapid_received) => patch({ rapid_received: rapid_received as ApplicationInput["rapid_received"], rapid_semesters: rapid_received === "Yes" ? data.rapid_semesters : [] })} options={[{ id: "Yes", label: "Yes" }, { id: "Never", label: "No" }]} />
           {data.rapid_received === "Yes" ? (
             <>
-              <fieldset className={styles.checks} data-field="rapid_semesters" aria-invalid={visible("rapid_semesters") ? true : undefined}>
+              <fieldset className={styles.radios} data-field="rapid_semesters" data-invalid={visible("rapid_semesters") ? "true" : undefined} aria-invalid={visible("rapid_semesters") ? true : undefined}>
                 <legend className={styles.legend}>Past terms</legend>
-                {RAPID_SEMESTERS.map((semester) => (
-                  <label key={semester} className={styles.choice}>
-                    <input
-                      type="checkbox"
-                      checked={data.rapid_semesters.includes(semester)}
-                      onChange={(event) =>
-                        patch({
-                          rapid_semesters: event.target.checked
-                            ? [...data.rapid_semesters, semester]
-                            : data.rapid_semesters.filter((item) => item !== semester),
-                        })
-                      }
-                    />
-                    <span>{semester}</span>
-                  </label>
-                ))}
+                <div className={styles.segmented}>
+                  {RAPID_SEMESTERS.map((semester) => (
+                    <label key={semester} className={styles.segment}>
+                      <input
+                        type="checkbox"
+                        checked={data.rapid_semesters.includes(semester)}
+                        onChange={(event) =>
+                          patch({
+                            rapid_semesters: event.target.checked
+                              ? [...data.rapid_semesters, semester]
+                              : data.rapid_semesters.filter((item) => item !== semester),
+                          })
+                        }
+                      />
+                      <span>{semester}</span>
+                    </label>
+                  ))}
+                </div>
                 <FieldError message={visible("rapid_semesters")} />
               </fieldset>
               <MoneyField label="Amount received (PKR)" value={data.rapid_amount} error={visible("rapid_amount.amount")} field="rapid_amount.amount" onChange={(rapid_amount) => patch({ rapid_amount: { ...rapid_amount, period: "semester", currency: "PKR" } })} />
             </>
           ) : null}
-          <SegmentedField legend="Receiving any other scholarship?" name="other_financial_support" value={data.other_financial_support} error={visible("other_financial_support")} field="other_financial_support" hint="Choose Yes if another office is paying any part of the fee." onChange={(other_financial_support) => patch({ other_financial_support: other_financial_support as ApplicationInput["other_financial_support"] })} />
+          <SegmentedField legend="Receiving any other scholarship?" name="other_financial_support" value={data.other_financial_support} error={visible("other_financial_support")} field="other_financial_support" hint="Yes if anyone else pays part of the fee." onChange={(other_financial_support) => patch({ other_financial_support: other_financial_support as ApplicationInput["other_financial_support"] })} />
           {data.other_financial_support === "Yes" ? (
             <>
               <SelectOther label="Provider" options={lists.providers} value={data.support_provider} error={visible("support_provider.option_id", "support_provider.other_text")} field="support_provider.option_id" onChange={(support_provider) => patch({ support_provider })} />
-              <RadioField legend="Support value" name="support_value_kind" value={data.support_value_kind} error={visible("support_value_kind")} field="support_value_kind" onChange={(support_value_kind) => patch({ support_value_kind: support_value_kind as ApplicationInput["support_value_kind"] })} options={[{ id: "percent", label: "Percent" }, { id: "amount", label: "PKR amount" }]} />
-              {data.support_value_kind === "percent" ? (
-                <Numberish label="Percent" value={data.support_percent} error={visible("support_percent")} field="support_percent" onChange={(support_percent) => patch({ support_percent })} />
-              ) : null}
-              {data.support_value_kind === "amount" ? (
-                <MoneyField label="Support amount (PKR)" value={data.support_amount} error={visible("support_amount.amount")} field="support_amount.amount" onChange={(support_amount) => patch({ support_amount: { ...support_amount, currency: "PKR", period: "semester" } })} />
-              ) : null}
+              <div className={styles.pair}>
+                <RadioField legend="Support value" name="support_value_kind" value={data.support_value_kind} error={visible("support_value_kind")} field="support_value_kind" onChange={(support_value_kind) => patch({ support_value_kind: support_value_kind as ApplicationInput["support_value_kind"] })} options={[{ id: "percent", label: "Percent" }, { id: "amount", label: "PKR" }]} />
+                {data.support_value_kind === "percent" ? (
+                  <Numberish label="Percent" value={data.support_percent} error={visible("support_percent")} field="support_percent" onChange={(support_percent) => patch({ support_percent })} />
+                ) : null}
+                {data.support_value_kind === "amount" ? (
+                  <MoneyField label="Support amount (PKR)" value={data.support_amount} error={visible("support_amount.amount")} field="support_amount.amount" onChange={(support_amount) => patch({ support_amount: { ...support_amount, currency: "PKR", period: "semester" } })} />
+                ) : null}
+              </div>
             </>
           ) : null}
           <SelectOther label="How did you hear about Rapid?" options={lists.heard} value={data.heard_about} error={visible("heard_about.option_id", "heard_about.other_text")} field="heard_about.option_id" onChange={(heard_about) => patch({ heard_about })} />
-          <TextField label="Church or place of worship" value={data.church_name} error={visible("church_name")} field="church_name" onChange={(church_name) => patch({ church_name })} />
-          <SelectOther label="Denomination (optional)" options={lists.denominations} value={data.denomination} error={visible("denomination.option_id", "denomination.other_text")} field="denomination.option_id" onChange={(denomination) => patch({ denomination })} />
-          <SelectField label="Priest or pastor title" value={data.pastor_title} error={visible("pastor_title")} field="pastor_title" options={PASTOR_TITLES.map((item) => ({ id: item.id, label: item.label }))} onChange={(pastor_title) => patch({ pastor_title: pastor_title as ApplicationInput["pastor_title"] })} />
-          {data.pastor_title === "Other" ? <TextField label="Title" value={data.pastor_title_other} error={visible("pastor_title_other")} field="pastor_title_other" onChange={(pastor_title_other) => patch({ pastor_title_other })} /> : null}
-          <TextField label="Priest or pastor name" value={data.pastor_name} error={visible("pastor_name")} field="pastor_name" onChange={(pastor_name) => patch({ pastor_name })} />
-          <PhoneField label="Priest or pastor contact number" value={data.pastor_phone} error={visible("pastor_phone")} field="pastor_phone" onChange={(pastor_phone) => patch({ pastor_phone })} />
-          <TextField label="Priest or pastor email (optional)" type="email" value={data.pastor_email} error={visible("pastor_email")} field="pastor_email" onChange={(pastor_email) => patch({ pastor_email })} />
-          <TextField label="Faculty reference name" value={data.faculty_ref_name} error={visible("faculty_ref_name")} field="faculty_ref_name" onChange={(faculty_ref_name) => patch({ faculty_ref_name })} />
-          <TextField label="Faculty designation" value={data.faculty_ref_designation} error={visible("faculty_ref_designation")} field="faculty_ref_designation" onChange={(faculty_ref_designation) => patch({ faculty_ref_designation })} />
-          <PhoneField label="Faculty phone" value={data.faculty_ref_phone} error={visible("faculty_ref_phone")} field="faculty_ref_phone" onChange={(faculty_ref_phone) => patch({ faculty_ref_phone })} />
-          <TextField label="Faculty email" type="email" value={data.faculty_ref_email} error={visible("faculty_ref_email")} field="faculty_ref_email" onChange={(faculty_ref_email) => patch({ faculty_ref_email })} />
-          <TextField label="Family reference name" value={data.family_ref_name} error={visible("family_ref_name")} field="family_ref_name" onChange={(family_ref_name) => patch({ family_ref_name })} />
-          <SelectOther label="Relationship" options={lists.relationships} value={data.family_ref_relationship} error={visible("family_ref_relationship.option_id", "family_ref_relationship.other_text")} field="family_ref_relationship.option_id" onChange={(family_ref_relationship) => patch({ family_ref_relationship })} />
-          <PhoneField label="Family reference phone" value={data.family_ref_phone} error={visible("family_ref_phone")} field="family_ref_phone" onChange={(family_ref_phone) => patch({ family_ref_phone })} />
-          <TextField label="Family reference email (optional)" type="email" hint="Leave blank if you only have a phone number." value={data.family_ref_email} error={visible("family_ref_email")} field="family_ref_email" onChange={(family_ref_email) => patch({ family_ref_email })} />
+          <h3 className={styles.subTitle}>Church and priest or pastor</h3>
+          <div className={styles.two}>
+            <TextField label="Church or place of worship" value={data.church_name} error={visible("church_name")} field="church_name" onChange={(church_name) => patch({ church_name })} />
+            <SelectOther label="Denomination (optional)" options={lists.denominations} value={data.denomination} error={visible("denomination.option_id", "denomination.other_text")} field="denomination.option_id" onChange={(denomination) => patch({ denomination })} />
+          </div>
+          <div className={styles.titleName}>
+            <SelectField label="Title" value={data.pastor_title} error={visible("pastor_title")} field="pastor_title" options={PASTOR_TITLES.map((item) => ({ id: item.id, label: item.label }))} onChange={(pastor_title) => patch({ pastor_title: pastor_title as ApplicationInput["pastor_title"] })} />
+            <TextField label="Priest or pastor name" autoCapitalize="words" spellCheck={false} value={data.pastor_name} error={visible("pastor_name")} field="pastor_name" onChange={(pastor_name) => patch({ pastor_name })} />
+          </div>
+          {data.pastor_title === "Other" ? <TextField label="Other title" value={data.pastor_title_other} error={visible("pastor_title_other")} field="pastor_title_other" onChange={(pastor_title_other) => patch({ pastor_title_other })} /> : null}
+          <div className={styles.two}>
+            <PhoneField label="Priest or pastor phone" value={data.pastor_phone} error={visible("pastor_phone")} field="pastor_phone" onChange={(pastor_phone) => patch({ pastor_phone })} />
+            <TextField label="Priest or pastor email (optional)" type="email" inputMode="email" autoComplete="off" autoCapitalize="none" spellCheck={false} value={data.pastor_email} error={visible("pastor_email")} field="pastor_email" onChange={(pastor_email) => patch({ pastor_email })} />
+          </div>
+          <h3 className={styles.subTitle}>Faculty reference</h3>
+          <div className={styles.pair}>
+            <TextField label="Faculty name" autoCapitalize="words" spellCheck={false} value={data.faculty_ref_name} error={visible("faculty_ref_name")} field="faculty_ref_name" onChange={(faculty_ref_name) => patch({ faculty_ref_name })} />
+            <TextField label="Designation" value={data.faculty_ref_designation} error={visible("faculty_ref_designation")} field="faculty_ref_designation" placeholder="e.g. Lecturer" onChange={(faculty_ref_designation) => patch({ faculty_ref_designation })} />
+          </div>
+          <div className={styles.two}>
+            <PhoneField label="Faculty phone" value={data.faculty_ref_phone} error={visible("faculty_ref_phone")} field="faculty_ref_phone" onChange={(faculty_ref_phone) => patch({ faculty_ref_phone })} />
+            <TextField label="Faculty email" type="email" inputMode="email" autoComplete="off" autoCapitalize="none" spellCheck={false} value={data.faculty_ref_email} error={visible("faculty_ref_email")} field="faculty_ref_email" onChange={(faculty_ref_email) => patch({ faculty_ref_email })} />
+          </div>
+          <h3 className={styles.subTitle}>Family reference</h3>
+          <TextField label="Family reference name" autoCapitalize="words" spellCheck={false} value={data.family_ref_name} error={visible("family_ref_name")} field="family_ref_name" onChange={(family_ref_name) => patch({ family_ref_name })} />
+          <div className={styles.pair}>
+            <SelectOther label="Relationship" options={lists.relationships} value={data.family_ref_relationship} error={visible("family_ref_relationship.option_id", "family_ref_relationship.other_text")} field="family_ref_relationship.option_id" onChange={(family_ref_relationship) => patch({ family_ref_relationship })} />
+            <PhoneField label="Reference phone" value={data.family_ref_phone} error={visible("family_ref_phone")} field="family_ref_phone" onChange={(family_ref_phone) => patch({ family_ref_phone })} />
+          </div>
+          <TextField label="Family reference email (optional)" type="email" inputMode="email" autoComplete="off" autoCapitalize="none" spellCheck={false} value={data.family_ref_email} error={visible("family_ref_email")} field="family_ref_email" onChange={(family_ref_email) => patch({ family_ref_email })} />
           <RadioField legend="Can you attend Rapid events?" name="attend_events" value={data.attend_events} error={visible("attend_events")} field="attend_events" onChange={(attend_events) => patch({ attend_events: attend_events as ApplicationInput["attend_events"] })} options={[{ id: "Yes", label: "Yes" }, { id: "No", label: "No" }, { id: "Maybe", label: "Maybe" }]} />
         </div>
       ) : null}
 
       {step === 5 ? (
         <div className={styles.grid}>
-          <p className={styles.sectionLead}>The statement of financial need needs 100 to 2000 characters. Each other answer needs 50 to 1500 characters.</p>
-          <TextAreaField label="Statement of financial need" hint="Explain your family's situation and why you need this scholarship now." value={data.financial_need_statement} error={visible("financial_need_statement")} field="financial_need_statement" maxLength={2000} onChange={(financial_need_statement) => patch({ financial_need_statement })} />
+          <p className={styles.hint}>Financial need: 100 to 2000 characters. Other answers: 50 to 1500 each. Urdu or English is fine.</p>
+          <TextAreaField label="Statement of financial need" hint="Your family's situation and why you need help now." value={data.financial_need_statement} error={visible("financial_need_statement")} field="financial_need_statement" maxLength={2000} onChange={(financial_need_statement) => patch({ financial_need_statement })} />
           <TextAreaField label="What is your life goal?" value={data.life_goal} error={visible("life_goal")} field="life_goal" maxLength={1500} onChange={(life_goal) => patch({ life_goal })} />
           <TextAreaField label="How will you contribute to your community?" value={data.community_contribution} error={visible("community_contribution")} field="community_contribution" maxLength={1500} onChange={(community_contribution) => patch({ community_contribution })} />
           <TextAreaField label="What is your plan if this scholarship is not awarded?" value={data.plan_if_denied} error={visible("plan_if_denied")} field="plan_if_denied" maxLength={1500} onChange={(plan_if_denied) => patch({ plan_if_denied })} />
@@ -1113,7 +1170,7 @@ export function ApplicationForm({
           {data.applicant_type === "continuing" ? (
             <fieldset className={styles.checks}>
               <legend className={styles.legend}>Unchanged from the previous term</legend>
-              <p className={styles.hint}>CNICs can be reused (the photo is on the Personal step). The result, fee voucher, and recommendation letter are required every term.</p>
+              <p className={styles.hint}>Result, fee voucher and recommendation letter are needed every term.</p>
               <label className={styles.choice}><input type="checkbox" checked={data.reuse_cnic} onChange={(event) => patch({ reuse_cnic: event.target.checked })} /><span>My CNIC or B-Form is unchanged</span></label>
               <label className={styles.choice}><input type="checkbox" checked={data.reuse_guardian} onChange={(event) => patch({ reuse_guardian: event.target.checked })} /><span>Father or guardian document is unchanged</span></label>
             </fieldset>
@@ -1163,7 +1220,7 @@ export function ApplicationForm({
 
       {step === 7 ? (
         <div className={styles.grid}>
-          <p className={styles.sectionLead}>You are responsible for this application. Review each section, then agree and submit.</p>
+          <p className={styles.hint}>Check each section, then agree and submit.</p>
           {FORM_STEPS.slice(0, 7).map((item, index) => (
             <article key={item.id} className={styles.reviewCard}>
               <header className={styles.reviewHead}>
@@ -1368,6 +1425,92 @@ function reviewLines(id: string, data: ApplicationInput, cycleId: string): Array
     ];
   }
   return [];
+}
+
+/** Occupation ids that a parent status already answers, so the occupation box is hidden for them. */
+const STATUS_OCCUPATION: Record<string, string> = { Retired: "retired", Unemployed: "unemployed" };
+
+/**
+ * Father or mother: name, status chips, then occupation and income only when they apply.
+ * Late hides both. Retired and Unemployed fill the matching occupation and hide that box,
+ * leaving the monthly income (a pension, or 0) with Unknown as an inline chip.
+ */
+function ParentBlock({
+  who,
+  prefix,
+  name,
+  status,
+  occupation,
+  income,
+  occupations,
+  visible,
+  onChange,
+}: {
+  who: "Father" | "Mother";
+  prefix: "father" | "mother";
+  name: string;
+  status: string;
+  occupation: ApplicationInput["father_occupation"];
+  income: ApplicationInput["father_monthly_income"];
+  occupations: CatalogOption[];
+  visible: (...keys: string[]) => string | undefined;
+  onChange: (partial: Partial<ApplicationInput>) => void;
+}) {
+  const possessive = `${who}'s`;
+  const implied = STATUS_OCCUPATION[status];
+  return (
+    <section className={styles.parent} aria-label={who}>
+      <TextField
+        label={`${possessive} name`}
+        autoCapitalize="words"
+        spellCheck={false}
+        value={name}
+        error={visible(`${prefix}_name`)}
+        field={`${prefix}_name`}
+        onChange={(value) => onChange({ [`${prefix}_name`]: value } as Partial<ApplicationInput>)}
+      />
+      <SegmentedField
+        legend={`${possessive} status`}
+        name={`${prefix}_status`}
+        value={status}
+        error={visible(`${prefix}_status`)}
+        field={`${prefix}_status`}
+        options={PARENT_STATUSES.map((item) => ({ id: item.id, label: item.label }))}
+        onChange={(next) => {
+          const partial: Record<string, unknown> = { [`${prefix}_status`]: next };
+          const nextImplied = STATUS_OCCUPATION[next];
+          if (nextImplied && occupations.some((option) => option.id === nextImplied)) {
+            partial[`${prefix}_occupation`] = { option_id: nextImplied, other_text: "" };
+          } else if (Object.values(STATUS_OCCUPATION).includes(occupation.option_id)) {
+            partial[`${prefix}_occupation`] = { option_id: "", other_text: "" };
+          }
+          onChange(partial as Partial<ApplicationInput>);
+        }}
+      />
+      {status === "Late" ? null : (
+        <div className={implied ? undefined : styles.two}>
+          {implied ? null : (
+            <SelectOther
+              label={`${possessive} occupation`}
+              options={occupations}
+              value={occupation}
+              error={visible(`${prefix}_occupation.option_id`, `${prefix}_occupation.other_text`)}
+              field={`${prefix}_occupation.option_id`}
+              onChange={(value) => onChange({ [`${prefix}_occupation`]: value } as Partial<ApplicationInput>)}
+            />
+          )}
+          <MoneyField
+            label={status === "Retired" ? `${possessive} monthly pension (PKR)` : `${possessive} monthly income (PKR)`}
+            allowUnknown
+            value={income}
+            error={visible(`${prefix}_monthly_income.amount`)}
+            field={`${prefix}_monthly_income.amount`}
+            onChange={(value) => onChange({ [`${prefix}_monthly_income`]: value } as Partial<ApplicationInput>)}
+          />
+        </div>
+      )}
+    </section>
+  );
 }
 
 function Numberish({

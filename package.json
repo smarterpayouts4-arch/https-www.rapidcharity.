@@ -15,7 +15,8 @@
     "qa:links": "node scripts/link-audit.mjs",
     "qa:content": "node scripts/content-connection-audit.mjs",
     "qa:content:strict": "node scripts/content-connection-audit.mjs --strict",
-    "qa:final:http": "node scripts/final-system-http-audit.mjs"
+    "qa:final:http": "node scripts/final-system-http-audit.mjs",
+    "test:sims": "playwright test -c playwright.sims.config.ts"
   },
   "dependencies": {
     "exceljs": "^4.4.0",

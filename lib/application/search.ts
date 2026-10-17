@@ -12,6 +12,14 @@ export const SCHOOL_ALIASES: Record<string, string[]> = {
     "forman christian college",
   ],
   kinnaird_college_for_women_university_lahore: ["kc", "kinnaird", "kinnaird college"],
+  government_college_university_faisalabad: ["gcuf", "gcu faisalabad", "gc university faisalabad"],
+  university_of_the_punjab_lahore: ["pu", "punjab university", "pu lahore"],
+  university_of_peshawar: ["uop", "peshawar university"],
+  university_of_sargodha: ["uos", "sargodha university"],
+  university_of_sindh: ["sindh university", "jamshoro"],
+  islamia_university_of_bahawalpur: ["iub", "islamia university"],
+  allama_iqbal_open_university: ["aiou", "open university"],
+  pmas_arid_agriculture_university_rawalpindi: ["uaar", "arid university"],
 };
 
 function norm(value: string): string {
@@ -50,6 +58,13 @@ export function derivedAliases(label: string): string[] {
     .split(/[^A-Za-z0-9]+/)
     .filter((word) => word.length > 2 && !/^(for|and|the|university|college)$/i.test(word));
   if (words.length >= 2) aliases.push(words.map((word) => word[0] ?? "").join(""));
+  // Pakistani institutions are usually known by the full acronym, University and College included (GCUF, IUB).
+  const full = label
+    .replace(/\([^)]*\)/g, " ")
+    .split(/[^A-Za-z0-9]+/)
+    .filter((word) => word.length > 1 && !/^(of|the|for|and|in)$/i.test(word));
+  const acronym = full.map((word) => word[0] ?? "").join("");
+  if (full.length >= 3 && !aliases.includes(acronym)) aliases.push(acronym);
   return aliases;
 }
 

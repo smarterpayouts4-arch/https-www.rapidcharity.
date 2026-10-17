@@ -119,6 +119,9 @@ export const applicationSchema = z.object({
   guardian_name: z.string().trim().max(60, "Use 60 characters or fewer."),
   guardian_occupation: z.string().trim().max(80, "Use 80 characters or fewer."),
   family_monthly_income: z.number().int().nonnegative().max(100_000_000).nullable(),
+  household_members: z.number().int().min(1, "Count at least yourself.").max(40, "Enter 40 or fewer.").nullable().optional(),
+  earning_members: z.number().int().min(0).max(40, "Enter 40 or fewer.").nullable().optional(),
+  house_status: z.enum(["", "owned", "rented", "other"]).optional(),
   siblings_count: z.number().int().min(0).max(20).nullable(),
   siblings_studying_count: z.number().int().min(0).max(20).nullable(),
   siblings_working_count: z.number().int().min(0).max(20).nullable(),
@@ -364,6 +367,13 @@ export function refineApplication(
   }
   if ((data.guardian_relation === "husband" || data.guardian_relation === "guardian") && !data.guardian_occupation.trim()) {
     add(["guardian_occupation"], "Enter the guardian's occupation, for example Driver or Unemployed.");
+  }
+  if (
+    typeof data.household_members === "number" &&
+    typeof data.earning_members === "number" &&
+    data.earning_members > data.household_members
+  ) {
+    add(["earning_members"], "Earning members cannot be more than the household size.");
   }
   if (data.family_monthly_income === null) add(["family_monthly_income"], "Enter the total family income per month in PKR. Use 0 if there is none.");
   const guardian = phoneIssue(data.guardian_phone, false);

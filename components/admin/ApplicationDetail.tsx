@@ -115,6 +115,10 @@ export function ApplicationOverview({ item }: { item: StoredApplication }) {
               ["Father / Guardian", guardianName(item)],
               ["Guardian occupation", guardianOccupation(item)],
               ["Family monthly income", money(item.family_monthly_income)],
+              ...(typeof item.household_members === "number" || typeof item.earning_members === "number"
+                ? ([["Household", `${item.household_members ?? "?"} people, ${item.earning_members ?? "?"} earning`]] as Array<[string, string]>)
+                : []),
+              ...(item.house_status ? ([["House", item.house_status === "owned" ? "Owned" : item.house_status === "rented" ? "Rented" : "Other"]] as Array<[string, string]>) : []),
               ["Guardian phone", localPhone(item.guardian_phone)],
             ]}
           />

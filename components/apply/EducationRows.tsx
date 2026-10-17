@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "@/app/apply/form/form.module.css";
 import { EDUCATION_QUALIFICATIONS, EDUCATION_STATUSES, MAX_EDUCATION_ROWS } from "@/lib/application/constants";
 import { emptyEducationRow } from "@/lib/application/empty";
@@ -9,6 +9,16 @@ import type { DocumentInput, EducationRow } from "@/lib/application/types";
 import { UPLOAD_ACCEPT } from "./DocumentFields";
 import { uploadDocument, type UploadContext } from "./uploadClient";
 import { DecimalField, FieldError, NumberField, SegmentedField, SelectField, TextField } from "./widgets";
+
+/** A row is complete when every required answer is in, so it can fold into a one-line summary. */
+export function educationRowComplete(row: EducationRow): boolean {
+  if (!row.qualification || (row.qualification === "other" && !row.qualification_other.trim())) return false;
+  if (!row.institution.trim() || !row.board.trim()) return false;
+  if (row.status !== "completed" && row.status !== "in_progress") return false;
+  if (row.year === null) return false;
+  if (row.status === "completed" && row.result_percent === null) return false;
+  return true;
+}
 
 const NEXT_QUALIFICATION: Record<string, EducationRow["qualification"]> = {
   "": "matriculation",
@@ -46,9 +56,21 @@ export function EducationRows({
 }) {
   const [busy, setBusy] = useState<Record<number, boolean>>({});
   const [rowError, setRowError] = useState<Record<number, string>>({});
+  // Rows that were already complete when the step opened start folded; new or unfinished rows stay open.
+  const [open, setOpen] = useState<Record<number, boolean>>(() =>
+    Object.fromEntries(rows.map((row, index) => [index, !educationRowComplete(row)])),
+  );
+
+  // Latest rows, so an upload that finishes later does not undo edits typed while it was running.
+  const rowsRef = useRef(rows);
+  useEffect(() => {
+    rowsRef.current = rows;
+  }, [rows]);
 
   function update(index: number, partial: Partial<EducationRow>) {
-    onChange(rows.map((row, rowIndex) => (rowIndex === index ? { ...row, ...partial } : row)));
+    const next = rowsRef.current.map((row, rowIndex) => (rowIndex === index ? { ...row, ...partial } : row));
+    rowsRef.current = next;
+    onChange(next);
   }
 
   function freeProofIndex(): number | null {
@@ -85,19 +107,59 @@ export function EducationRows({
         Education history
       </h3>
       <p className={styles.hint}>
-        Add each qualification from Matriculation onward: school or college, board or university, result and year. A proof file for each row is optional.
+        From Matriculation onward. A proof file per row is optional.
       </p>
       {error ? <FieldError message={error} /> : null}
       {rows.map((row, index) => {
         const proof = row.proof_index === null ? undefined : documents.find((item) => item.slot === "education_proof" && item.index === row.proof_index);
         const base = `education.${index}`;
+        const hasError = Boolean(
+          visible(`${base}.qualification`, `${base}.qualification_other`, `${base}.institution`, `${base}.board`, `${base}.status`, `${base}.result_percent`, `${base}.year`, `${base}.proof_index`) || rowError[index],
+        );
+        const folded = open[index] === false && !hasError && educationRowComplete(row);
         const title = EDUCATION_QUALIFICATIONS.find((item) => item.id === row.qualification)?.label.replace(/ \(.*\)$/, "") ?? "Qualification";
         return (
-          <article key={index} className={styles.eduCard} data-field={base} data-testid="education-row">
+          <article key={index} className={styles.eduCard} data-field={base} data-testid="education-row" data-folded={folded ? "true" : undefined}>
+            {folded ? (
+              <div className={styles.eduSummary}>
+                <p>
+                  <strong>
+                    {index + 1}. {row.qualification === "other" && row.qualification_other.trim() ? row.qualification_other.trim() : title}
+                  </strong>
+                  <span>
+                    {[row.institution.trim(), row.board.trim()].filter(Boolean).join(", ")}
+                  </span>
+                  <span>
+                    {row.status === "in_progress" ? `In progress, expected ${row.year}` : `${row.year}, ${row.result_percent}%`}
+                    {proof ? ", proof added" : ""}
+                  </span>
+                </p>
+                <button
+                  type="button"
+                  className="btn-text btn-sm"
+                  aria-label={`Edit qualification ${index + 1}`}
+                  onClick={() => setOpen((current) => ({ ...current, [index]: true }))}
+                >
+                  Edit
+                </button>
+              </div>
+            ) : (
+            <>
             <header className={styles.eduHead}>
               <h4>
                 {index + 1}. {row.qualification === "other" && row.qualification_other.trim() ? row.qualification_other.trim() : title}
               </h4>
+              <span className={styles.eduHeadActions}>
+              {educationRowComplete(row) ? (
+                <button
+                  type="button"
+                  className="btn-text btn-sm"
+                  aria-label={`Done with qualification ${index + 1}`}
+                  onClick={() => setOpen((current) => ({ ...current, [index]: false }))}
+                >
+                  Done
+                </button>
+              ) : null}
               {rows.length > 1 ? (
                 <button
                   type="button"
@@ -106,11 +168,20 @@ export function EducationRows({
                   onClick={() => {
                     if (row.proof_index !== null) onRemoveDocument("education_proof", row.proof_index);
                     onChange(rows.filter((_, rowIndex) => rowIndex !== index));
+                    setOpen((current) => {
+                      const next: Record<number, boolean> = {};
+                      rows.forEach((_, rowIndex) => {
+                        if (rowIndex < index) next[rowIndex] = current[rowIndex] ?? true;
+                        else if (rowIndex > index) next[rowIndex - 1] = current[rowIndex] ?? true;
+                      });
+                      return next;
+                    });
                   }}
                 >
                   Remove
                 </button>
               ) : null}
+              </span>
             </header>
             <div className={styles.two}>
               <SelectField
@@ -135,7 +206,7 @@ export function EducationRows({
                   value={row.institution}
                   field={`${base}.institution`}
                   error={visible(`${base}.institution`)}
-                  hint="School or college"
+                  placeholder="School or college"
                   onChange={(value) => update(index, { institution: value })}
                 />
               )}
@@ -146,7 +217,7 @@ export function EducationRows({
                 value={row.institution}
                 field={`${base}.institution`}
                 error={visible(`${base}.institution`)}
-                hint="School or college"
+                placeholder="School or college"
                 onChange={(value) => update(index, { institution: value })}
               />
             ) : null}
@@ -155,7 +226,7 @@ export function EducationRows({
               value={row.board}
               field={`${base}.board`}
               error={visible(`${base}.board`)}
-              hint="For example Lahore Board or Punjab University"
+              placeholder="e.g. BISE Lahore, Punjab University"
               onChange={(value) => update(index, { board: value })}
             />
             <SegmentedField
@@ -167,9 +238,9 @@ export function EducationRows({
               options={EDUCATION_STATUSES.map((item) => ({ id: item.id, label: item.label }))}
               onChange={(value) => update(index, { status: value as EducationRow["status"] })}
             />
-            <div className={styles.two}>
+            <div className={styles.pair}>
               <DecimalField
-                label={row.status === "in_progress" ? "Result (%) (optional)" : "Result (%)"}
+                label={row.status === "in_progress" ? "Result % (optional)" : "Result (%)"}
                 value={row.result_percent}
                 field={`${base}.result_percent`}
                 error={visible(`${base}.result_percent`)}
@@ -218,6 +289,8 @@ export function EducationRows({
               ) : null}
             </div>
             <FieldError message={rowError[index] || visible(`${base}.proof_index`)} />
+            </>
+            )}
           </article>
         );
       })}
@@ -225,7 +298,11 @@ export function EducationRows({
         <button
           type="button"
           className={`btn-secondary btn-sm ${styles.eduAdd}`}
-          onClick={() => onChange([...rows, emptyEducationRow(NEXT_QUALIFICATION[rows.at(-1)?.qualification ?? ""] ?? "other")])}
+          onClick={() => {
+            // Fold the finished rows so the new one is in view.
+            setOpen(Object.fromEntries([...rows.map((row, index) => [index, !educationRowComplete(row)]), [rows.length, true]]));
+            onChange([...rows, emptyEducationRow(NEXT_QUALIFICATION[rows.at(-1)?.qualification ?? ""] ?? "other")]);
+          }}
         >
           Add another qualification
         </button>

@@ -5,7 +5,7 @@
   --color-brand-primary-active: #8B0A24;
   --color-brand-deep: #8B0A24;
   --color-brand-soft: #f7f3f4;
-  --color-brand-tint: #f3e6ea;
+  --color-brand-tint: #FFE8EE;
   --color-brand-focus-ring: rgba(178, 15, 58, 0.45);
 
   /* Decorative script on light / dark surfaces */
@@ -13,7 +13,7 @@
   --color-brand-script-on-dark: rgba(255, 255, 255, 0.38);
 
   /* ── Text ────────────────────────────────────────── */
-  --color-text-primary: #1A1A1A;
+  --color-text-primary: #222222;
   --color-text-secondary: #393F44;
   --color-text-body: #555555;
   --color-text-muted: #4E4946;

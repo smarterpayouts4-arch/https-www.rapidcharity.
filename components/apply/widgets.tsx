@@ -21,6 +21,29 @@ export function FieldError({ id, message }: { id?: string; message?: string }) {
   );
 }
 
+/** Turns Urdu / Arabic-Indic digits (۰-۹, ٠-٩) into 0-9 so numeric fields accept either keyboard. */
+export function asciiDigits(value: string): string {
+  return value
+    .replace(/[\u06F0-\u06F9]/g, (digit) => String(digit.charCodeAt(0) - 0x06f0))
+    .replace(/[\u0660-\u0669]/g, (digit) => String(digit.charCodeAt(0) - 0x0660));
+}
+
+/** 75000 -> "75,000". Grouped in thousands, the way amounts are printed on vouchers and salary slips. */
+export function groupThousands(value: number | null | undefined): string {
+  if (value === null || value === undefined || Number.isNaN(value)) return "";
+  return value.toLocaleString("en-US", { maximumFractionDigits: 0 });
+}
+
+/** Reads a typed whole amount: drops commas, spaces and "Rs"; null for empty; undefined when it is not a number. */
+export function parseWhole(raw: string): number | null | undefined {
+  const cleaned = asciiDigits(raw).replace(/[,\s]/g, "").replace(/^(rs\.?|pkr)/i, "");
+  if (!cleaned) return null;
+  if (!/^\d+$/.test(cleaned)) return undefined;
+  return Number(cleaned);
+}
+
+type InputMode = "text" | "numeric" | "decimal" | "tel" | "email" | "none";
+
 export function TextField({
   label,
   value,
@@ -34,6 +57,9 @@ export function TextField({
   field,
   placeholder,
   inputMode,
+  autoCapitalize,
+  spellCheck,
+  dir,
 }: {
   label: string;
   value: string;
@@ -46,7 +72,11 @@ export function TextField({
   list?: string;
   field?: string;
   placeholder?: string;
-  inputMode?: "text" | "numeric" | "decimal" | "tel" | "email";
+  inputMode?: InputMode;
+  autoCapitalize?: "off" | "none" | "on" | "sentences" | "words" | "characters";
+  spellCheck?: boolean;
+  /** "auto" lets Urdu script typed into a field read right to left while Latin text stays left to right. */
+  dir?: "auto" | "ltr";
 }) {
   const id = useId();
   const described = [hint ? `${id}-hint` : "", error ? `${id}-error` : ""].filter(Boolean).join(" ") || undefined;
@@ -64,6 +94,9 @@ export function TextField({
         list={list}
         placeholder={placeholder}
         inputMode={inputMode}
+        autoCapitalize={autoCapitalize}
+        spellCheck={spellCheck}
+        dir={dir ?? (type === "text" ? "auto" : undefined)}
         aria-invalid={error ? true : undefined}
         aria-describedby={described}
         onChange={(event) => onChange(event.target.value)}
@@ -91,25 +124,36 @@ export function TextAreaField({
   hint?: string;
 }) {
   const id = useId();
+  const described = [hint ? `${id}-hint` : "", `${id}-count`, error ? `${id}-error` : ""].filter(Boolean).join(" ");
   return (
     <div className={styles.field} data-field={field} data-invalid={error ? "true" : undefined}>
-      <label htmlFor={id}>{label}</label>
-      {hint ? <p className={styles.hint}>{hint}</p> : null}
+      <div className={styles.labelRow}>
+        <label htmlFor={id}>{label}</label>
+        <span className={styles.counter} id={`${id}-count`}>
+          {value.trim().length} / {maxLength}
+        </span>
+      </div>
+      {hint ? <p className={styles.hint} id={`${id}-hint`}>{hint}</p> : null}
       <textarea
         id={id}
         className={styles.textarea}
         value={value}
         maxLength={maxLength}
+        dir="auto"
         aria-invalid={error ? true : undefined}
-        aria-describedby={error ? `${id}-error` : undefined}
+        aria-describedby={described}
         onChange={(event) => onChange(event.target.value)}
       />
-      <p className={styles.counter}>
-        {value.trim().length} / {maxLength}
-      </p>
       <FieldError id={`${id}-error`} message={error} />
     </div>
   );
+}
+
+type Option = { id: string; label: string; detail?: string };
+
+/** Short answers (up to five options, no detail line) are shown as tappable chips that wrap. */
+function fitsChips(options: Option[]): boolean {
+  return options.length <= 5 && options.every((option) => !option.detail && option.label.length <= 22);
 }
 
 export function RadioField({
@@ -125,13 +169,16 @@ export function RadioField({
   legend: string;
   name: string;
   value: string;
-  options: Array<{ id: string; label: string; detail?: string }>;
+  options: Option[];
   onChange: (value: string) => void;
   error?: string;
   hint?: string;
   field?: string;
 }) {
   const id = useId();
+  if (fitsChips(options)) {
+    return <SegmentedField legend={legend} name={name} value={value} options={options} onChange={onChange} error={error} hint={hint} field={field} />;
+  }
   return (
     <fieldset className={styles.radios} data-field={field} data-invalid={error ? "true" : undefined} aria-invalid={error ? true : undefined} aria-describedby={error ? `${id}-error` : undefined} tabIndex={error ? -1 : undefined}>
       <legend className={styles.legend}>{legend}</legend>
@@ -164,6 +211,7 @@ export function SelectField({
   error,
   field,
   autoComplete,
+  hint,
 }: {
   label: string;
   value: string;
@@ -172,18 +220,20 @@ export function SelectField({
   error?: string;
   field?: string;
   autoComplete?: string;
+  hint?: string;
 }) {
   const id = useId();
   return (
     <div className={styles.field} data-field={field} data-invalid={error ? "true" : undefined}>
       <label htmlFor={id}>{label}</label>
+      {hint ? <p className={styles.hint} id={`${id}-hint`}>{hint}</p> : null}
       <select
         id={id}
         className={styles.control}
         value={value}
         autoComplete={autoComplete}
         aria-invalid={error ? true : undefined}
-        aria-describedby={error ? `${id}-error` : undefined}
+        aria-describedby={[hint ? `${id}-hint` : "", error ? `${id}-error` : ""].filter(Boolean).join(" ") || undefined}
         onChange={(event) => onChange(event.target.value)}
       >
         <option value="">Choose</option>
@@ -382,6 +432,7 @@ export function PhoneField({
   error,
   hint,
   field,
+  autoComplete = "off",
 }: {
   label: string;
   value: string;
@@ -389,17 +440,21 @@ export function PhoneField({
   error?: string;
   hint?: string;
   field?: string;
+  /** "tel" only for the applicant's own number, so the browser does not offer it for a pastor or a reference. */
+  autoComplete?: string;
 }) {
   return (
     <TextField
       label={label}
       field={field}
       value={value}
-      onChange={onChange}
+      onChange={(next) => onChange(asciiDigits(next))}
       error={error}
       type="tel"
-      autoComplete="tel"
-      hint={hint ?? "Pakistan mobile, for example 0300 1234567. Landlines can include an area code."}
+      inputMode="tel"
+      autoComplete={autoComplete}
+      placeholder="0300 1234567"
+      hint={hint}
     />
   );
 }
@@ -409,11 +464,13 @@ export function CnicField({
   onChange,
   error,
   field,
+  hint = "B-Form number if you are under 18.",
 }: {
   value: string;
   onChange: (value: string) => void;
   error?: string;
   field?: string;
+  hint?: string;
 }) {
   return (
     <TextField
@@ -421,11 +478,14 @@ export function CnicField({
       field={field}
       value={value}
       error={error}
+      type="text"
+      dir="ltr"
       autoComplete="off"
       placeholder="35202-1234567-1"
       inputMode="numeric"
-      hint="13 digits, for example 35202-1234567-1. B-Form number if you are under 18."
-      onChange={(next) => onChange(formatCnic(next))}
+      maxLength={15}
+      hint={hint}
+      onChange={(next) => onChange(formatCnic(asciiDigits(next)))}
     />
   );
 }
@@ -450,58 +510,64 @@ export function MoneyField({
   field?: string;
 }) {
   const id = useId();
+  const unknown = value.value_state === "unknown";
   return (
     <div className={styles.field} data-field={field} data-invalid={error ? "true" : undefined}>
       <label htmlFor={id}>{label}</label>
-      {hint ? <p className={styles.hint}>{hint}</p> : null}
-      <input
-        id={id}
-        className={styles.control}
-        inputMode="numeric"
-        value={value.value_state === "unknown" ? "" : value.amount ?? ""}
-        disabled={value.value_state === "unknown"}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={error ? `${id}-error` : undefined}
-        onChange={(event) => {
-          const raw = event.target.value.trim();
-          if (!/^\d*$/.test(raw)) return;
-          if (!raw) {
-            onChange({ ...value, amount: null, value_state: "known" });
-            return;
-          }
-          const amount = Number(raw);
-          onChange({ ...value, amount, value_state: amount === 0 ? "zero" : "known" });
-        }}
-      />
-      {allowCurrency ? (
-        <select
+      {hint ? <p className={styles.hint} id={`${id}-hint`}>{hint}</p> : null}
+      <div className={styles.inlineRow}>
+        <input
+          id={id}
           className={styles.control}
-          aria-label={`${label} currency`}
-          value={value.currency}
-          onChange={(event) => onChange({ ...value, currency: event.target.value as Money["currency"] })}
-        >
-          <option value="PKR">PKR</option>
-          <option value="USD">USD</option>
-          <option value="GBP">GBP</option>
-          <option value="CAD">CAD</option>
-        </select>
-      ) : null}
-      {allowUnknown ? (
-        <label className={styles.choice}>
-          <input
-            type="checkbox"
-            checked={value.value_state === "unknown"}
-            onChange={(event) =>
-              onChange(
-                event.target.checked
-                  ? { ...value, amount: null, value_state: "unknown" }
-                  : { ...value, amount: null, value_state: "known" },
-              )
+          inputMode="numeric"
+          autoComplete="off"
+          dir="ltr"
+          placeholder={unknown ? "Unknown" : "e.g. 25,000"}
+          value={unknown ? "" : groupThousands(value.amount)}
+          disabled={unknown}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={[hint ? `${id}-hint` : "", error ? `${id}-error` : ""].filter(Boolean).join(" ") || undefined}
+          onChange={(event) => {
+            const amount = parseWhole(event.target.value);
+            if (amount === undefined) return;
+            if (amount === null) {
+              onChange({ ...value, amount: null, value_state: "known" });
+              return;
             }
-          />
-          <span>Unknown</span>
-        </label>
-      ) : null}
+            if (amount > 100_000_000) return;
+            onChange({ ...value, amount, value_state: amount === 0 ? "zero" : "known" });
+          }}
+        />
+        {allowCurrency ? (
+          <select
+            className={styles.control}
+            aria-label={`${label} currency`}
+            value={value.currency}
+            onChange={(event) => onChange({ ...value, currency: event.target.value as Money["currency"] })}
+          >
+            <option value="PKR">PKR</option>
+            <option value="USD">USD</option>
+            <option value="GBP">GBP</option>
+            <option value="CAD">CAD</option>
+          </select>
+        ) : null}
+        {allowUnknown ? (
+          <label className={styles.toggleChip}>
+            <input
+              type="checkbox"
+              checked={unknown}
+              onChange={(event) =>
+                onChange(
+                  event.target.checked
+                    ? { ...value, amount: null, value_state: "unknown" }
+                    : { ...value, amount: null, value_state: "known" },
+                )
+              }
+            />
+            <span>Unknown</span>
+          </label>
+        ) : null}
+      </div>
       <FieldError id={`${id}-error`} message={error} />
     </div>
   );
@@ -515,6 +581,8 @@ export function NumberField({
   hint,
   max,
   field,
+  thousands = false,
+  placeholder,
 }: {
   label: string;
   value: number | null;
@@ -523,27 +591,32 @@ export function NumberField({
   hint?: string;
   max?: number;
   field?: string;
+  /** Show 75,000 instead of 75000 (amounts in PKR). */
+  thousands?: boolean;
+  placeholder?: string;
 }) {
   const id = useId();
   return (
     <div className={styles.field} data-field={field} data-invalid={error ? "true" : undefined}>
       <label htmlFor={id}>{label}</label>
-      {hint ? <p className={styles.hint}>{hint}</p> : null}
+      {hint ? <p className={styles.hint} id={`${id}-hint`}>{hint}</p> : null}
       <input
         id={id}
         className={styles.control}
         inputMode="numeric"
-        value={value ?? ""}
+        autoComplete="off"
+        dir="ltr"
+        placeholder={placeholder}
+        value={thousands ? groupThousands(value) : value ?? ""}
         aria-invalid={error ? true : undefined}
-        aria-describedby={error ? `${id}-error` : undefined}
+        aria-describedby={[hint ? `${id}-hint` : "", error ? `${id}-error` : ""].filter(Boolean).join(" ") || undefined}
         onChange={(event) => {
-          const raw = event.target.value.trim();
-          if (!raw) {
+          const next = parseWhole(event.target.value);
+          if (next === undefined) return;
+          if (next === null) {
             onChange(null);
             return;
           }
-          if (!/^\d+$/.test(raw)) return;
-          const next = Number(raw);
           if (max !== undefined && next > max) return;
           onChange(next);
         }}
@@ -553,7 +626,7 @@ export function NumberField({
   );
 }
 
-/** Yes / No (or any two or three short options) as a segmented toggle built from real radio inputs. */
+/** Short choices (Yes / No, gender, status, scale) as chips built from real radio inputs. Chips wrap onto a new row when space runs out. */
 export function SegmentedField({
   legend,
   name,
@@ -583,11 +656,11 @@ export function SegmentedField({
       data-field={field}
       data-invalid={error ? "true" : undefined}
       aria-invalid={error ? true : undefined}
-      aria-describedby={error ? `${id}-error` : undefined}
+      aria-describedby={[hint ? `${id}-hint` : "", error ? `${id}-error` : ""].filter(Boolean).join(" ") || undefined}
       tabIndex={error ? -1 : undefined}
     >
       <legend className={styles.legend}>{legend}</legend>
-      {hint ? <p className={styles.hint}>{hint}</p> : null}
+      {hint ? <p className={styles.hint} id={`${id}-hint`}>{hint}</p> : null}
       <div className={styles.segmented} data-count={options.length}>
         {options.map((option) => (
           <label key={option.id} className={styles.segment}>
@@ -633,17 +706,19 @@ export function DecimalField({
   return (
     <div className={styles.field} data-field={field} data-invalid={error ? "true" : undefined}>
       <label htmlFor={id}>{label}</label>
-      {hint ? <p className={styles.hint}>{hint}</p> : null}
+      {hint ? <p className={styles.hint} id={`${id}-hint`}>{hint}</p> : null}
       <input
         id={id}
         className={styles.control}
         inputMode="decimal"
+        autoComplete="off"
+        dir="ltr"
         value={shown}
         placeholder={placeholder}
         aria-invalid={error ? true : undefined}
-        aria-describedby={error ? `${id}-error` : undefined}
+        aria-describedby={[hint ? `${id}-hint` : "", error ? `${id}-error` : ""].filter(Boolean).join(" ") || undefined}
         onChange={(event) => {
-          const raw = event.target.value.trim();
+          const raw = asciiDigits(event.target.value.trim()).replace("٫", ".");
           if (!/^\d{0,3}(\.\d{0,2})?$/.test(raw)) return;
           setText(raw);
           const next = raw === "" || raw === "." ? null : Number(raw);
