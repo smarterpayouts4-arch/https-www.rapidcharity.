@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import styles from "@/app/apply/form/form.module.css";
 import {
   cityOptions,
@@ -31,7 +31,7 @@ import {
 } from "@/lib/application/constants";
 import { emptyApplication } from "@/lib/application/empty";
 import { ageInYears } from "@/lib/application/normalize";
-import { clearDraft, readDraft, savedAgo, writeDraft, type ApplicationDraft } from "@/lib/application/draft";
+import { clearDraft, readDraftSnapshot, savedAgo, writeDraft } from "@/lib/application/draft";
 import { eligibilitySuggestion } from "@/lib/application/eligibility";
 import { documentUploadPrompt, fieldLabel } from "@/lib/application/fieldLabels";
 import { missingRequiredDocuments } from "@/lib/application/documents";
@@ -78,20 +78,29 @@ export function ApplicationForm({
   const [step, setStep] = useState(0);
   const [errors, setErrors] = useState<Errors>({});
   const [issues, setIssues] = useState<FormIssue[]>([]);
-  const [pendingFocus, setPendingFocus] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [receipt, setReceipt] = useState<{ id: string; submitted_at: string } | null>(null);
   const [picking, setPicking] = useState(!initialScholarship);
   const [touched, setTouched] = useState<Set<string>>(new Set());
   const [stepAttempted, setStepAttempted] = useState(false);
   const [returnToReview, setReturnToReview] = useState(false);
-  const [pendingDraft, setPendingDraft] = useState<ApplicationDraft | null>(null);
+  const [draftDismissed, setDraftDismissed] = useState(false);
   const [savedLabel, setSavedLabel] = useState("");
-  const [ready, setReady] = useState(false);
+  const ready = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+  const storedDraft = useSyncExternalStore(
+    () => () => {},
+    () => readDraftSnapshot(),
+    () => null,
+  );
+  const pendingDraft = draftDismissed ? null : storedDraft;
   const dirty = useRef(false);
   const dataRef = useRef(data);
   const formRef = useRef<HTMLFormElement>(null);
-  dataRef.current = data;
+  const pendingFocusRef = useRef<string | null>(null);
 
   const lists = useMemo(
     () => ({
@@ -169,11 +178,6 @@ export function ApplicationForm({
   }
 
   useEffect(() => {
-    setReady(true);
-    setPendingDraft(readDraft());
-  }, []);
-
-  useEffect(() => {
     if (!dirty.current) return;
     const handle = window.setTimeout(() => {
       const draft = { data: dataRef.current, step, savedAt: new Date().toISOString() };
@@ -219,10 +223,11 @@ export function ApplicationForm({
   }, []);
 
   useEffect(() => {
-    if (!pendingFocus) return;
-    focusField(pendingFocus);
-    setPendingFocus(null);
-  }, [pendingFocus, focusField]);
+    const key = pendingFocusRef.current;
+    if (!key) return;
+    pendingFocusRef.current = null;
+    focusField(key);
+  });
 
   const suggestion = eligibilitySuggestion({
     scholarship: data.scholarship,
@@ -249,7 +254,7 @@ export function ApplicationForm({
     if (next.some((issue) => issue.key === "scholarship" || issue.key.startsWith("scholarship."))) {
       setPicking(true);
     }
-    setPendingFocus(next[0]?.key ?? null);
+    pendingFocusRef.current = next[0]?.key ?? null;
   }
 
   function validateCurrent(): boolean {
@@ -285,7 +290,7 @@ export function ApplicationForm({
       const message = suggestion?.message ?? "This answer does not match the selected scholarship.";
       const key = step === 1 ? "gender" : "field_of_study.option_id";
       setIssues([{ key, label: fieldLabel(key), message }]);
-      setPendingFocus(key);
+      pendingFocusRef.current = key;
       return;
     }
     if (!validateCurrent()) return;
@@ -504,7 +509,7 @@ export function ApplicationForm({
                 setStep(Math.min(pendingDraft.step, FORM_STEPS.length - 1));
                 setPicking(!pendingDraft.data.scholarship);
                 dirty.current = true;
-                setPendingDraft(null);
+                setDraftDismissed(true);
               }}
             >
               Resume
@@ -514,7 +519,7 @@ export function ApplicationForm({
               className={styles.btnSecondary}
               onClick={() => {
                 clearDraft();
-                setPendingDraft(null);
+                setDraftDismissed(true);
                 setSavedLabel("");
               }}
             >

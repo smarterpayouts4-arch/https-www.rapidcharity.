@@ -134,7 +134,6 @@ export function RadioField({
             name={name}
             value={option.id}
             checked={value === option.id}
-            aria-invalid={error ? true : undefined}
             onChange={() => onChange(option.id)}
           />
           <span>
@@ -243,7 +242,10 @@ export function SelectOther({
     }
     if (other) onChange({ option_id: "other", other_text: typed.slice(0, 120) });
   }
-  commitRef.current = commitTyped;
+
+  useEffect(() => {
+    commitRef.current = commitTyped;
+  });
 
   useEffect(() => {
     function onDoc(event: MouseEvent) {

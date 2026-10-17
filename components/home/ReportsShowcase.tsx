@@ -6,19 +6,21 @@ import styles from "./ReportsShowcase.module.css";
 
 type Props = {
   content: SiteContent["reportsShowcase"];
+  remoteHref?: string;
 };
 
-function downloadTarget(href: string): { href: string; external: boolean; download: boolean } {
+function downloadTarget(href: string, remoteHref?: string): { href: string; external: boolean; download: boolean } {
   const local =
     href.startsWith("/") && existsSync(join(process.cwd(), "public", href.replace(/^\//, "")));
   if (local) return { href, external: false, download: true };
   const configured = process.env.REPORT_2025_URL?.trim();
   if (configured) return { href: configured, external: true, download: false };
-  return { href: "/reports", external: false, download: false };
+  if (remoteHref?.trim()) return { href: remoteHref.trim(), external: true, download: false };
+  return { href, external: false, download: false };
 }
 
-export function ReportsShowcase({ content }: Props) {
-  const download = downloadTarget(content.downloadHref);
+export function ReportsShowcase({ content, remoteHref }: Props) {
+  const download = downloadTarget(content.downloadHref, remoteHref);
   return (
     <section className={styles.section} aria-labelledby="reports-heading" data-reveal>
       <div className={`container ${styles.inner}`}>

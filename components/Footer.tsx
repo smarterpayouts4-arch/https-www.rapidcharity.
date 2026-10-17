@@ -34,7 +34,7 @@ export function Footer({ footer, brandName, brandTag }: Props) {
           </div>
 
           <div className={styles.col}>
-            <h3>{footer.quickLinksTitle}</h3>
+            <p className={styles.colTitle}>{footer.quickLinksTitle}</p>
             <ul className={styles.links}>
               {footer.quickLinks.map((l) => (
                 <li key={`${l.href}-${l.label}`}>
@@ -45,7 +45,7 @@ export function Footer({ footer, brandName, brandTag }: Props) {
           </div>
 
           <div className={styles.col}>
-            <h3>{footer.contactTitle}</h3>
+            <p className={styles.colTitle}>{footer.contactTitle}</p>
             <ul className={styles.contact}>
               <li>
                 <a href={`mailto:${footer.email}`}>{footer.email}</a>
@@ -57,7 +57,7 @@ export function Footer({ footer, brandName, brandTag }: Props) {
           </div>
 
           <div className={`${styles.col} ${styles.subscribeCol}`}>
-            <h3>{footer.communityTitle}</h3>
+            <p className={styles.colTitle}>{footer.communityTitle}</p>
             <SubscribeForm content={footer.subscribe} email={footer.email} />
             <div className={styles.social}>
               <a

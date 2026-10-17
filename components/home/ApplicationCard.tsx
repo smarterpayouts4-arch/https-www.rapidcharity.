@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DraftNotice } from "@/components/apply/DraftNotice";
+import { applicationStatus } from "@/lib/application/intakes";
 import type { SiteContent } from "@/lib/content/schema";
 import styles from "./ApplicationCard.module.css";
 
@@ -41,6 +42,7 @@ type Props = {
 };
 
 export function ApplicationCard({ className, content }: Props) {
+  const status = applicationStatus();
   return (
     <aside
       className={`${styles.card}${className ? ` ${className}` : ""}`}
@@ -48,12 +50,12 @@ export function ApplicationCard({ className, content }: Props) {
     >
       <div className={styles.head}>
         <GraduationCapIcon />
-        <h2 className={styles.title}>{content.title}</h2>
+        <h2 className={styles.title}>{status.title}</h2>
       </div>
       <ul className={styles.meta}>
         <li>
-          <strong>{content.deadlineLabel}</strong>
-          <span>{content.deadlineValue}</span>
+          <strong>{status.deadlineLabel}</strong>
+          <span>{status.deadlineValue}</span>
         </li>
         <li>
           <strong>{content.programsLabel}</strong>

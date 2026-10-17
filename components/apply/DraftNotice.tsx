@@ -1,16 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { FORM_STEPS } from "@/lib/application/schema";
-import { clearDraft, readDraft, savedAgo, type ApplicationDraft } from "@/lib/application/draft";
+import { useSyncExternalStore } from "react";
+import { FORM_STEPS } from "@/lib/application/steps";
+import { clearDraft, readDraftSnapshot, savedAgo } from "@/lib/application/draft";
 import styles from "@/app/apply/form/form.module.css";
 
 export function DraftNotice({ compact = false }: { compact?: boolean }) {
-  const [draft, setDraft] = useState<ApplicationDraft | null>(null);
-
-  useEffect(() => {
-    setDraft(readDraft());
-  }, []);
+  const draft = useSyncExternalStore(
+    (notify) => {
+      window.addEventListener("rapid-draft", notify);
+      return () => window.removeEventListener("rapid-draft", notify);
+    },
+    () => readDraftSnapshot(),
+    () => null,
+  );
 
   if (!draft) return null;
   const step = Math.min(FORM_STEPS.length, Math.max(1, draft.step + 1));
@@ -32,7 +35,6 @@ export function DraftNotice({ compact = false }: { compact?: boolean }) {
           className={styles.btnSecondary}
           onClick={() => {
             clearDraft();
-            setDraft(null);
           }}
         >
           Start over

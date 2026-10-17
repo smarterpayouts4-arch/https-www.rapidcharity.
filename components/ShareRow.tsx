@@ -120,7 +120,7 @@ export function ShareRow({
 
   return (
     <div className={`${styles.row} ${variant === "compact" ? styles.compact : styles.labeled}`}>
-      {variant === "labeled" ? <h5 className={styles.heading}>{content.heading}</h5> : null}
+      {variant === "labeled" ? <p className={styles.heading}>{content.heading}</p> : null}
       <ul className={styles.list} aria-label={content.ariaLabel}>
         {items.map((name) => {
           if (name === "copy") {

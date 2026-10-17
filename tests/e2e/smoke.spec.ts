@@ -177,7 +177,8 @@ test.describe("categories and additional posts", () => {
 test.describe("apply page chrome", () => {
   test("share row and deadline band", async ({ page }) => {
     await page.goto("/apply", { waitUntil: "domcontentloaded" });
-    await expect(page.getByRole("heading", { name: "Share:" })).toBeVisible();
+    await expect(page.getByText("Share:", { exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Share:" })).toHaveCount(0);
     await expect(page.getByRole("list", { name: "Share Buttons" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Spring Semester 2027" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Fall Semester 2027" })).toBeVisible();

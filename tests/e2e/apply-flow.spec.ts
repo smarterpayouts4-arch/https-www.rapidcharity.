@@ -284,8 +284,8 @@ test("robert mathais page leads with eligibility bullets and a short deadline", 
   const list = page.getByRole("list").filter({ hasText: "studying business" });
   await expect(list.getByRole("listitem")).toHaveCount(3);
   await expect(list.getByText("Only students studying business are eligible to apply.")).toBeVisible();
-  const deadline = page.locator("dd").filter({ hasText: "Spring 2027:" });
-  await expect(deadline).toHaveText("Spring 2027: 15 October 2026. Fall 2027: 15 April 2027.");
+  const deadline = page.locator("dd").filter({ hasText: "Applications closed" });
+  await expect(deadline).toHaveText("Applications closed. Next intake: Fall Semester 2027, 15 April 2027.");
   await expect(page.getByText("The last date of submitting")).toHaveCount(0);
 });
 

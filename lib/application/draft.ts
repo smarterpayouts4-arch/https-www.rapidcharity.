@@ -21,12 +21,31 @@ export function readDraft(): ApplicationDraft | null {
   }
 }
 
+let cachedRaw: string | null | undefined;
+let cachedDraft: ApplicationDraft | null = null;
+
+/** Stable snapshot for useSyncExternalStore. Same storage text returns the same object. */
+export function readDraftSnapshot(): ApplicationDraft | null {
+  if (typeof window === "undefined") return null;
+  const raw = window.localStorage.getItem(DRAFT_KEY);
+  if (raw === cachedRaw) return cachedDraft;
+  cachedRaw = raw;
+  cachedDraft = readDraft();
+  return cachedDraft;
+}
+
+function notifyDraft() {
+  window.dispatchEvent(new Event("rapid-draft"));
+}
+
 export function writeDraft(draft: ApplicationDraft) {
   window.localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  notifyDraft();
 }
 
 export function clearDraft() {
   window.localStorage.removeItem(DRAFT_KEY);
+  notifyDraft();
 }
 
 export function savedAgo(iso: string, now = Date.now()): string {

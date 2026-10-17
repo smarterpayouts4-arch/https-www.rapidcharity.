@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { ContentLink } from "@/components/ContentLink";
-import { ApplicationScreen } from "@/components/apply/ApplicationScreen";
 import { deadlineFact } from "@/components/apply/LandingBody";
 import { ReadableParagraph } from "@/components/content/Guide";
 import { ScholarshipStory } from "@/components/apply/ScholarshipStory";
@@ -9,6 +9,7 @@ import { DeadlineBand } from "@/components/DeadlineBand";
 import { PreviewBanner } from "@/components/PreviewBanner";
 import { ShareRow } from "@/components/ShareRow";
 import { isScholarshipId } from "@/lib/application/constants";
+import { deadlineBandItems } from "@/lib/application/intakes";
 import { loadSiteContent, resolvePreview } from "@/lib/content";
 import { site } from "@/lib/site";
 import styles from "./apply.module.css";
@@ -45,7 +46,7 @@ export default async function ApplyPage({
   const raw = params?.scholarship;
   const scholarshipValue = Array.isArray(raw) ? raw[0] : raw;
   if (isScholarshipId(scholarshipValue)) {
-    return <ApplicationScreen initialScholarship={scholarshipValue} />;
+    redirect(`/apply/form?scholarship=${scholarshipValue}`);
   }
   const { apply, chrome } = await loadSiteContent({ preview });
 
@@ -98,7 +99,7 @@ export default async function ApplyPage({
         </div>
       </section>
 
-      <DeadlineBand items={apply.deadlines} ariaLabel={apply.deadlinesAriaLabel} />
+      <DeadlineBand items={deadlineBandItems()} ariaLabel={apply.deadlinesAriaLabel} />
     </>
   );
 }

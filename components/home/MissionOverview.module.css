@@ -96,9 +96,7 @@
 .fbWrap,
 .fallback {
   position: relative;
-  background:
-    linear-gradient(180deg, rgba(26, 26, 26, 0.12), rgba(26, 26, 26, 0.35)),
-    url("/assets/images/home/video-poster.jpg") center / cover no-repeat;
+  background: #1a1a1a;
 }
 
 .fbFrame {

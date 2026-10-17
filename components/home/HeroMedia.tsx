@@ -103,8 +103,11 @@ export function HeroMedia({ slides, ariaLabel }: Props) {
               alt={slide.alt}
               width={1600}
               height={1000}
-              priority={slideIndex < 3}
-              sizes="(max-width: 767px) 86vw, (max-width: 1099px) 46vw, 30vw"
+              priority={slideIndex === 0}
+              fetchPriority={slideIndex === 0 ? "high" : "low"}
+              decoding={slideIndex === 0 ? "sync" : "async"}
+              loading={slideIndex === 0 ? "eager" : "lazy"}
+              sizes="(max-width: 767px) calc(100vw - 4.5rem), (max-width: 1099px) calc(50vw - 2rem), 360px"
               style={{ objectPosition: slide.objectPosition ?? "center 40%" }}
             />
           </figure>

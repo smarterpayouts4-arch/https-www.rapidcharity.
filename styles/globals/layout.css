@@ -2,6 +2,12 @@
    Section background utilities
    ═══════════════════════════════════════════════════ */
 .section { padding: var(--space-section) 0; }
+
+/* Skip layout for sections below the first screen so the hero photo can paint. */
+main section:not([data-hero-root]) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 42rem;
+}
 .section-alt,
 .bg-alt { background: var(--color-background-alt); }
 .bg-page { background: var(--color-background-page); }

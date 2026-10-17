@@ -195,9 +195,14 @@
   z-index: 20;
 }
 .dropdown:hover .menu,
-.dropdown:focus-within .menu { display: block; }
+.dropdown:focus-within .menu,
+.dropdownPinned .menu { display: block; }
 .dropdown:hover .mega,
-.dropdown:focus-within .mega { display: grid; }
+.dropdown:focus-within .mega,
+.dropdownPinned .mega { display: grid; }
+@media (min-width: 981px) {
+  .dropdownSuppressed .menu { display: none !important; }
+}
 
 .mega {
   width: min(22rem, 72vw);

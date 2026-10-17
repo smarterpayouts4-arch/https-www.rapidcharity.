@@ -44,7 +44,9 @@ export default async function HomePage({
     studentStories: <StudentStories content={content.studentStories} />,
     latestNews: <LatestNews content={content.latestNews} />,
     leadership: <Leadership content={content.leadership} />,
-    reportsShowcase: <ReportsShowcase content={content.reportsShowcase} />,
+    reportsShowcase: (
+      <ReportsShowcase content={content.reportsShowcase} remoteHref={content.reports.publicSrc} />
+    ),
     donateBanner: <DonateBanner content={content.donateBanner} />,
   };
 

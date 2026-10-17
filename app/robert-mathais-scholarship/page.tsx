@@ -4,6 +4,7 @@ import { ContentLink } from "@/components/ContentLink";
 import { LandingBody } from "@/components/apply/LandingBody";
 import { PageHero } from "@/components/PageHero";
 import { PreviewBanner } from "@/components/PreviewBanner";
+import { deadlineStatusSentence } from "@/lib/application/intakes";
 import { loadSiteContent, resolvePreview } from "@/lib/content";
 import { site } from "@/lib/site";
 
@@ -44,7 +45,7 @@ export default async function Page({
               },
               {
                 label: "Deadline",
-                text: "Spring 2027: 15 October 2026. Fall 2027: 15 April 2027.",
+                text: deadlineStatusSentence(),
               },
             ]}
           />

@@ -1,11 +1,22 @@
 "use client";
 
-import { useReducedMotion } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(
+    (notify) => {
+      const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+      media.addEventListener("change", notify);
+      return () => media.removeEventListener("change", notify);
+    },
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    () => false,
+  );
+}
 
 /** Counts a leading integer once it scrolls into view. Other values stay as written. */
 export function CountUp({ value }: { value: string }) {
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
   const match = /^(\d+)/.exec(value);
   const target = match ? Number(match[1]) : null;
   const rest = match ? value.slice(match[1].length) : "";
