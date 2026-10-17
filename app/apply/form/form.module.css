@@ -146,13 +146,6 @@
 
 .sectionLead,
 .hint,
-.note {
-  margin: 0 0 0.9rem;
-  color: var(--color-text-muted);
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
-
 .grid {
   display: grid;
   gap: 0.9rem;
@@ -665,13 +658,6 @@
   display: grid;
   gap: 0.7rem;
   overflow: hidden;
-}
-
-.checklist {
-  margin: 0.2rem 0 0.4rem;
-  padding-left: 1.2rem;
-  color: var(--color-text-secondary);
-  line-height: 1.55;
 }
 
 .confetti {

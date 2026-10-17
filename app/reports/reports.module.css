@@ -69,11 +69,11 @@
     linear-gradient(180deg, rgba(178, 15, 58, 0.06), transparent 70%),
     var(--color-background-alt);
   padding: 2rem 1.25rem;
-  text-align: center;
+  text-align: left;
 }
 
 .missing p {
-  margin: 0 auto 0.55rem;
+  margin: 0 0 0.55rem;
   max-width: 38rem;
   color: var(--color-text-secondary);
 }

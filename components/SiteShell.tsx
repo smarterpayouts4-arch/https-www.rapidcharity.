@@ -9,13 +9,14 @@ type Props = {
   children: React.ReactNode;
   nav: SiteContent["nav"];
   footer: SiteContent["footer"];
+  programBlurbs?: Record<string, string>;
 };
 
 /**
  * Site chrome for public pages. Admin routes render children only
  * (Keystatic/Makerkit pattern: dedicated admin shell).
  */
-export function SiteShell({ children, nav, footer }: Props) {
+export function SiteShell({ children, nav, footer, programBlurbs }: Props) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin") ?? false;
 
@@ -28,7 +29,7 @@ export function SiteShell({ children, nav, footer }: Props) {
       <a className="skip-link" href="#main">
         Skip to content
       </a>
-      <Header nav={nav} />
+      <Header nav={nav} programBlurbs={programBlurbs} />
       <main id="main" className="site-main">{children}</main>
       <Footer
         footer={footer}

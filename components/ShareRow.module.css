@@ -1,6 +1,6 @@
 .row {
   margin: 2rem 0 1.5rem;
-  text-align: center;
+  text-align: left;
 }
 .heading {
   margin: 0 0 0.85rem;
@@ -15,7 +15,7 @@
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 1rem 1.35rem;
 }
 .item {

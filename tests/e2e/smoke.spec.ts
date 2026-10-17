@@ -259,13 +259,13 @@ test.describe("donate page chrome", () => {
 });
 
 test.describe("header chrome", () => {
-  test("active nav highlight and scholarship + indicator", async ({ page }) => {
+  test("active nav highlight and scholarship chevron indicator", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/donate", { waitUntil: "domcontentloaded" });
-    const donate = page.locator("nav[aria-label='Primary'] a[aria-current='page']");
+    const donate = page.locator("header a[aria-current='page']").first();
     await expect(donate).toHaveText("Donate");
     const sch = page.locator("nav[aria-label='Primary'] button", { hasText: "Scholarship Programs" });
-    await expect(sch).toContainText("+");
+    await expect(sch.locator("svg")).toHaveCount(1);
   });
 });
 

@@ -73,7 +73,13 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${cormorant.variable} ${jakarta.variable} ${poppins.variable}`}>
       <body>
-        <SiteShell nav={content.nav} footer={content.footer}>
+        <SiteShell
+          nav={content.nav}
+          footer={content.footer}
+          programBlurbs={Object.fromEntries(
+            (content.scholarshipPrograms?.programs ?? []).map((p) => [p.href, p.blurb]),
+          )}
+        >
           {children}
         </SiteShell>
       </body>
