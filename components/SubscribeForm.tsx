@@ -27,7 +27,7 @@ export function SubscribeForm({ content, email: destination }: Props) {
       <div className={styles.subscribeRow}>
         <input id="subscribe-email" type="email" required placeholder={content.placeholder} value={email}
           onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
-        <button className="btn" type="submit">{content.submitLabel}</button>
+        <button className="btn btn-sm" type="submit">{content.submitLabel}</button>
       </div>
       <label className={styles.consent}>
         <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />

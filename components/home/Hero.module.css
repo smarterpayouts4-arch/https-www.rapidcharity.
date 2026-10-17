@@ -73,19 +73,6 @@
   margin-bottom: 1.6rem;
 }
 
-.ctas :global(a.btn-white) {
-  background: #ffffff;
-  border-color: #8b0a24;
-  color: #8b0a24;
-  box-shadow: none;
-}
-
-.ctas :global(a.btn-white:hover) {
-  background: #8b0a24;
-  border-color: #8b0a24;
-  color: #ffffff;
-}
-
 .quote {
   margin: 0;
   padding: 0 0 0 1rem;
@@ -289,7 +276,7 @@
   }
 
   .ctas :global(.btn),
-  .ctas :global(.btn-white) {
+  .ctas :global(.btn-secondary) {
     width: 100%;
     justify-content: center;
   }

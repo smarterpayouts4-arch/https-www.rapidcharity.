@@ -9,6 +9,8 @@ import { DeadlineBand } from "@/components/DeadlineBand";
 import { PreviewBanner } from "@/components/PreviewBanner";
 import { ShareRow } from "@/components/ShareRow";
 import { isScholarshipId } from "@/lib/application/constants";
+import { mockApplicationsEnabled } from "@/lib/application/mockGate";
+import { findMock } from "@/lib/application/mocks";
 import { deadlineBandItems, deadlineCycleItems, type ScholarshipId } from "@/lib/application/intakes";
 import { loadSiteContent, resolvePreview } from "@/lib/content";
 import { site } from "@/lib/site";
@@ -51,6 +53,11 @@ export default async function ApplyPage({
   const preview = await resolvePreview(params);
   const raw = params?.scholarship;
   const scholarshipValue = Array.isArray(raw) ? raw[0] : raw;
+  const rawMock = params?.mock;
+  const mock = mockApplicationsEnabled() ? findMock(Array.isArray(rawMock) ? rawMock[0] : rawMock) : undefined;
+  if (mock) {
+    redirect(`/apply/form?scholarship=${mock.scholarship}&mock=${mock.id}`);
+  }
   if (isScholarshipId(scholarshipValue)) {
     redirect(`/apply/form?scholarship=${scholarshipValue}`);
   }

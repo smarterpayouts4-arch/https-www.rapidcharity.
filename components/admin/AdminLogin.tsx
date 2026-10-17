@@ -89,7 +89,7 @@ export function AdminLogin({ mode, apiKey, devPassword = false }: Props) {
                 {error}
               </p>
             ) : null}
-            <button className={styles.btn} type="submit" disabled={busy}>
+            <button className="btn btn-sm" type="submit" disabled={busy}>
               {busy ? "Signing in…" : "Sign in"}
             </button>
           </form>

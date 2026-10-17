@@ -1,25 +1,33 @@
 /* ═══════════════════════════════════════════════════
    Button primitives
+   One system for every route. Variants: .btn (primary), .btn-secondary /
+   .btn-outline (outline), .btn-text (quiet text action), .btn-danger,
+   .btn-on-dark / .btn-white (on dark or photo surfaces).
+   Modifiers: .btn-sm (44px, compact rows and admin), .btn-block (full width).
+   Sizes, radius and type come from the --btn-* tokens in tokens.css.
    ═══════════════════════════════════════════════════ */
 .btn,
 .btn-secondary,
 .btn-outline,
 .btn-text,
+.btn-danger,
 .btn-on-dark,
 .btn-white {
+  appearance: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  padding: 0.9rem 1.65rem;
-  min-height: 50px;
-  border-radius: var(--radius-pill);
-  border: 2px solid transparent;
+  padding: var(--btn-pad-y) var(--btn-pad-x);
+  min-height: var(--btn-height);
+  border-radius: var(--btn-radius);
+  border: var(--btn-border-width) solid transparent;
   font-family: var(--font-button);
-  font-weight: 600;
-  font-size: 0.92rem;
+  font-weight: var(--btn-font-weight);
+  font-size: var(--btn-font-size);
   letter-spacing: 0.01em;
   line-height: 1.2;
+  text-align: center;
   cursor: pointer;
   text-decoration: none;
   transition:
@@ -29,10 +37,20 @@
     box-shadow var(--transition-fast),
     transform var(--transition-fast);
 }
+.btn-sm {
+  min-height: var(--btn-height-sm);
+  padding: var(--btn-pad-y-sm) var(--btn-pad-x-sm);
+  font-size: var(--btn-font-size-sm);
+}
+.btn-block {
+  display: flex;
+  width: 100%;
+}
 .btn:hover,
 .btn-secondary:hover,
 .btn-outline:hover,
 .btn-text:hover,
+.btn-danger:hover,
 .btn-on-dark:hover,
 .btn-white:hover {
   text-decoration: none;
@@ -61,7 +79,7 @@
   }
 }
 
-/* Primary — high-contrast brand CTA */
+/* Primary: high-contrast brand CTA */
 .btn {
   background: var(--color-brand-primary);
   border-color: var(--color-brand-primary);
@@ -80,6 +98,8 @@
   box-shadow: none;
   transform: translateY(1px);
 }
+.btn.btn-sm { box-shadow: none; }
+.btn.btn-sm:hover { box-shadow: none; }
 
 /* Secondary / outline */
 .btn-secondary,
@@ -102,20 +122,34 @@
   color: var(--color-text-on-brand);
 }
 
-/* Text button (no fill / soft chrome) */
+/* Text button (no fill, no border): quiet companion to a primary */
 .btn-text {
   background: transparent;
   border-color: transparent;
   color: var(--color-brand-primary);
-  padding-inline: 0.35rem;
+  padding-inline: 0.75rem;
   box-shadow: none;
 }
 .btn-text:hover {
   color: var(--color-brand-primary-hover);
   text-decoration: underline;
+  text-underline-offset: 0.18em;
 }
 .btn-text:active {
   color: var(--color-brand-primary-active);
+}
+
+/* Destructive (admin delete, purge) */
+.btn-danger {
+  background: var(--color-brand-deep);
+  border-color: var(--color-brand-deep);
+  color: var(--color-text-on-brand);
+  box-shadow: none;
+}
+.btn-danger:hover {
+  background: var(--color-brand-primary);
+  border-color: var(--color-brand-primary);
+  color: var(--color-text-on-brand);
 }
 
 /* On dark surfaces (donate banner, stories panel) */
@@ -143,19 +177,18 @@
 .btn-secondary:focus-visible,
 .btn-outline:focus-visible,
 .btn-text:focus-visible,
+.btn-danger:focus-visible,
 .btn-on-dark:focus-visible,
 .btn-white:focus-visible {
-  outline: 2px solid #1a1a1a;
-  outline-offset: 3px;
-  box-shadow: var(--focus-ring), var(--shadow-btn);
-}
-.btn-text:focus-visible {
+  outline: var(--btn-focus-outline);
+  outline-offset: var(--btn-focus-offset);
   box-shadow: var(--focus-ring);
 }
 .btn:disabled,
 .btn-secondary:disabled,
 .btn-outline:disabled,
 .btn-text:disabled,
+.btn-danger:disabled,
 .btn-on-dark:disabled,
 .btn-white:disabled,
 .btn[aria-disabled="true"],
@@ -166,6 +199,31 @@
   box-shadow: none;
   pointer-events: none;
   transform: none;
+}
+
+/* Round icon-only control (menu, close, remove file): 44px tap target */
+.btn-icon {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--btn-height-sm);
+  height: var(--btn-height-sm);
+  padding: 0;
+  border: 0;
+  border-radius: var(--btn-radius);
+  background: transparent;
+  color: var(--color-text-primary);
+  font: inherit;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+.btn-icon:hover { background: rgba(34, 34, 34, 0.06); }
+.btn-icon:focus-visible {
+  outline: var(--btn-focus-outline);
+  outline-offset: 2px;
 }
 
 

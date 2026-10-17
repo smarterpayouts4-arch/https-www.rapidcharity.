@@ -83,6 +83,21 @@
   --shadow-btn-hover: 0 10px 28px rgba(178, 15, 58, 0.36);
   --space-section: clamp(4rem, 9vw, 8rem);
   --focus-ring: 0 0 0 3px var(--color-brand-focus-ring);
+
+  /* ── Buttons (one system: .btn, .btn-secondary, .btn-text, .btn-danger, .btn-white + .btn-sm / .btn-block) ── */
+  --btn-height: 50px;
+  --btn-height-sm: 44px;
+  --btn-pad-y: 0.9rem;
+  --btn-pad-x: 1.65rem;
+  --btn-pad-y-sm: 0.55rem;
+  --btn-pad-x-sm: 1.15rem;
+  --btn-radius: var(--radius-pill);
+  --btn-border-width: 2px;
+  --btn-font-size: 0.92rem;
+  --btn-font-size-sm: 0.875rem;
+  --btn-font-weight: 600;
+  --btn-focus-outline: 2px solid var(--color-text-primary);
+  --btn-focus-offset: 3px;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --transition-fast: 0.15s ease;
   --transition-ui: 0.24s var(--ease-out);

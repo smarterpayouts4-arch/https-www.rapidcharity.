@@ -62,12 +62,12 @@ export function EventsCollectionSection({
           <code>content/events.draft.json</code> → <code>content/events.json</code>.
         </p>
         <div className={styles.actions} style={{ marginBottom: "0.75rem" }}>
-          <button type="button" className={styles.btnGhost} onClick={addItem}>
+          <button type="button" className="btn-secondary btn-sm" onClick={addItem}>
             Add event
           </button>
           <button
             type="button"
-            className={styles.btn}
+            className="btn btn-sm"
             disabled={busy}
             onClick={onSaveDraft}
           >
@@ -75,7 +75,7 @@ export function EventsCollectionSection({
           </button>
           <button
             type="button"
-            className={styles.btnDanger}
+            className="btn-danger btn-sm"
             disabled={busy}
             onClick={onPublish}
           >
@@ -171,7 +171,7 @@ export function EventsCollectionSection({
                   <div className={styles.actions}>
                     <button
                       type="button"
-                      className={styles.btnGhost}
+                      className="btn-secondary btn-sm"
                       onClick={() => updateItem(index, { images: images.filter((_, i) => i !== imageIndex) })}
                     >
                       Remove photo
@@ -182,7 +182,7 @@ export function EventsCollectionSection({
               <div className={styles.actions}>
                 <button
                   type="button"
-                  className={styles.btnGhost}
+                  className="btn-secondary btn-sm"
                   onClick={() => updateItem(index, { images: [...images, { src: "/assets/images/", alt: "" }] })}
                 >
                   Add photo
@@ -191,7 +191,7 @@ export function EventsCollectionSection({
               </div>
             </fieldset>
             <div className={styles.actions}>
-              <button type="button" className={styles.btnGhost} onClick={() => removeItem(index)}>
+              <button type="button" className="btn-secondary btn-sm" onClick={() => removeItem(index)}>
                 Remove event
               </button>
             </div>

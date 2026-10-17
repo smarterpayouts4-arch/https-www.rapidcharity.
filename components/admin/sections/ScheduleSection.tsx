@@ -163,18 +163,18 @@ export function ScheduleSection({ content, onChange }: Props) {
             </div>
           </fieldset>
           <div className={styles.actions}>
-            <button type="button" className={styles.btnGhost} onClick={() => moveIntake(index, -1)} disabled={index === 0}>
+            <button type="button" className="btn-secondary btn-sm" onClick={() => moveIntake(index, -1)} disabled={index === 0}>
               Move up
             </button>
             <button
               type="button"
-              className={styles.btnGhost}
+              className="btn-secondary btn-sm"
               onClick={() => moveIntake(index, 1)}
               disabled={index === items.length - 1}
             >
               Move down
             </button>
-            <button type="button" className={styles.btnGhost} onClick={() => removeIntake(index)} disabled={items.length <= 1}>
+            <button type="button" className="btn-secondary btn-sm" onClick={() => removeIntake(index)} disabled={items.length <= 1}>
               Remove intake
             </button>
           </div>
@@ -183,7 +183,7 @@ export function ScheduleSection({ content, onChange }: Props) {
 
       <section className={styles.card}>
         <div className={styles.actions}>
-          <button type="button" className={styles.btnGhost} onClick={addIntake}>
+          <button type="button" className="btn-secondary btn-sm" onClick={addIntake}>
             Add intake
           </button>
         </div>

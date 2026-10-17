@@ -31,14 +31,17 @@ import {
 } from "@/lib/application/constants";
 import { emptyApplication } from "@/lib/application/empty";
 import { ageInYears } from "@/lib/application/normalize";
-import { clearDraft, readDraftSnapshot, savedAgo, writeDraft } from "@/lib/application/draft";
+import { clearDraft, readDraftSnapshot, writeDraft } from "@/lib/application/draft";
+import { requiredDocumentSlots } from "@/lib/application/documents";
 import { eligibilitySuggestion } from "@/lib/application/eligibility";
 import { documentUploadPrompt, fieldLabel } from "@/lib/application/fieldLabels";
 import { missingRequiredDocuments } from "@/lib/application/documents";
 import { FORM_STEPS, errorsForStep, validateApplication } from "@/lib/application/schema";
 import { inferProgramSelection, SCHOOL_ALIASES } from "@/lib/application/search";
 import type { ApplicationInput, DocumentInput, PromotedOption } from "@/lib/application/types";
+import type { MockApplication } from "@/lib/application/mocks";
 import { DocumentFields } from "./DocumentFields";
+import { DraftNoticeView } from "./DraftNotice";
 import { ProgramField } from "./ProgramField";
 import {
   CnicField,
@@ -64,29 +67,43 @@ function toIssues(fieldErrors: Errors): FormIssue[] {
   }));
 }
 
+function fromMock(mock: MockApplication): ApplicationInput {
+  return { ...structuredClone(mock.data), client_id: crypto.randomUUID(), documents: [] };
+}
+
 export function ApplicationForm({
   initialScholarship,
   promoted,
   cycleName = "Spring Semester 2027",
+  mocks,
+  initialMock = "",
 }: {
   initialScholarship: ScholarshipId | "";
   promoted: PromotedOption[];
   cycleName?: string;
+  /** Test-only sample applications. Passed by the server only when mocks are enabled. */
+  mocks?: MockApplication[];
+  initialMock?: string;
 }) {
-  const [data, setData] = useState<ApplicationInput>(() => ({
-    ...emptyApplication(initialScholarship),
-    client_id: crypto.randomUUID(),
-  }));
+  const startMock = mocks?.find((item) => item.id === initialMock);
+  const [data, setData] = useState<ApplicationInput>(() =>
+    startMock
+      ? fromMock(startMock)
+      : {
+          ...emptyApplication(initialScholarship),
+          client_id: crypto.randomUUID(),
+        },
+  );
   const [step, setStep] = useState(0);
   const [errors, setErrors] = useState<Errors>({});
   const [issues, setIssues] = useState<FormIssue[]>([]);
   const [busy, setBusy] = useState(false);
   const [receipt, setReceipt] = useState<{ id: string; submitted_at: string } | null>(null);
-  const [picking, setPicking] = useState(!initialScholarship);
+  const [picking, setPicking] = useState(!initialScholarship && !startMock);
   const [touched, setTouched] = useState<Set<string>>(new Set());
   const [stepAttempted, setStepAttempted] = useState(false);
   const [returnToReview, setReturnToReview] = useState(false);
-  const [draftDismissed, setDraftDismissed] = useState(false);
+  const [draftDismissed, setDraftDismissed] = useState(Boolean(startMock));
   const [savedLabel, setSavedLabel] = useState("");
   const ready = useSyncExternalStore(
     () => () => {},
@@ -99,7 +116,7 @@ export function ApplicationForm({
     () => null,
   );
   const pendingDraft = draftDismissed ? null : storedDraft;
-  const dirty = useRef(false);
+  const dirty = useRef(Boolean(startMock));
   const dataRef = useRef(data);
   const formRef = useRef<HTMLFormElement>(null);
   const pendingFocusRef = useRef<string | null>(null);
@@ -184,10 +201,37 @@ export function ApplicationForm({
     const handle = window.setTimeout(() => {
       const draft = { data: dataRef.current, step, savedAt: new Date().toISOString() };
       writeDraft(draft);
-      setSavedLabel("Saved · just now");
+      setSavedLabel("Saved just now");
     }, 1000);
     return () => window.clearTimeout(handle);
   }, [data, step]);
+
+  useEffect(() => {
+    if (!startMock) return;
+    const url = new URL(window.location.href);
+    if (!url.searchParams.has("mock")) return;
+    url.searchParams.delete("mock");
+    window.history.replaceState(null, "", `${url.pathname}${url.search}`);
+  }, [startMock]);
+
+  function loadMock(mock: MockApplication) {
+    const next = fromMock(mock);
+    dirty.current = true;
+    dataRef.current = next;
+    setData(next);
+    setStep(0);
+    setPicking(false);
+    setErrors({});
+    setIssues([]);
+    setTouched(new Set());
+    setStepAttempted(false);
+    setReturnToReview(false);
+    setDraftDismissed(true);
+    const url = new URL(window.location.href);
+    url.searchParams.set("scholarship", mock.scholarship);
+    url.searchParams.delete("mock");
+    window.history.replaceState(null, "", `${url.pathname}${url.search}`);
+  }
 
   const focusField = useCallback((key: string) => {
     const root = formRef.current;
@@ -496,44 +540,41 @@ export function ApplicationForm({
         </div>
       </div>
       {savedLabel ? <p className={styles.saved}>{savedLabel}</p> : null}
-      {pendingDraft ? (
-        <div className={styles.draftBanner} role="status">
-          <p>
-            You have an application in progress (Step {Math.min(FORM_STEPS.length, pendingDraft.step + 1)} of {FORM_STEPS.length}, saved {savedAgo(pendingDraft.savedAt)}).
-          </p>
-          <div className={styles.draftActions}>
-            <button
-              type="button"
-              className={styles.btn}
-              onClick={() => {
-                dataRef.current = pendingDraft.data;
-                setData(pendingDraft.data);
-                setStep(Math.min(pendingDraft.step, FORM_STEPS.length - 1));
-                setPicking(!pendingDraft.data.scholarship);
-                dirty.current = true;
-                setDraftDismissed(true);
-              }}
-            >
-              Resume
-            </button>
-            <button
-              type="button"
-              className={styles.btnSecondary}
-              onClick={() => {
-                clearDraft();
-                setDraftDismissed(true);
-                setSavedLabel("");
-              }}
-            >
-              Start over
-            </button>
+      {mocks && mocks.length > 0 ? (
+        <div className={styles.testTools} data-testid="mock-tools">
+          <p className={styles.testToolsLabel}>Test mode: fill the form with a sample application</p>
+          <div className={styles.testToolsActions}>
+            {mocks.map((mock) => (
+              <button key={mock.id} type="button" className="btn-secondary btn-sm" onClick={() => loadMock(mock)}>
+                {mock.label}
+              </button>
+            ))}
           </div>
         </div>
+      ) : null}
+      {pendingDraft ? (
+        <DraftNoticeView
+          step={pendingDraft.step}
+          savedAt={pendingDraft.savedAt}
+          onResume={() => {
+            dataRef.current = pendingDraft.data;
+            setData(pendingDraft.data);
+            setStep(Math.min(pendingDraft.step, FORM_STEPS.length - 1));
+            setPicking(!pendingDraft.data.scholarship);
+            dirty.current = true;
+            setDraftDismissed(true);
+          }}
+          onStartOver={() => {
+            clearDraft();
+            setDraftDismissed(true);
+            setSavedLabel("");
+          }}
+        />
       ) : null}
       <h2 className={styles.sectionTitle}>{current?.label}</h2>
       {data.scholarship && !picking ? (
         <p className={styles.chip}>
-          <span>Applying for: {scholarship?.label ?? "Scholarship"} ·</span>
+          <span>Applying for: {scholarship?.label ?? "Scholarship"}</span>
           <button type="button" className={styles.chipChange} onClick={() => { setPicking(true); setStep(0); }}>
             Change
           </button>
@@ -906,6 +947,7 @@ export function ApplicationForm({
               ...(data.disability && data.disability !== "none" ? [{ slot: "disability_certificate", text: "Required because a disability is selected." }] : []),
               ...(data.other_financial_support === "Yes" ? [{ slot: "other_award", text: "Required because another scholarship was declared." }] : []),
             ]}
+            sampleSlots={mocks && mocks.length > 0 ? requiredDocumentSlots(data) : undefined}
             onUpsert={upsertDocument}
             onRemove={removeDocument}
           />
@@ -960,13 +1002,13 @@ export function ApplicationForm({
       </div>
 
       <div className={styles.actions}>
-        <button type="button" className={styles.btnSecondary} onClick={() => setStep((current) => Math.max(0, current - 1))} disabled={step === 0}>
+        <button type="button" className="btn-secondary" onClick={() => setStep((current) => Math.max(0, current - 1))} disabled={step === 0}>
           Back
         </button>
         {step < FORM_STEPS.length - 1 ? (
-          <button type="button" className={styles.btn} disabled={blocked || !ready} onClick={() => goNext()}>{returnToReview ? "Back to review" : "Continue"}</button>
+          <button type="button" className="btn" disabled={blocked || !ready} onClick={() => goNext()}>{returnToReview ? "Back to review" : "Continue"}</button>
         ) : (
-          <button type="button" className={styles.btn} disabled={busy || !ready} onClick={() => void submit()}>
+          <button type="button" className="btn" disabled={busy || !ready} onClick={() => void submit()}>
             {busy ? "Submitting…" : "Submit application"}
           </button>
         )}

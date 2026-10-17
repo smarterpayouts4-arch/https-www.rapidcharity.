@@ -45,7 +45,8 @@ export function sniffType(bytes: Uint8Array): SniffedType {
   }
   if (bytes.length >= 12 && bytes[4] === 0x66 && bytes[5] === 0x74 && bytes[6] === 0x79 && bytes[7] === 0x70) {
     const brand = String.fromCharCode(bytes[8] ?? 0, bytes[9] ?? 0, bytes[10] ?? 0, bytes[11] ?? 0).toLowerCase();
-    if (brand.startsWith("hei") || brand === "mif1" || brand === "msf1") return "image/heic";
+    // heic, heix, heim, heis, hevc, hevx, and the generic HEIF brands mif1 / msf1.
+    if (brand.startsWith("hei") || brand.startsWith("hev") || brand === "mif1" || brand === "msf1") return "image/heic";
   }
   return "reject";
 }

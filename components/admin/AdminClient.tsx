@@ -100,12 +100,12 @@ export function AdminClient({
           </p>
         </div>
         <div className={styles.actions}>
-          <a className={styles.btnGhost} href={previewPath} target="_blank" rel="noreferrer">
+          <a className="btn-secondary btn-sm" href={previewPath} target="_blank" rel="noreferrer">
             Preview
           </a>
           <button
             type="button"
-            className={styles.btnGhost}
+            className="btn-secondary btn-sm"
             onClick={() => {
               void fetch("/api/admin/session", { method: "DELETE" }).then(() => {
                 router.refresh();
@@ -118,7 +118,7 @@ export function AdminClient({
             <>
               <button
                 type="button"
-                className={styles.btn}
+                className="btn btn-sm"
                 disabled={busy}
                 onClick={() => void admin.saveDraft()}
               >
@@ -126,7 +126,7 @@ export function AdminClient({
               </button>
               <button
                 type="button"
-                className={styles.btnDanger}
+                className="btn-danger btn-sm"
                 disabled={busy}
                 onClick={() => void admin.publish()}
               >

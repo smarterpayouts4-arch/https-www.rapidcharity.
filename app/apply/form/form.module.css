@@ -129,9 +129,7 @@
 
 .stepBtn:focus-visible,
 .control:focus-visible,
-.choice:focus-visible,
-.btn:focus-visible,
-.btnSecondary:focus-visible {
+.choice:focus-visible {
   outline: 2px solid var(--color-brand-primary);
   outline-offset: 2px;
 }
@@ -149,6 +147,14 @@
 .grid {
   display: grid;
   gap: 0.9rem;
+}
+
+.hint {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+  text-wrap: wrap;
 }
 
 .two {
@@ -242,6 +248,14 @@
   background: var(--color-background-alt);
   cursor: pointer;
   font: inherit;
+}
+
+/* Keep the small visual circle but give it a 44px tap area. */
+.clear::after {
+  content: "";
+  position: absolute;
+  inset: calc((1.7rem - 44px) / 2);
+  border-radius: 999px;
 }
 
 .combo .control {
@@ -352,48 +366,84 @@
   margin-top: 1.1rem;
 }
 
-.btn,
-.btnSecondary {
-  appearance: none;
-  border-radius: 999px;
-  font: inherit;
-  font-weight: 600;
-  padding: 0.75rem 1.15rem;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.btn {
-  border: 0;
-  background: var(--color-brand-primary);
-  color: #fff;
-}
-
-.btn:disabled {
-  opacity: 0.65;
-  cursor: progress;
-}
-
-.btnSecondary {
-  border: 1px solid var(--color-border-strong);
-  background: #fff;
-  color: var(--color-text-secondary);
-}
-
 .drop {
-  display: grid;
-  gap: 0.25rem;
-  justify-items: center;
-  padding: 1.15rem 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-height: 64px;
+  padding: 0.85rem 1rem;
   border: 1.5px dashed var(--color-border-strong);
   border-radius: var(--radius-card);
   background: #fff;
-  text-align: center;
+  text-align: left;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.drop[aria-disabled="true"] {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.dropIcon {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-brand-tint);
+  color: var(--color-brand-primary);
+}
+
+.dropIcon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.dropText {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
 }
 
 .drop strong {
   font-size: 0.95rem;
+  color: var(--color-text-primary);
+}
+
+.dropHint {
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
+.dropDesktop { display: none; }
+
+@media (hover: hover) and (pointer: fine) {
+  .dropMobile { display: none; }
+  .dropDesktop { display: inline; }
+}
+
+.drop:focus-within,
+.drop:focus-visible {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: 2px;
+}
+
+/* Visually hidden but still a real, tappable-through-label file input.
+   Not display:none, so iOS Safari and Android Chrome open the picker. */
+.fileInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  opacity: 0;
 }
 
 .drop[data-error="true"] {
@@ -403,7 +453,7 @@
 
 .fileRow {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.35rem 0.6rem;
   align-items: center;
   margin-top: 0.45rem;
@@ -439,16 +489,10 @@
     animation: form-in 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   .layout > .card { animation-delay: 0.1s; }
-  .btn,
-  .btnSecondary,
   .stepBtn,
   .drop,
   .option {
     transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-  }
-  .btn:hover:not(:disabled),
-  .btnSecondary:hover {
-    transform: translateY(-1px);
   }
   .drop:hover:not([data-error="true"]) {
     border-color: var(--color-brand-primary);
@@ -474,12 +518,59 @@
   }
 }
 
-.remove {
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  font: inherit;
+.fileRow[data-has-thumb="true"] {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+.fileRow[data-has-thumb="true"] .bar {
+  grid-column: 1 / -1;
+}
+
+.thumb {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.5rem;
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+  background: var(--color-background-page);
+}
+
+.thumbPdf {
+  display: inline-grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-background-page);
+  color: var(--color-brand-primary);
+  font-size: 0.7rem;
   font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.fileMeta {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.fileName {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.fileNote {
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.remove {
+  font-size: 1.35rem;
+  color: var(--color-text-secondary);
 }
 
 .mobileProgress { display: none; }
@@ -554,22 +645,25 @@
   font-weight: 600;
 }
 
-.draftBanner,
-.draftCompact {
+/* Test-only sample data panel (shown only when mocks are enabled). */
+.testTools {
   display: grid;
-  gap: 0.7rem;
+  gap: 0.6rem;
   margin: 0 0 1rem;
-  padding: 0.9rem 1rem;
+  padding: 0.85rem 1rem;
+  border: 1.5px dashed var(--color-border-strong);
   border-radius: var(--radius-card);
-  background: var(--color-background-alt);
-  border: 1px solid var(--color-border);
-  color: var(--color-text-primary);
+  background: var(--color-background-page);
 }
 
-.draftBanner p,
-.draftCompact p { margin: 0; line-height: 1.45; }
+.testToolsLabel {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
 
-.draftActions {
+.testToolsActions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
@@ -625,13 +719,11 @@
     border-top: 1px solid var(--color-border);
     backdrop-filter: blur(10px);
   }
-  .btn,
-  .btnSecondary,
   .control,
   .choice {
     min-height: 48px;
   }
-  .btn, .btnSecondary { flex: 1; }
+  .actions > * { flex: 1 1 0; }
 }
 
 .noteBox {

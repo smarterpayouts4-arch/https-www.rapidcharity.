@@ -41,7 +41,7 @@ export function Hero({ content, applicationCard, intakes }: Props) {
             <Link className="btn" href={content.primaryCta.href}>
               {content.primaryCta.label} <span aria-hidden="true">→</span>
             </Link>
-            <Link className="btn-white" href={content.secondaryCta.href}>
+            <Link className="btn-secondary" href={content.secondaryCta.href}>
               {content.secondaryCta.label} <span aria-hidden="true">→</span>
             </Link>
           </div>

@@ -1,0 +1,237 @@
+{
+  "client_id": "",
+  "scholarship": "ivy-azariah",
+  "applicant_type": "new",
+  "first_name": "Sample",
+  "last_name": "Ivy Tester",
+  "full_name_as_on_cnic": "Sample Ivy Tester",
+  "date_of_birth": "2005-03-14",
+  "gender": "Female",
+  "disability": "none",
+  "disability_other": "",
+  "marital_status": "Single",
+  "spouse_name": "",
+  "spouse_monthly_income": {
+    "amount": null,
+    "currency": "PKR",
+    "period": "month",
+    "value_state": "known"
+  },
+  "religion": {
+    "option_id": "christianity",
+    "other_text": ""
+  },
+  "cnic": "35202-0000001-2",
+  "email": "sample.applicant+ivy@example.com",
+  "email_confirm": "sample.applicant+ivy@example.com",
+  "mobile_phone": "0300 0000101",
+  "secondary_phone": "",
+  "address_line": "House 1, Sample Street, Test Colony",
+  "city": {
+    "option_id": "lahore",
+    "other_text": ""
+  },
+  "province": "Punjab",
+  "employment_status": "No",
+  "employment_job": "",
+  "employment_employer": "",
+  "monthly_income": {
+    "amount": null,
+    "currency": "PKR",
+    "period": "month",
+    "value_state": "known"
+  },
+  "father_name": "Sample Father Ivy",
+  "mother_name": "Sample Mother Ivy",
+  "father_status": "Living",
+  "mother_status": "Living",
+  "father_occupation": {
+    "option_id": "driver",
+    "other_text": ""
+  },
+  "mother_occupation": {
+    "option_id": "homemaker",
+    "other_text": ""
+  },
+  "father_monthly_income": {
+    "amount": 32000,
+    "currency": "PKR",
+    "period": "month",
+    "value_state": "known"
+  },
+  "mother_monthly_income": {
+    "amount": 0,
+    "currency": "PKR",
+    "period": "month",
+    "value_state": "zero"
+  },
+  "guardian_phone": "+92 300 0000102",
+  "siblings_count": 3,
+  "siblings_studying_count": 2,
+  "siblings_working_count": 1,
+  "siblings_married_count": 0,
+  "siblings_other_count": 0,
+  "siblings_notes": "One younger sister is in Grade 9 and one brother is in FSc.",
+  "current_institution": {
+    "option_id": "kinnaird_college_for_women_university_lahore",
+    "other_text": ""
+  },
+  "campus_city": {
+    "option_id": "lahore",
+    "other_text": ""
+  },
+  "degree_level": {
+    "option_id": "bachelor",
+    "other_text": ""
+  },
+  "field_of_study": {
+    "option_id": "nursing",
+    "other_text": ""
+  },
+  "program_title": "Bachelor of Science in Nursing - track unspecified",
+  "program_track": "generic_bsn",
+  "program_track_other": "",
+  "specialization": "",
+  "study_years": 4,
+  "completion_term": "Spring",
+  "completion_year": 2029,
+  "roll_number": "SAMPLE-IVY-001",
+  "terms": [
+    {
+      "term": "Spring 2026",
+      "unit": "semester",
+      "number": 1,
+      "status": "declared",
+      "result": {
+        "type": "CGPA",
+        "value": 3.45,
+        "max": 4,
+        "grade": ""
+      }
+    },
+    {
+      "term": "Fall 2026",
+      "unit": "semester",
+      "number": 2,
+      "status": "declared",
+      "result": {
+        "type": "CGPA",
+        "value": 3.6,
+        "max": 4,
+        "grade": ""
+      }
+    },
+    {
+      "term": "Spring 2027",
+      "unit": "semester",
+      "number": 3,
+      "status": "awaited",
+      "result": {
+        "type": "CGPA",
+        "value": null,
+        "max": 4,
+        "grade": ""
+      }
+    },
+    {
+      "term": "Fall 2027",
+      "unit": "semester",
+      "number": 4,
+      "status": "future",
+      "result": {
+        "type": "CGPA",
+        "value": null,
+        "max": 4,
+        "grade": ""
+      }
+    },
+    {
+      "term": "Spring 2028",
+      "unit": "semester",
+      "number": 5,
+      "status": "future",
+      "result": {
+        "type": "CGPA",
+        "value": null,
+        "max": 4,
+        "grade": ""
+      }
+    }
+  ],
+  "previous_institution": {
+    "option_id": "lahore_college_for_women_university",
+    "other_text": ""
+  },
+  "previous_qualification": {
+    "option_id": "fsc_pre_medical",
+    "other_text": ""
+  },
+  "previous_completion_year": 2024,
+  "fee": {
+    "amount": 85000,
+    "currency": "PKR",
+    "period": "semester",
+    "value_state": "known"
+  },
+  "fee_due_date": "2027-01-15",
+  "institution_phone": "",
+  "institution_address": "",
+  "rapid_received": "Never",
+  "rapid_semesters": [],
+  "rapid_amount": {
+    "amount": null,
+    "currency": "PKR",
+    "period": "semester",
+    "value_state": "known"
+  },
+  "other_financial_support": "No",
+  "support_provider": {
+    "option_id": "",
+    "other_text": ""
+  },
+  "support_value_kind": "",
+  "support_percent": null,
+  "support_amount": {
+    "amount": null,
+    "currency": "PKR",
+    "period": "semester",
+    "value_state": "known"
+  },
+  "heard_about": {
+    "option_id": "pastor_church",
+    "other_text": ""
+  },
+  "church_name": "Sample Grace Church",
+  "denomination": {
+    "option_id": "church_of_pakistan",
+    "other_text": ""
+  },
+  "pastor_title": "Pastor",
+  "pastor_title_other": "",
+  "pastor_name": "Sample Pastor Ivy",
+  "pastor_phone": "0300 0000103",
+  "pastor_email": "sample.pastor+ivy@example.com",
+  "faculty_ref_name": "Sample Faculty Ivy",
+  "faculty_ref_designation": "Lecturer, Nursing",
+  "faculty_ref_phone": "0300 0000104",
+  "faculty_ref_email": "sample.faculty+ivy@example.com",
+  "family_ref_name": "Sample Aunt Ivy",
+  "family_ref_relationship": {
+    "option_id": "aunt",
+    "other_text": ""
+  },
+  "family_ref_phone": "0300 0000105",
+  "family_ref_email": "",
+  "attend_events": "Yes",
+  "life_goal": "My goal is to become a registered nurse and later a nursing teacher, so that more young women in my community can train for safe, respected work in hospitals and clinics.",
+  "community_contribution": "I volunteer at our church health day, where I help older people check their blood pressure. After my degree I want to run free health awareness sessions for mothers in our area.",
+  "plan_if_denied": "If this scholarship is not awarded, I will ask the college about an installment plan, take tuition students in the evenings, and keep studying while my father helps as much as he can.",
+  "future_plan": "After this program I plan to work in a public hospital in Lahore for at least three years, then complete a postgraduate nursing qualification so that I can teach.",
+  "reuse_photo": false,
+  "reuse_cnic": false,
+  "reuse_guardian": false,
+  "documents": [],
+  "consent_accepted": true,
+  "consent_name": "Sample Ivy Tester",
+  "website": ""
+}

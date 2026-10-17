@@ -78,12 +78,12 @@ export function BlogCollectionSection({
           <code>public/assets/images/blog/</code> are preserved.
         </p>
         <div className={styles.actions} style={{ marginBottom: "0.75rem" }}>
-          <button type="button" className={styles.btnGhost} onClick={addPost}>
+          <button type="button" className="btn-secondary btn-sm" onClick={addPost}>
             Add post
           </button>
           <button
             type="button"
-            className={styles.btn}
+            className="btn btn-sm"
             disabled={busy}
             onClick={onSaveDraft}
           >
@@ -91,7 +91,7 @@ export function BlogCollectionSection({
           </button>
           <button
             type="button"
-            className={styles.btnDanger}
+            className="btn-danger btn-sm"
             disabled={busy}
             onClick={onPublish}
           >

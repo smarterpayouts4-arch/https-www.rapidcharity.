@@ -219,13 +219,13 @@ export function ApplicationsPanel({
           </p>
         </div>
         <div className={styles.appMeta}>
-          <button type="button" className={styles.btnGhost} onClick={() => void load()}>
+          <button type="button" className="btn-secondary btn-sm" onClick={() => void load()}>
             Refresh
           </button>
-          <a className={styles.btnGhost} href={`/api/admin/applications/export?cycle=${batch?.cycle ?? cycle}`}>
+          <a className="btn-secondary btn-sm" href={`/api/admin/applications/export?cycle=${batch?.cycle ?? cycle}`}>
             Download CSV
           </a>
-          <a className={styles.btnGhost} href={`/api/admin/applications/excel?cycle=${batch?.cycle ?? cycle}`}>
+          <a className="btn-secondary btn-sm" href={`/api/admin/applications/excel?cycle=${batch?.cycle ?? cycle}`}>
             Download Excel
           </a>
         </div>
@@ -262,14 +262,14 @@ export function ApplicationsPanel({
           </p>
           <div className={styles.appMeta}>
             {batch.status === "open" ? (
-              <button type="button" className={styles.btnGhost} disabled={busy} onClick={() => void closeSelected()}>
+              <button type="button" className="btn-secondary btn-sm" disabled={busy} onClick={() => void closeSelected()}>
                 Close batch
               </button>
             ) : null}
             {batch.status === "closed" ? (
               <button
                 type="button"
-                className={styles.btnDanger}
+                className="btn-danger btn-sm"
                 disabled={busy}
                 onClick={() => {
                   setPurgeOpen(true);
@@ -289,7 +289,7 @@ export function ApplicationsPanel({
                 Cloudinary, or the local upload folder. Only the archive date and the counts are kept. Download the
                 workbook first. This cannot be undone.
               </p>
-              <button type="button" className={styles.btn} disabled={busy} onClick={() => void downloadFinal()}>
+              <button type="button" className="btn btn-sm" disabled={busy} onClick={() => void downloadFinal()}>
                 Download final Excel
               </button>
               <label>
@@ -304,7 +304,7 @@ export function ApplicationsPanel({
               <div className={styles.appMeta}>
                 <button
                   type="button"
-                  className={styles.btnDanger}
+                  className="btn-danger btn-sm"
                   disabled={busy || !finalReady || confirmText !== batch.cycle}
                   onClick={() => void purgeSelected()}
                 >
@@ -312,7 +312,7 @@ export function ApplicationsPanel({
                 </button>
                 <button
                   type="button"
-                  className={styles.btnGhost}
+                  className="btn-secondary btn-sm"
                   disabled={busy}
                   onClick={() => {
                     setPurgeOpen(false);
@@ -372,7 +372,7 @@ export function ApplicationsPanel({
                       ? "Reviewed"
                       : "No other values"}
                 </span>
-                <button type="button" className={styles.btnGhost} onClick={() => setOpenId(openId === item.id ? "" : item.id)}>
+                <button type="button" className="btn-secondary btn-sm" onClick={() => setOpenId(openId === item.id ? "" : item.id)}>
                   {openId === item.id ? "Hide" : "View"}
                 </button>
               </div>

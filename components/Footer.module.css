@@ -150,8 +150,9 @@
 
 .subscribe input[type="email"] {
   flex: 1 1 10rem;
-  padding: 0.7rem 0.85rem;
-  border-radius: 0.35rem;
+  min-height: var(--btn-height-sm);
+  padding: 0.6rem 1rem;
+  border-radius: var(--btn-radius);
   border: 1px solid #4a4446;
   background: #2c2c2c;
   color: #fff;
@@ -161,10 +162,7 @@
 }
 
 .subscribe button {
-  align-self: stretch;
-  border-radius: 0.35rem;
-  padding: 0.7rem 1.15rem;
-  font-size: 0.85rem;
+  flex: 0 0 auto;
 }
 
 .consent {

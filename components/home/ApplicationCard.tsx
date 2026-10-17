@@ -70,7 +70,7 @@ export function ApplicationCard({ className, content, intakes }: Props) {
           <span>{content.programsValue}</span>
         </li>
       </ul>
-      <Link className={`btn ${styles.btn}`} href={content.applyHref}>
+      <Link className={`btn btn-block ${styles.btn}`} href={content.applyHref}>
         {content.applyLabel} <span aria-hidden="true">→</span>
       </Link>
       <Link className={styles.guide} href={content.guideHref}>

@@ -3,9 +3,17 @@ import type { ScholarshipId } from "@/lib/application/constants";
 import { loadPromoted } from "@/lib/application/store";
 import { loadFormState } from "@/lib/application/formSettings";
 import type { PromotedOption } from "@/lib/application/types";
+import { mockApplicationsEnabled } from "@/lib/application/mockGate";
+import { MOCK_APPLICATIONS } from "@/lib/application/mocks";
 import styles from "@/app/apply/form/form.module.css";
 
-export async function ApplicationScreen({ initialScholarship }: { initialScholarship: ScholarshipId | "" }) {
+export async function ApplicationScreen({
+  initialScholarship,
+  initialMock = "",
+}: {
+  initialScholarship: ScholarshipId | "";
+  initialMock?: string;
+}) {
   const form = await loadFormState();
   if (!form.open) {
     return (
@@ -39,9 +47,14 @@ export async function ApplicationScreen({ initialScholarship }: { initialScholar
         <h1 className={styles.title}>Scholarship application</h1>
         <p className={styles.lead}>
           John-Ivy Azariah, Robert Mathias, and Ivy Azariah applications are collected on this form.
-          Upload JPG, PNG, or PDF copies of your photo, identity card, results, fee voucher, and pastor letter. Files stay private.
+          Upload photos (JPG, PNG, HEIC) or PDF copies of your photo, identity card, results, fee voucher, and pastor letter. Files stay private.
         </p>
-        <ApplicationForm initialScholarship={initialScholarship} promoted={promoted} cycleName={form.cycleName} />
+        <ApplicationForm
+          initialScholarship={initialScholarship}
+          promoted={promoted}
+          cycleName={form.cycleName}
+          {...(mockApplicationsEnabled() ? { mocks: MOCK_APPLICATIONS, initialMock } : {})}
+        />
       </div>
     </section>
   );

@@ -179,24 +179,15 @@
 .menuActive .menuTitle { color: #b20f3a; }
 .menuActive { background: #ffe8ee; }
 
-.donate {
+/* Header Donate uses .btn .btn-sm; this only controls visibility. */
+.header .donate {
   display: none;
-  align-items: center;
-  padding: 0.6rem 1.25rem;
-  border-radius: 999px;
-  background: #b20f3a;
-  color: #ffffff;
-  font-family: var(--font-button);
-  font-size: 0.86rem;
-  font-weight: 600;
   white-space: nowrap;
-  text-decoration: none;
-  box-shadow: 0 6px 16px rgba(178, 15, 58, 0.22);
-  transition: background 0.2s ease, box-shadow 0.2s ease;
 }
-.donate:hover { background: #c81343; color: #ffffff; text-decoration: none; }
-.donate:active,
-.donateActive { background: #8b0a24; }
+.header .donateActive {
+  background: var(--color-brand-primary-active);
+  border-color: var(--color-brand-primary-active);
+}
 
 /* ── Menu button (hamburger morphs to X) ───────── */
 .menuToggle {
@@ -360,33 +351,18 @@
   border-top: 1px solid rgba(34, 34, 34, 0.1);
   background: #f7f4ef;
 }
+/* Drawer CTAs use .btn / .btn-secondary + .btn-block. */
 .drawerDonate,
 .drawerApply {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 50px;
-  border-radius: 999px;
-  font-family: var(--font-button);
-  font-size: 0.95rem;
-  font-weight: 600;
-  text-decoration: none;
+  box-shadow: none;
 }
-.drawerDonate { background: #b20f3a; color: #ffffff; }
-.drawerDonate:hover { background: #c81343; color: #ffffff; text-decoration: none; }
-.drawerDonate:active { background: #8b0a24; }
-.drawerApply { border: 1.5px solid #8b0a24; color: #8b0a24; background: #ffffff; }
-.drawerApply:hover { background: #ffe8ee; text-decoration: none; }
 
 .link:focus-visible,
-.donate:focus-visible,
 .menuItem:focus-visible,
 .menuToggle:focus-visible,
 .drawerClose:focus-visible,
 .drawerLink:focus-visible,
-.subLink:focus-visible,
-.drawerDonate:focus-visible,
-.drawerApply:focus-visible {
+.subLink:focus-visible {
   outline: 2px solid #b20f3a;
   outline-offset: 2px;
 }
@@ -398,7 +374,7 @@
 
 @media (min-width: 1024px) {
   .nav { display: flex; align-items: center; gap: 1rem; }
-  .donate { display: inline-flex; }
+  .header .donate { display: inline-flex; }
   .menuToggle,
   .drawer,
   .backdrop { display: none; }

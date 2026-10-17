@@ -16,6 +16,9 @@ import {
 import { normalizeCnic } from "./normalize";
 import type { DocumentChecks } from "./types";
 
+/** Informational note added to every PDF; not a problem with the file. */
+export const PDF_NOTE = "Text checks run on photos. A reviewer will read this PDF.";
+
 export type PreparedFile = { blob: Blob; name: string; checks: DocumentChecks };
 
 function checksFrom(partial: Partial<DocumentChecks>): DocumentChecks {
@@ -88,9 +91,16 @@ async function readText(blob: Blob): Promise<string> {
   }
 }
 
+/**
+ * HEIC/HEIF (iPhone default) becomes JPEG in the browser before upload, so the
+ * server only ever stores JPG, PNG or PDF. heic2any is libheif compiled to wasm,
+ * so this also works in Android Chrome, which cannot decode HEIC natively.
+ * Decided by the file's bytes, not its name: a ".heic" name with JPEG bytes
+ * (iOS often converts on pick) is used as-is.
+ */
 async function maybeHeic(file: File): Promise<File> {
   const bytes = new Uint8Array(await file.slice(0, 16).arrayBuffer());
-  if (sniffType(bytes) !== "image/heic" && !file.name.toLowerCase().endsWith(".heic")) return file;
+  if (sniffType(bytes) !== "image/heic") return file;
   try {
     const heic2any = (await import("heic2any")).default;
     const converted = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.85 });
@@ -98,14 +108,22 @@ async function maybeHeic(file: File): Promise<File> {
     if (!blob) throw new Error("empty");
     return new File([blob], "photo.jpg", { type: "image/jpeg" });
   } catch {
-    throw new Error("Save this HEIC photo as JPG and upload it again.");
+    throw new Error("This HEIC photo could not be read. Save it as JPG and upload it again.");
   }
+}
+
+function isWebp(bytes: Uint8Array): boolean {
+  return (
+    bytes.length >= 12 &&
+    String.fromCharCode(bytes[0] ?? 0, bytes[1] ?? 0, bytes[2] ?? 0, bytes[3] ?? 0) === "RIFF" &&
+    String.fromCharCode(bytes[8] ?? 0, bytes[9] ?? 0, bytes[10] ?? 0, bytes[11] ?? 0) === "WEBP"
+  );
 }
 
 export async function mergeImagesToPdf(files: File[]): Promise<Blob> {
   const pdf = await PDFDocument.create();
   for (const file of files.slice(0, 2)) {
-    const prepared = await compressImage(file);
+    const prepared = await compressImage(await maybeHeic(file));
     const image = await pdf.embedJpg(new Uint8Array(await prepared.blob.arrayBuffer()));
     const page = pdf.addPage([image.width, image.height]);
     page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
@@ -119,9 +137,10 @@ export async function prepareFile(
 ): Promise<PreparedFile> {
   const source = await maybeHeic(file);
   const head = new Uint8Array(await source.slice(0, 32).arrayBuffer());
-  const kind = sniffType(head);
+  // WebP (some Android galleries) is decoded by the browser and re-encoded as JPEG below.
+  const kind = isWebp(head) ? "image/webp" : sniffType(head);
   if (kind === "reject" || kind === "image/heic") {
-    throw new Error("Use a JPG, PNG, or PDF. Word files, zip files, and chat screenshots are not accepted.");
+    throw new Error("Use a photo (JPG, PNG, HEIC) or a PDF. Word files, zip files, and chat screenshots are not accepted.");
   }
   if (kind === "application/pdf") {
     const bytes = new Uint8Array(await source.arrayBuffer());
@@ -139,7 +158,7 @@ export async function prepareFile(
       name: `${context.slot}.pdf`,
       checks: checksFrom({
         page_count: pages,
-        warnings: ["Text checks run on photos. A reviewer will read this PDF."],
+        warnings: [PDF_NOTE],
       }),
     };
   }

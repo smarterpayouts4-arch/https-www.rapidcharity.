@@ -1,0 +1,240 @@
+{
+  "client_id": "",
+  "scholarship": "robert-mathias",
+  "applicant_type": "continuing",
+  "first_name": "Sample",
+  "last_name": "Robert Tester",
+  "full_name_as_on_cnic": "Sample Robert Tester",
+  "date_of_birth": "2003-11-21",
+  "gender": "Female",
+  "disability": "none",
+  "disability_other": "",
+  "marital_status": "Single",
+  "spouse_name": "",
+  "spouse_monthly_income": {
+    "amount": null,
+    "currency": "PKR",
+    "period": "month",
+    "value_state": "known"
+  },
+  "religion": {
+    "option_id": "christianity",
+    "other_text": ""
+  },
+  "cnic": "35202-0000003-4",
+  "email": "sample.applicant+robert@example.com",
+  "email_confirm": "sample.applicant+robert@example.com",
+  "mobile_phone": "0300 0000301",
+  "secondary_phone": "",
+  "address_line": "House 3, Sample Lane, Test Gardens",
+  "city": {
+    "option_id": "rawalpindi",
+    "other_text": ""
+  },
+  "province": "Punjab",
+  "employment_status": "No",
+  "employment_job": "",
+  "employment_employer": "",
+  "monthly_income": {
+    "amount": null,
+    "currency": "PKR",
+    "period": "month",
+    "value_state": "known"
+  },
+  "father_name": "Sample Father Robert",
+  "mother_name": "Sample Mother Robert",
+  "father_status": "Living",
+  "mother_status": "Living",
+  "father_occupation": {
+    "option_id": "shopkeeper_small_business",
+    "other_text": ""
+  },
+  "mother_occupation": {
+    "option_id": "homemaker",
+    "other_text": ""
+  },
+  "father_monthly_income": {
+    "amount": 45000,
+    "currency": "PKR",
+    "period": "month",
+    "value_state": "known"
+  },
+  "mother_monthly_income": {
+    "amount": 0,
+    "currency": "PKR",
+    "period": "month",
+    "value_state": "zero"
+  },
+  "guardian_phone": "+92 300 0000302",
+  "siblings_count": 1,
+  "siblings_studying_count": 1,
+  "siblings_working_count": 0,
+  "siblings_married_count": 0,
+  "siblings_other_count": 0,
+  "siblings_notes": "",
+  "current_institution": {
+    "option_id": "university_of_the_punjab_lahore",
+    "other_text": ""
+  },
+  "campus_city": {
+    "option_id": "lahore",
+    "other_text": ""
+  },
+  "degree_level": {
+    "option_id": "bachelor",
+    "other_text": ""
+  },
+  "field_of_study": {
+    "option_id": "business_administration",
+    "other_text": ""
+  },
+  "program_title": "Bachelor of Business Administration",
+  "program_track": "",
+  "program_track_other": "",
+  "specialization": "Marketing",
+  "study_years": 4,
+  "completion_term": "Spring",
+  "completion_year": 2028,
+  "roll_number": "SAMPLE-RM-003",
+  "terms": [
+    {
+      "term": "Spring 2026",
+      "unit": "semester",
+      "number": 3,
+      "status": "declared",
+      "result": {
+        "type": "Grade",
+        "value": null,
+        "max": null,
+        "grade": "A-"
+      }
+    },
+    {
+      "term": "Fall 2026",
+      "unit": "semester",
+      "number": 4,
+      "status": "declared",
+      "result": {
+        "type": "Marks",
+        "value": 412,
+        "max": 500,
+        "grade": ""
+      }
+    },
+    {
+      "term": "Spring 2027",
+      "unit": "semester",
+      "number": 5,
+      "status": "awaited",
+      "result": {
+        "type": "CGPA",
+        "value": null,
+        "max": 4,
+        "grade": ""
+      }
+    },
+    {
+      "term": "Fall 2027",
+      "unit": "semester",
+      "number": 6,
+      "status": "future",
+      "result": {
+        "type": "CGPA",
+        "value": null,
+        "max": 4,
+        "grade": ""
+      }
+    },
+    {
+      "term": "Spring 2028",
+      "unit": "semester",
+      "number": 7,
+      "status": "future",
+      "result": {
+        "type": "CGPA",
+        "value": null,
+        "max": 4,
+        "grade": ""
+      }
+    }
+  ],
+  "previous_institution": {
+    "option_id": "forman_christian_college_a_chartered_university_lahore",
+    "other_text": ""
+  },
+  "previous_qualification": {
+    "option_id": "i_com_commerce",
+    "other_text": ""
+  },
+  "previous_completion_year": 2022,
+  "fee": {
+    "amount": 95000,
+    "currency": "PKR",
+    "period": "semester",
+    "value_state": "known"
+  },
+  "fee_due_date": "2027-01-10",
+  "institution_phone": "",
+  "institution_address": "",
+  "rapid_received": "Yes",
+  "rapid_semesters": [
+    "Spring 2026",
+    "Fall 2026"
+  ],
+  "rapid_amount": {
+    "amount": 40000,
+    "currency": "PKR",
+    "period": "semester",
+    "value_state": "known"
+  },
+  "other_financial_support": "Yes",
+  "support_provider": {
+    "option_id": "institution_financial_aid",
+    "other_text": ""
+  },
+  "support_value_kind": "percent",
+  "support_percent": 25,
+  "support_amount": {
+    "amount": null,
+    "currency": "PKR",
+    "period": "semester",
+    "value_state": "known"
+  },
+  "heard_about": {
+    "option_id": "pastor_church",
+    "other_text": ""
+  },
+  "church_name": "Sample Rawalpindi Church",
+  "denomination": {
+    "option_id": "presbyterian",
+    "other_text": ""
+  },
+  "pastor_title": "Rev.",
+  "pastor_title_other": "",
+  "pastor_name": "Sample Reverend Robert",
+  "pastor_phone": "0300 0000303",
+  "pastor_email": "sample.pastor+robert@example.com",
+  "faculty_ref_name": "Sample Faculty Robert",
+  "faculty_ref_designation": "Lecturer, Business School",
+  "faculty_ref_phone": "0300 0000304",
+  "faculty_ref_email": "sample.faculty+robert@example.com",
+  "family_ref_name": "Sample Brother Robert",
+  "family_ref_relationship": {
+    "option_id": "brother",
+    "other_text": ""
+  },
+  "family_ref_phone": "0300 0000305",
+  "family_ref_email": "",
+  "attend_events": "Yes",
+  "life_goal": "I want to open a small marketing agency that helps family shops in Rawalpindi sell online, because my father's shop showed me how hard it is for small traders to reach new customers.",
+  "community_contribution": "I run a free weekend workshop at church where I show shop owners how to keep simple accounts and use social media. I will keep it going and invite classmates to teach with me.",
+  "plan_if_denied": "If the scholarship is not renewed I will keep the university's 25 percent aid, ask for a fee installment plan, and take on freelance social media work to cover the rest.",
+  "future_plan": "After my BBA I plan to work in a marketing team for two years to learn, then start my agency and hire other graduates from families like mine.",
+  "reuse_photo": true,
+  "reuse_cnic": true,
+  "reuse_guardian": false,
+  "documents": [],
+  "consent_accepted": true,
+  "consent_name": "Sample Robert Tester",
+  "website": ""
+}

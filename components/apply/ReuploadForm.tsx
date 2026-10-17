@@ -3,6 +3,7 @@
 import { useState } from "react";
 import styles from "@/app/apply/form/form.module.css";
 import { prepareFile } from "@/lib/application/prepareFile";
+import { UPLOAD_ACCEPT } from "./DocumentFields";
 import type { DocumentInput } from "@/lib/application/types";
 
 export function ReuploadForm({
@@ -76,11 +77,15 @@ export function ReuploadForm({
       <p className={styles.lead}>{reason}</p>
       <label className={styles.field} htmlFor="replacement">
         {slot.replaceAll("_", " ")}
+        <span className={styles.hint}>
+          Choose from your photo gallery or files. Take a photo first, save it to your gallery, then upload it here.
+          JPG, PNG, HEIC, or PDF, up to 5 MB.
+        </span>
         <input
           id="replacement"
           className={styles.control}
           type="file"
-          accept="image/jpeg,image/png,application/pdf,.jpg,.jpeg,.png,.pdf"
+          accept={UPLOAD_ACCEPT}
           disabled={busy}
           onChange={(event) => void onPick(event.target.files?.[0])}
         />

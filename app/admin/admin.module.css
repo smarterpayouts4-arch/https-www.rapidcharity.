@@ -67,55 +67,7 @@
   align-items: center;
 }
 
-.btn,
-.btnGhost,
-.btnDanger {
-  appearance: none;
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 0.875rem;
-  font-weight: 600;
-  padding: 0.65rem 1.1rem;
-  border-radius: var(--radius-pill);
-  transition: background var(--transition-fast), box-shadow var(--transition-fast),
-    transform var(--transition-fast);
-}
-
-.btn {
-  background: var(--color-brand-primary);
-  color: #fff;
-  box-shadow: var(--shadow-btn);
-}
-
-.btn:hover {
-  background: var(--color-brand-primary-hover);
-  box-shadow: var(--shadow-btn-hover);
-  text-decoration: none;
-}
-
-.btn:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-.btnGhost {
-  background: #fff;
-  color: var(--color-text-secondary);
-  border: 1px solid var(--color-border-strong);
-}
-
-.btnGhost:hover {
-  border-color: var(--color-brand-primary);
-  color: var(--color-brand-primary);
-  text-decoration: none;
-}
-
-.btnDanger {
-  background: var(--color-brand-deep);
-  color: #fff;
-}
+/* Buttons use the global system: .btn / .btn-secondary / .btn-danger + .btn-sm. */
 
 .status {
   font-size: 0.8rem;
@@ -241,13 +193,25 @@
 
 .moveBtns button {
   appearance: none;
-  border: 1px solid var(--color-border-strong);
+  display: inline-grid;
+  place-items: center;
+  border: 1.5px solid var(--color-border-strong);
   background: #fff;
-  border-radius: 6px;
-  width: 2rem;
-  height: 2rem;
+  border-radius: var(--btn-radius);
+  width: 2.25rem;
+  height: 2.25rem;
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+.moveBtns button:hover:not(:disabled) {
+  border-color: var(--color-brand-primary);
+  color: var(--color-brand-primary);
+}
+.moveBtns button:focus-visible {
+  outline: var(--btn-focus-outline);
+  outline-offset: 2px;
 }
 
 .moveBtns button:disabled {
@@ -420,13 +384,8 @@
   .actions {
     width: 100%;
   }
-  .actions .btn,
-  .actions .btnGhost,
-  .actions .btnDanger {
+  .actions > :global(.btn-sm) {
     flex: 1 1 auto;
-    text-align: center;
-    padding: 0.55rem 0.75rem;
-    font-size: 0.8rem;
   }
   .mainPane {
     padding: 1rem 0.75rem 1.5rem;
@@ -510,7 +469,7 @@
   gap: 0.85rem;
 }
 
-.loginForm .btn {
+.loginForm :global(.btn) {
   width: 100%;
 }
 
@@ -701,15 +660,35 @@
   margin-left: 0.45rem;
 }
 
+/* Dense per-row review actions (desktop admin table): compact outline pills
+   on the same radius, type and colors as .btn-secondary. */
 .appActions button {
-  font: inherit;
-  font-size: 0.8rem;
-  font-weight: 600;
-  border-radius: 999px;
-  border: 1px solid var(--color-border-strong);
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  font-family: var(--font-button);
+  font-size: 0.78rem;
+  font-weight: var(--btn-font-weight);
+  border-radius: var(--btn-radius);
+  border: 1.5px solid var(--color-brand-primary);
   background: #fff;
-  padding: 0.3rem 0.6rem;
+  color: var(--color-brand-primary);
+  padding: 0.25rem 0.75rem;
   cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+.appActions button:hover:not(:disabled) {
+  background: var(--color-brand-primary);
+  color: var(--color-text-on-brand);
+}
+.appActions button:focus-visible {
+  outline: var(--btn-focus-outline);
+  outline-offset: 2px;
+}
+.appActions button:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
 }
 
 .checkGroup {

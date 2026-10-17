@@ -1,0 +1,237 @@
+{
+  "client_id": "",
+  "scholarship": "john-ivy-azariah",
+  "applicant_type": "new",
+  "first_name": "Sample",
+  "last_name": "John Tester",
+  "full_name_as_on_cnic": "Sample John Tester",
+  "date_of_birth": "2004-08-02",
+  "gender": "Male",
+  "disability": "none",
+  "disability_other": "",
+  "marital_status": "Single",
+  "spouse_name": "",
+  "spouse_monthly_income": {
+    "amount": null,
+    "currency": "PKR",
+    "period": "month",
+    "value_state": "known"
+  },
+  "religion": {
+    "option_id": "christianity",
+    "other_text": ""
+  },
+  "cnic": "35202-0000002-3",
+  "email": "sample.applicant+john-ivy@example.com",
+  "email_confirm": "sample.applicant+john-ivy@example.com",
+  "mobile_phone": "0300 0000201",
+  "secondary_phone": "0300 0000209",
+  "address_line": "Flat 2, Sample Block, Test Town",
+  "city": {
+    "option_id": "faisalabad",
+    "other_text": ""
+  },
+  "province": "Punjab",
+  "employment_status": "Yes",
+  "employment_job": "Part-time computer lab assistant",
+  "employment_employer": "Sample Community Centre",
+  "monthly_income": {
+    "amount": 15000,
+    "currency": "PKR",
+    "period": "month",
+    "value_state": "known"
+  },
+  "father_name": "Sample Father John",
+  "mother_name": "Sample Mother John",
+  "father_status": "Retired",
+  "mother_status": "Living",
+  "father_occupation": {
+    "option_id": "retired",
+    "other_text": ""
+  },
+  "mother_occupation": {
+    "option_id": "teacher",
+    "other_text": ""
+  },
+  "father_monthly_income": {
+    "amount": 28000,
+    "currency": "PKR",
+    "period": "month",
+    "value_state": "known"
+  },
+  "mother_monthly_income": {
+    "amount": 30000,
+    "currency": "PKR",
+    "period": "month",
+    "value_state": "known"
+  },
+  "guardian_phone": "+92 300 0000202",
+  "siblings_count": 2,
+  "siblings_studying_count": 1,
+  "siblings_working_count": 0,
+  "siblings_married_count": 1,
+  "siblings_other_count": 0,
+  "siblings_notes": "",
+  "current_institution": {
+    "option_id": "forman_christian_college_a_chartered_university_lahore",
+    "other_text": ""
+  },
+  "campus_city": {
+    "option_id": "lahore",
+    "other_text": ""
+  },
+  "degree_level": {
+    "option_id": "bachelor",
+    "other_text": ""
+  },
+  "field_of_study": {
+    "option_id": "computer_science",
+    "other_text": ""
+  },
+  "program_title": "BS Computer Science",
+  "program_track": "",
+  "program_track_other": "",
+  "specialization": "Software Engineering",
+  "study_years": 4,
+  "completion_term": "Fall",
+  "completion_year": 2028,
+  "roll_number": "SAMPLE-JIA-002",
+  "terms": [
+    {
+      "term": "Spring 2026",
+      "unit": "semester",
+      "number": 3,
+      "status": "declared",
+      "result": {
+        "type": "CGPA",
+        "value": 3.21,
+        "max": 4,
+        "grade": ""
+      }
+    },
+    {
+      "term": "Fall 2026",
+      "unit": "semester",
+      "number": 4,
+      "status": "declared",
+      "result": {
+        "type": "Percentage",
+        "value": 78.5,
+        "max": 100,
+        "grade": ""
+      }
+    },
+    {
+      "term": "Spring 2027",
+      "unit": "semester",
+      "number": 5,
+      "status": "awaited",
+      "result": {
+        "type": "CGPA",
+        "value": null,
+        "max": 4,
+        "grade": ""
+      }
+    },
+    {
+      "term": "Fall 2027",
+      "unit": "semester",
+      "number": 6,
+      "status": "future",
+      "result": {
+        "type": "CGPA",
+        "value": null,
+        "max": 4,
+        "grade": ""
+      }
+    },
+    {
+      "term": "Spring 2028",
+      "unit": "semester",
+      "number": 7,
+      "status": "future",
+      "result": {
+        "type": "CGPA",
+        "value": null,
+        "max": 4,
+        "grade": ""
+      }
+    }
+  ],
+  "previous_institution": {
+    "option_id": "punjab_group_of_colleges_pgc",
+    "other_text": ""
+  },
+  "previous_qualification": {
+    "option_id": "ics_computer_science",
+    "other_text": ""
+  },
+  "previous_completion_year": 2023,
+  "fee": {
+    "amount": 120000,
+    "currency": "PKR",
+    "period": "semester",
+    "value_state": "known"
+  },
+  "fee_due_date": "2027-01-20",
+  "institution_phone": "+92 42 0000 0000",
+  "institution_address": "Sample Campus Road, Lahore",
+  "rapid_received": "Never",
+  "rapid_semesters": [],
+  "rapid_amount": {
+    "amount": null,
+    "currency": "PKR",
+    "period": "semester",
+    "value_state": "known"
+  },
+  "other_financial_support": "No",
+  "support_provider": {
+    "option_id": "",
+    "other_text": ""
+  },
+  "support_value_kind": "",
+  "support_percent": null,
+  "support_amount": {
+    "amount": null,
+    "currency": "PKR",
+    "period": "semester",
+    "value_state": "known"
+  },
+  "heard_about": {
+    "option_id": "pastor_church",
+    "other_text": ""
+  },
+  "church_name": "Sample Faisalabad Church",
+  "denomination": {
+    "option_id": "catholic",
+    "other_text": ""
+  },
+  "pastor_title": "Fr.",
+  "pastor_title_other": "",
+  "pastor_name": "Sample Father Priest",
+  "pastor_phone": "0300 0000203",
+  "pastor_email": "",
+  "faculty_ref_name": "Sample Faculty John",
+  "faculty_ref_designation": "Assistant Professor, Computer Science",
+  "faculty_ref_phone": "0300 0000204",
+  "faculty_ref_email": "sample.faculty+john-ivy@example.com",
+  "family_ref_name": "Sample Uncle John",
+  "family_ref_relationship": {
+    "option_id": "uncle",
+    "other_text": ""
+  },
+  "family_ref_phone": "0300 0000205",
+  "family_ref_email": "sample.family+john-ivy@example.com",
+  "attend_events": "Maybe",
+  "life_goal": "I want to build simple, low-cost software that helps small schools in Punjab keep attendance and results without paper, so teachers can spend more time teaching.",
+  "community_contribution": "I already teach basic computer skills to children at our community centre on Saturdays. I will keep doing this and train two older students to lead the classes with me.",
+  "plan_if_denied": "If I do not receive this scholarship I will increase my hours at the lab, apply for the university's need-based aid, and if needed take one lighter semester to manage the fee.",
+  "future_plan": "After graduating I plan to join a software company in Lahore as a junior developer, support my parents, and help my younger brother complete his own degree.",
+  "reuse_photo": false,
+  "reuse_cnic": false,
+  "reuse_guardian": false,
+  "documents": [],
+  "consent_accepted": true,
+  "consent_name": "Sample John Tester",
+  "website": ""
+}

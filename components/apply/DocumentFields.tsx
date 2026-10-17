@@ -2,8 +2,23 @@
 
 import { useState } from "react";
 import styles from "@/app/apply/form/form.module.css";
-import { prepareFile, mergeImagesToPdf } from "@/lib/application/prepareFile";
+import { PDF_NOTE, prepareFile, mergeImagesToPdf } from "@/lib/application/prepareFile";
 import type { DocumentInput } from "@/lib/application/types";
+
+/** Image types plus PDF, so phones open the photo picker. No `capture`: gallery and files only. */
+export const UPLOAD_ACCEPT =
+  "image/jpeg,image/png,image/heic,image/heif,image/webp,application/pdf,.jpg,.jpeg,.png,.heic,.heif,.webp,.pdf";
+
+type Preview = { name: string; url: string; pdf: boolean };
+
+function UploadIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 15V4m0 0L7.5 8.5M12 4l4.5 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M4.5 14.5v3A2.5 2.5 0 0 0 7 20h10a2.5 2.5 0 0 0 2.5-2.5v-3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
 
 const LABELS: Record<string, string> = {
   photo: "Passport photo",
@@ -26,6 +41,7 @@ export function DocumentFields({
   invalidSlots,
   hints,
   context,
+  sampleSlots,
   onUpsert,
   onRemove,
 }: {
@@ -36,6 +52,8 @@ export function DocumentFields({
   invalidSlots?: string[];
   hints: { slot: string; text: string }[];
   context: { name: string; cnic: string; fatherName: string; fee: number | null; fatherLate: boolean; under18: boolean };
+  /** Test mode only: required slots to fill with the SAMPLE files from tests/fixtures/sample-documents. */
+  sampleSlots?: string[];
   onUpsert: (document: DocumentInput) => void;
   onRemove: (slot: string, index: number) => void;
 }) {
@@ -43,6 +61,26 @@ export function DocumentFields({
   const [busySlots, setBusySlots] = useState<Record<string, boolean>>({});
   const [progress, setProgress] = useState<Record<string, number>>({});
   const [slotError, setSlotError] = useState<Record<string, string>>({});
+  const [previews, setPreviews] = useState<Record<string, Preview>>({});
+  const [sampleBusy, setSampleBusy] = useState(false);
+
+  function rememberPreview(key: string, preview: Preview) {
+    setPreviews((current) => {
+      const old = current[key];
+      if (old?.url) URL.revokeObjectURL(old.url);
+      return { ...current, [key]: preview };
+    });
+  }
+
+  function forgetPreview(key: string) {
+    setPreviews((current) => {
+      const old = current[key];
+      if (old?.url) URL.revokeObjectURL(old.url);
+      const next = { ...current };
+      delete next[key];
+      return next;
+    });
+  }
 
   function markBusy(slot: string, value: boolean) {
     setBusySlots((current) => ({ ...current, [slot]: value }));
@@ -69,7 +107,7 @@ export function DocumentFields({
     });
   }
 
-  async function upload(slot: string, index: number, file: File) {
+  async function upload(slot: string, index: number, file: File, displayName = file.name) {
     markBusy(slot, true);
     setSlotError((current) => ({ ...current, [slot]: "" }));
     setProgress((current) => ({ ...current, [slot]: 8 }));
@@ -92,6 +130,8 @@ export function DocumentFields({
         return;
       }
       onUpsert(body.document);
+      const pdf = prepared.blob.type === "application/pdf";
+      rememberPreview(`${slot}-${index}`, { name: displayName, url: pdf ? "" : URL.createObjectURL(prepared.blob), pdf });
       setProgress((current) => ({ ...current, [slot]: 100 }));
       const warnings = body.document.checks.warnings;
       setStatus(warnings.length ? warnings[0] ?? "" : "File accepted.");
@@ -105,14 +145,21 @@ export function DocumentFields({
     }
   }
 
-  async function onPick(slot: string, index: number, list: FileList | null) {
-    if (!list || list.length === 0) return;
+  async function onPick(slot: string, index: number, picked: ArrayLike<File> | null) {
+    // Copy first: the input's live FileList is cleared right after onChange.
+    const list = picked ? Array.from(picked) : [];
+    if (list.length === 0) return;
     if ((slot === "cnic" || slot === "guardian_cnic") && list.length === 2) {
       markBusy(slot, true);
       setStatus("Combining the front and back into one PDF…");
       try {
         const merged = await mergeImagesToPdf([list[0] as File, list[1] as File]);
-        await upload(slot, index, new File([merged], `${slot}.pdf`, { type: "application/pdf" }));
+        await upload(
+          slot,
+          index,
+          new File([merged], `${slot}.pdf`, { type: "application/pdf" }),
+          `${(list[0] as File).name} + ${(list[1] as File).name}`,
+        );
       } catch (reason) {
         setStatus(reason instanceof Error ? reason.message : "The two photos could not be combined.");
         markBusy(slot, false);
@@ -120,6 +167,30 @@ export function DocumentFields({
       return;
     }
     await upload(slot, index, list[0] as File);
+  }
+
+  async function uploadSamples() {
+    if (!sampleSlots) return;
+    setSampleBusy(true);
+    try {
+      const { SAMPLE_DOCUMENT_FILES } = await import("@/lib/application/sampleDocuments");
+      for (const slot of sampleSlots) {
+        if (documents.some((item) => item.slot === slot)) continue;
+        const names = SAMPLE_DOCUMENT_FILES[slot] ?? [];
+        const files: File[] = [];
+        for (const name of names) {
+          const response = await fetch(`/api/dev/sample-documents?file=${encodeURIComponent(name)}`);
+          if (!response.ok) throw new Error(`Sample file ${name} is not available.`);
+          const blob = await response.blob();
+          files.push(new File([blob], name, { type: blob.type }));
+        }
+        if (files.length) await onPick(slot, 1, files);
+      }
+    } catch (reason) {
+      setStatus(reason instanceof Error ? reason.message : "The sample files could not be loaded.");
+    } finally {
+      setSampleBusy(false);
+    }
   }
 
   const slots = [
@@ -138,9 +209,20 @@ export function DocumentFields({
   return (
     <div className={styles.grid} data-field={field}>
       <p className={styles.noteBox}>
-        JPG, PNG, or PDF. Each file can be up to 5 MB and the set up to 25 MB. Photos are compressed in the browser
-        before they are stored. CNIC front and back can be two photos; they are combined into one PDF.
+        Take a photo first, save it to your gallery, then upload it here. JPG, PNG, HEIC, or PDF, up to 5 MB each
+        and 25 MB in total. Large phone photos are made smaller automatically. CNIC front and back can be two
+        photos; they are combined into one PDF.
       </p>
+      {sampleSlots ? (
+        <div className={styles.testTools} data-testid="sample-documents">
+          <p className={styles.testToolsLabel}>Test mode: upload the SAMPLE files for every required document</p>
+          <div className={styles.testToolsActions}>
+            <button type="button" className="btn-secondary btn-sm" disabled={sampleBusy} onClick={() => void uploadSamples()}>
+              {sampleBusy ? "Uploading sample files…" : "Upload sample documents"}
+            </button>
+          </div>
+        </div>
+      ) : null}
       {error ? <p className={styles.error}>{error}</p> : null}
       {status ? <p role="status">{status}</p> : null}
       {slots.map((slot) => {
@@ -172,16 +254,39 @@ export function DocumentFields({
               htmlFor={`doc-${slot}`}
               data-focus
               tabIndex={-1}
+              aria-disabled={busySlots[slot] ? "true" : undefined}
               data-error={slotError[slot] || invalidSlots?.includes(slot) ? "true" : "false"}
             >
-              <strong>{busySlots[slot] ? "Checking…" : "Select or drop a file"}</strong>
-              <span className={styles.hint}>JPG, PNG, or PDF · 5 MB each · 25 MB total</span>
+              <span className={styles.dropIcon}>
+                <UploadIcon />
+              </span>
+              <span className={styles.dropText}>
+                <strong>
+                  {busySlots[slot] ? (
+                    "Checking…"
+                  ) : files.length > 0 && slot !== "result" ? (
+                    "Replace with another photo or file"
+                  ) : (
+                    <>
+                      <span className={styles.dropMobile}>Choose from your photo gallery or files</span>
+                      <span className={styles.dropDesktop}>Choose a file or drop it here</span>
+                    </>
+                  )}
+                </strong>
+                <span className={styles.dropHint}>
+                  {slot === "cnic" || slot === "guardian_cnic"
+                    ? "Pick one PDF, or two photos (front and back)."
+                    : slot === "result"
+                      ? "JPG, PNG, HEIC, or PDF. Up to five files."
+                      : "JPG, PNG, HEIC, or PDF, up to 5 MB."}
+                </span>
+              </span>
             </label>
             <input
               id={`doc-${slot}`}
-              className={styles.hp}
+              className={styles.fileInput}
               type="file"
-              accept="image/jpeg,image/png,image/heic,application/pdf,.jpg,.jpeg,.png,.heic,.pdf"
+              accept={UPLOAD_ACCEPT}
               multiple={slot === "cnic" || slot === "guardian_cnic" || slot === "result"}
               disabled={Boolean(busySlots[slot])}
               onChange={(event) => {
@@ -201,18 +306,41 @@ export function DocumentFields({
               </div>
             ) : null}
             {slotError[slot] ? <p className={styles.error}>{slotError[slot]}</p> : null}
-            {files.map((file) => (
-              <div key={`${file.slot}-${file.index}`} className={styles.fileRow} data-error={file.checks.warnings[0] ? "true" : "false"}>
-                <span>
-                  {file.slot === "result" ? `Result ${file.index}` : "Uploaded"} · {Math.ceil(file.bytes / 1024)} KB
-                  {file.checks.duplicate_across ? " · also seen on another application" : ""}
-                  {file.checks.warnings[0] ? ` · ${file.checks.warnings[0]}` : ""}
+            {files.map((file) => {
+              const key = `${file.slot}-${file.index}`;
+              const preview = previews[key];
+              const pdf = preview ? preview.pdf : file.mime === "application/pdf";
+              const showThumb = Boolean(preview?.url) || pdf;
+              const notes = [
+                file.slot === "result" ? `Result ${file.index}, uploaded` : "Uploaded",
+                `${Math.ceil(file.bytes / 1024)} KB`,
+                file.checks.warnings[0] ?? "",
+              ].filter(Boolean);
+              return (
+              <div
+                key={key}
+                className={styles.fileRow}
+                data-has-thumb={showThumb ? "true" : "false"}
+                data-error={file.checks.warnings.some((item) => item !== PDF_NOTE) ? "true" : "false"}
+              >
+                {preview?.url ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- local object URL preview of the picked file
+                  <img className={styles.thumb} src={preview.url} alt="" />
+                ) : pdf ? (
+                  <span className={styles.thumbPdf} aria-hidden="true">PDF</span>
+                ) : null}
+                <span className={styles.fileMeta}>
+                  {preview?.name ? <span className={styles.fileName}>{preview.name}</span> : null}
+                  <span className={styles.fileNote}>{notes.join(", ")}</span>
                 </span>
                 <button
                   type="button"
-                  className={styles.remove}
+                  className={`btn-icon ${styles.remove}`}
                   aria-label={`Remove ${label ?? slot}`}
-                  onClick={() => onRemove(file.slot, file.index)}
+                  onClick={() => {
+                    forgetPreview(key);
+                    onRemove(file.slot, file.index);
+                  }}
                 >
                   ×
                 </button>
@@ -220,7 +348,8 @@ export function DocumentFields({
                   <span style={{ width: "100%" }} />
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         );
       })}

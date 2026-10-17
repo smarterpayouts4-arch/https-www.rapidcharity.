@@ -21,8 +21,11 @@
   background: transparent;
   font: inherit;
   font-weight: 600;
-  padding: 0.45rem 0.95rem;
-  border-radius: var(--radius-pill);
+  min-height: var(--btn-height-sm);
+  padding: 0.45rem 1.1rem;
+  border-radius: var(--btn-radius);
+  font-family: var(--font-button);
+  font-size: var(--btn-font-size-sm);
   cursor: pointer;
   color: var(--color-text-secondary);
 }

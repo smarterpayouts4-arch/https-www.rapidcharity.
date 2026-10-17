@@ -262,7 +262,7 @@ export function Header({ nav, programBlurbs = {} }: Props) {
           </ul>
           <Link
             href={donate.href}
-            className={`${styles.donate} ${donateActive ? styles.donateActive : ""}`}
+            className={`btn btn-sm ${styles.donate} ${donateActive ? styles.donateActive : ""}`}
             aria-current={donateActive ? "page" : undefined}
           >
             {donate.label}
@@ -380,11 +380,11 @@ export function Header({ nav, programBlurbs = {} }: Props) {
           </ul>
         </nav>
         <div className={styles.drawerFoot}>
-          <Link href={donate.href} className={styles.drawerDonate} onClick={() => closeDrawer(false)}>
+          <Link href={donate.href} className={`btn btn-block ${styles.drawerDonate}`} onClick={() => closeDrawer(false)}>
             {donate.label}
           </Link>
           {applyItem?.href ? (
-            <Link href={applyItem.href} className={styles.drawerApply} onClick={() => closeDrawer(false)}>
+            <Link href={applyItem.href} className={`btn-secondary btn-block ${styles.drawerApply}`} onClick={() => closeDrawer(false)}>
               {applyItem.label}
             </Link>
           ) : null}
