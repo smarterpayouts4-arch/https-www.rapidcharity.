@@ -4,13 +4,14 @@
 }
 
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 2rem;
-  margin-bottom: 2.5rem;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 0.75rem 2rem;
+  margin-bottom: 2.25rem;
 }
+
+.intro { min-width: 0; }
 
 .title {
   font-size: clamp(1.85rem, 3vw, 2.55rem);
@@ -26,23 +27,21 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.5rem;
 }
 
 .card {
+  min-width: 0;
   background: var(--color-surface-card);
   border: 1px solid var(--color-border);
+  border-top: 3px solid var(--color-brand-primary);
   border-radius: var(--radius-card);
   overflow: hidden;
-  box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
-.card:hover {
-  border-color: var(--color-border-strong);
-}
+.card:hover { border-color: var(--color-border-strong); border-top-color: var(--color-brand-primary-hover); }
 
 .imageWrap {
   aspect-ratio: 5 / 4;
@@ -54,27 +53,38 @@
   height: 100%;
   object-fit: cover;
   object-position: center top;
-  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .body {
-  padding: 1.25rem 1.35rem 1.5rem;
+  padding: 1.35rem 1.4rem 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
   flex: 1;
+  min-width: 0;
 }
+
 .chip {
-  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
   margin: 0;
-  padding: 0.2rem 0.55rem;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--color-border-strong);
+  font-family: var(--font-button);
   font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-brand-deep);
+}
+.num {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: #FFE8EE;
+  color: var(--color-brand-deep);
+  letter-spacing: 0;
 }
 
 .body h3 {
@@ -82,28 +92,36 @@
   font-size: 1.7rem;
   margin: 0;
   line-height: 1.15;
+  overflow-wrap: break-word;
 }
-.body p {
+.titleLink { color: inherit; text-decoration: none; }
+.titleLink:hover { color: var(--color-brand-primary); text-decoration: none; }
+
+.blurb {
   margin: 0;
   flex: 1;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: var(--color-body);
   line-height: 1.6;
+  overflow-wrap: break-word;
 }
 
 .more {
   align-self: flex-start;
-  margin-top: 0.35rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 44px;
+  margin-top: 0.15rem;
   border: 1px solid var(--color-text-primary);
   border-radius: var(--radius-pill);
-  padding: 0.45rem 0.95rem;
+  padding: 0.45rem 1rem;
   color: var(--color-text-primary);
   font-weight: 600;
   font-size: 0.88rem;
   text-decoration: none;
   transition: background 0.2s ease, color 0.2s ease;
 }
-
 .more:hover {
   background: var(--color-text-primary);
   color: #fff;
@@ -111,96 +129,43 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .card {
-    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s ease, border-color 0.45s ease;
-  }
+  .card { transition: transform 0.45s var(--ease-out), box-shadow 0.45s ease, border-color 0.45s ease; }
   .card:hover {
     transform: translateY(-4px);
     box-shadow: 0 16px 36px rgba(26, 26, 26, 0.09);
   }
-  .card:hover .imageWrap img {
-    transform: scale(1.045);
-  }
 }
 
-@media (max-width: 900px) {
-  .grid { grid-template-columns: 1fr 1fr; }
+@media (max-width: 1023px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 .seeAll { display: none; }
 
 @media (max-width: 767px) {
-  .section { padding: 1.15rem 0 0.5rem; }
-  .header {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
-  }
-  .header > div { grid-column: 1; }
-  .header :global(.btn-secondary),
-  .header :global(.eyebrow),
-  .lead { display: none; }
+  /* Eyebrow, then title with "See all" beside it, then the lead across the full width. */
+  .intro { display: contents; }
+  .header :global(.eyebrow) { grid-column: 1 / -1; grid-row: 1; }
+  .title { grid-column: 1; grid-row: 2; align-self: center; }
+  .seeAll { grid-column: 2; grid-row: 2; align-self: center; }
+  .lead { grid-column: 1 / -1; grid-row: 3; margin: 0; }
+  .header { row-gap: 0.4rem; }
+  .section { padding: 1.75rem 0; }
+  .header { align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+  .header :global(.eyebrow) { margin: 0; }
+  .desktopCta { display: none; }
+  .lead { font-size: 0.92rem; }
   .title { font-size: 1.55rem; margin: 0; }
-  .grid {
-    display: flex;
-    flex-direction: column;
-    grid-template-columns: none;
-    gap: 0;
-    overflow: visible;
-  }
-  .card:nth-child(n + 5) { display: none; }
-  .card {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 72px;
-    gap: 0.75rem;
-    align-items: center;
-    width: 100%;
-    max-width: none;
-    flex: none;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-    background: transparent;
-    border-bottom: 1px solid var(--color-border);
-    padding: 0.8rem 0;
-  }
-  .imageWrap {
-    grid-column: 2;
-    grid-row: 1;
-    width: 72px;
-    height: 72px;
-    aspect-ratio: 1;
-    margin: 0;
-    border-radius: 0.55rem;
-  }
-  .body {
-    grid-column: 1;
-    grid-row: 1;
-    padding: 0;
-    gap: 0.2rem;
-  }
-  .chip { display: none; }
-  .body h3 { font-size: 1rem; font-family: var(--font-sans); font-weight: 700; line-height: 1.25; }
-  .body p:not(.chip) {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    font-size: 0.85rem;
-  }
-  .more {
-    border: 0;
-    border-radius: 0;
-    padding: 0;
-    color: var(--color-brand-primary);
-  }
+  .grid { grid-template-columns: minmax(0, 1fr); gap: 0.85rem; }
+  .body { padding: 1rem 1.1rem 1.1rem; gap: 0.45rem; }
+  .body h3 { font-size: 1.35rem; }
+  .blurb { font-size: 0.92rem; line-height: 1.55; }
+  .more { border: 0; padding: 0; min-height: 40px; color: var(--color-brand-primary); }
+  .more:hover { background: transparent; color: var(--color-brand-primary-hover); text-decoration: underline; }
   .seeAll {
     display: inline-flex;
     align-items: center;
-    grid-column: 2;
-    grid-row: 1;
+    gap: 0.3rem;
     min-height: 44px;
     margin: 0;
     font-weight: 650;

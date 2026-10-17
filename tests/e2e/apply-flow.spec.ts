@@ -274,8 +274,13 @@ test("home mobile keeps news and programs to about four compact cards", async ({
   await expect(programs.getByRole("link", { name: "See all" })).toBeVisible();
   const cards = programs.locator("article:visible");
   await expect(cards).toHaveCount(3);
+  // Program descriptions show in full (no clamp) and stay compact.
   const box = await cards.first().boundingBox();
-  expect(box?.height ?? 999).toBeLessThan(160);
+  expect(box?.height ?? 999).toBeLessThan(260);
+  const clamped = await cards.locator("p").evaluateAll((els) =>
+    els.filter((el) => el.scrollHeight > el.clientHeight + 2).length,
+  );
+  expect(clamped).toBe(0);
 });
 
 test("robert mathais page leads with eligibility bullets and a short deadline", async ({ page }) => {

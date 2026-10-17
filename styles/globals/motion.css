@@ -1,17 +1,8 @@
 /* Scroll reveals and hover motion.
-   Nothing here changes color. Visitors who prefer reduced motion, and
-   browsers without scroll-driven animations, keep every element visible. */
-
-@keyframes rc-rise {
-  from {
-    opacity: 0;
-    translate: 0 1.35rem;
-  }
-  to {
-    opacity: 1;
-    translate: 0 0;
-  }
-}
+   Nothing here changes color. Content is only hidden after the reveal
+   script has run (html.rc-reveal), so no-JS visitors and visitors who
+   prefer reduced motion always see everything. Each element fades in once,
+   the first time it reaches the viewport, and then stays visible. */
 
 @media (prefers-reduced-motion: no-preference) {
   .btn:hover,
@@ -35,28 +26,28 @@
     transition: color 0.2s ease;
   }
 
-  @supports (animation-timeline: view()) {
-    [data-reveal],
-    [data-reveal-item] {
-      animation: rc-rise linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 22%;
-    }
+  .rc-reveal [data-reveal],
+  .rc-reveal [data-reveal-item] {
+    transition:
+      opacity 0.55s var(--ease-out),
+      translate 0.55s var(--ease-out);
+  }
 
-    [data-reveal-item]:nth-child(2) {
-      animation-range: entry 5% cover 28%;
-    }
+  .rc-reveal [data-reveal]:not([data-shown]),
+  .rc-reveal [data-reveal-item]:not([data-shown]) {
+    opacity: 0;
+    translate: 0 1rem;
+  }
 
-    [data-reveal-item]:nth-child(3) {
-      animation-range: entry 10% cover 34%;
-    }
+  .rc-reveal [data-reveal-item]:nth-child(2) { transition-delay: 60ms; }
+  .rc-reveal [data-reveal-item]:nth-child(3) { transition-delay: 120ms; }
+  .rc-reveal [data-reveal-item]:nth-child(4) { transition-delay: 180ms; }
+}
 
-    [data-reveal-item]:nth-child(4) {
-      animation-range: entry 15% cover 40%;
-    }
-
-    [data-reveal-item]:nth-child(n + 5) {
-      animation-range: entry 18% cover 44%;
-    }
+@media print {
+  [data-reveal],
+  [data-reveal-item] {
+    opacity: 1 !important;
+    translate: none !important;
   }
 }

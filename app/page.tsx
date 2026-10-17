@@ -13,7 +13,9 @@ import {
 } from "@/components/home";
 import { PreviewBanner } from "@/components/PreviewBanner";
 import { site } from "@/lib/site";
+import { homeNewsPosts, homeStoryPosts } from "@/components/home/homePosts";
 import {
+  loadBlogContent,
   loadSiteContent,
   resolvePreview,
   type HomepageSectionId,
@@ -31,6 +33,14 @@ export default async function HomePage({
   const params = searchParams ? await searchParams : undefined;
   const preview = await resolvePreview(params);
   const content = await loadSiteContent({ preview });
+  const blog = await loadBlogContent();
+  const storiesVisible = content.homepage.sections.some((s) => s.id === "studentStories" && s.visible);
+  const stories = homeStoryPosts(blog);
+  const news = homeNewsPosts(
+    blog,
+    storiesVisible ? new Set(stories.map((s) => s.post.slug)) : undefined,
+  );
+  const minRead = content.chrome.blog.minReadSuffix;
 
   const sectionMap: Record<HomepageSectionId, ReactNode> = {
     hero: (
@@ -41,8 +51,10 @@ export default async function HomePage({
     scholarshipPrograms: (
       <ScholarshipPrograms content={content.scholarshipPrograms} />
     ),
-    studentStories: <StudentStories content={content.studentStories} />,
-    latestNews: <LatestNews content={content.latestNews} />,
+    studentStories: (
+      <StudentStories content={content.studentStories} posts={stories} minReadSuffix={minRead} />
+    ),
+    latestNews: <LatestNews content={content.latestNews} posts={news} minReadSuffix={minRead} />,
     leadership: <Leadership content={content.leadership} />,
     reportsShowcase: (
       <ReportsShowcase content={content.reportsShowcase} remoteHref={content.reports.publicSrc} />

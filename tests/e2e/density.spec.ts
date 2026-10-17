@@ -37,18 +37,27 @@ for (const width of WIDTHS) {
   });
 }
 
-test("mobile home uses rows, a peeking carousel, and see all", async ({ page }) => {
+test("mobile home uses a two-column story grid, full program cards, and see all", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/", { waitUntil: "domcontentloaded" });
-  const news = page.locator("#news-heading").locator("xpath=ancestor::section[1]").locator("article").first();
-  await news.scrollIntoViewIfNeeded();
-  const row = await news.boundingBox();
-  const thumb = await news.locator("img").boundingBox();
-  expect(row?.height ?? 999).toBeLessThan(150);
-  expect((thumb?.x ?? 0) > (row?.x ?? 0) + (row?.width ?? 0) / 2).toBeTruthy();
-  const programs = page.locator("#scholarships-heading").locator("xpath=ancestor::section[1]").locator("article").first();
-  const programBox = await programs.boundingBox();
-  expect(programBox?.width ?? 999).toBeLessThan(340);
+  for (const id of ["#news-heading", "#stories-heading"]) {
+    const section = page.locator(id).locator("xpath=ancestor::section[1]");
+    await section.locator("article").first().scrollIntoViewIfNeeded();
+    // Layout offsets, so the fade-in translate cannot skew the measurement.
+    const m = await section.evaluate((el) => {
+      const [a, b] = [...el.querySelectorAll("article")] as HTMLElement[];
+      const imgOffset = a.querySelector("img")!.getBoundingClientRect().top - a.getBoundingClientRect().top;
+      return { aTop: a.offsetTop, bTop: b.offsetTop, aRight: a.offsetLeft + a.offsetWidth, bLeft: b.offsetLeft, imgOffset };
+    });
+    // Two cards side by side, photo on top of each card.
+    expect(Math.abs(m.aTop - m.bTop)).toBeLessThan(2);
+    expect(m.bLeft).toBeGreaterThan(m.aRight - 1);
+    expect(Math.abs(m.imgOffset)).toBeLessThan(3);
+  }
+  const programs = page.locator("#scholarships-heading").locator("xpath=ancestor::section[1]").locator("article");
+  await expect(programs).toHaveCount(3);
+  const programBox = await programs.first().boundingBox();
+  expect(programBox?.width ?? 999).toBeLessThanOrEqual(352);
   await expect(page.getByRole("link", { name: "See all" }).first()).toBeVisible();
 });
 

@@ -194,9 +194,9 @@
 }
 
 @media (max-width: 900px) {
-  .band { grid-template-columns: 1fr; }
+  .band { grid-template-columns: minmax(0, 1fr); }
   .video, .fbWrap, .fallback { min-height: 22rem; }
-  .pillars { grid-template-columns: 1fr 1fr; }
+  .pillars { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .title { max-width: none; }
 }
 
@@ -207,15 +207,12 @@
   .journeyWrap { padding: 1.35rem 0; }
   .quoteCard { margin-bottom: 1rem; }
   .quoteCard p { font-size: 1.2rem; }
-  .pillars { grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+  .pillars { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0.85rem; }
   .pillar { padding-top: 0.65rem; }
   .pillar h3 { font-size: 1.1rem; }
   .pillar p {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
     font-size: 0.82rem;
+    overflow-wrap: anywhere;
   }
 }
 

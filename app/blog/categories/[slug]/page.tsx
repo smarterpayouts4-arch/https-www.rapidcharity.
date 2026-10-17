@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
+import { PostCard, PostGrid } from "@/components/blog/PostCard";
 import { notFound } from "next/navigation";
 import { CategoryRail } from "@/components/CategoryRail";
 import { PageHero } from "@/components/PageHero";
@@ -64,36 +63,21 @@ export default async function CategoryPage({ params, searchParams }: Props) {
         subtitle={siteContent.chrome.blog.categorySubtitle}
       />
       <section className="section">
-        <div className="container card-grid">
-          {list.map((post) => (
-            <article key={post.slug} className="card">
-              {post.image ? (
-                <Link href={`/post/${post.slug}`}>
-                  <Image
-                    src={post.image}
-                    alt={post.imageAlt || post.title}
-                    width={480}
-                    height={260}
-                    style={{
-                      width: "100%",
-                      height: 160,
-                      objectFit: "cover",
-                      borderRadius: "0.35rem",
-                      marginBottom: "0.75rem",
-                    }}
-                  />
-                </Link>
-              ) : null}
-              <h3>
-                <Link href={`/post/${post.slug}`}>{post.title}</Link>
-              </h3>
-              <p className="meta">
-                {post.author} · {post.date} · {post.readMinutes}{" "}
-                {siteContent.chrome.blog.minReadSuffix}
-              </p>
-              <p>{post.excerpt}</p>
-            </article>
-          ))}
+        <div className="container">
+          <PostGrid variant="page">
+            {list.map((post, index) => (
+              <PostCard
+                key={post.slug}
+                post={post}
+                categoryLabels={post.categories.map(
+                  (item) => collection.categories.find((c) => c.slug === item)?.label ?? item,
+                )}
+                minReadSuffix={siteContent.chrome.blog.minReadSuffix}
+                sizes="(max-width: 639px) 50vw, (max-width: 1279px) 33vw, 25vw"
+                priority={index < 2}
+              />
+            ))}
+          </PostGrid>
         </div>
       </section>
     </>
