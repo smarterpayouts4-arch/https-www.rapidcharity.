@@ -8,6 +8,15 @@
   --color-brand-tint: #FFE8EE;
   --color-brand-focus-ring: rgba(178, 15, 58, 0.45);
 
+  /* ── Pill / segmented / radio-chip choice states (one contrast-safe system) ── */
+  /* #FFFFFF on #B20F3A = 6.95:1; #222222 on #FFFFFF = 15.91:1; #8B0A24 on #FFE8EE = 8.32:1 (all AA ≥ 4.5:1) */
+  --pill-selected-bg: #B20F3A;
+  --pill-selected-text: #FFFFFF;
+  --pill-unselected-bg: #FFFFFF;
+  --pill-unselected-text: #222222;
+  --pill-hover-bg: #FFE8EE;
+  --pill-hover-text: #8B0A24;
+
   /* Decorative script on light / dark surfaces */
   --color-brand-script: color-mix(in srgb, var(--color-brand-primary) 48%, #8a7a7e);
   --color-brand-script-on-dark: rgba(255, 255, 255, 0.38);
