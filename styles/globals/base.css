@@ -1,5 +1,7 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
+/* Anchored content (skip link, #ids, hash links) lands below the sticky header. */
+html { scroll-padding-top: calc(var(--header-h) + 1rem); }
 body {
   font-family: var(--font-sans);
   font-size: var(--text-base);

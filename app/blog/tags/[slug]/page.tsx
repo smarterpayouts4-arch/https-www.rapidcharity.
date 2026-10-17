@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { PostCard, PostGrid } from "@/components/blog/PostCard";
 import { notFound } from "next/navigation";
 import { PageHero } from "@/components/PageHero";
 import { PreviewBanner } from "@/components/PreviewBanner";
@@ -50,16 +50,21 @@ export default async function TagPage({ params, searchParams }: Props) {
       {preview ? <PreviewBanner content={siteContent.chrome.preview} liveHref={`/blog/tags/${slug}`} /> : null}
       <PageHero title={tag.label} subtitle={siteContent.chrome.blog.tagSubtitle} />
       <section className="section">
-        <div className="container card-grid">
-          {list.map((post) => (
-            <article key={post.slug} className="card">
-              <h3>
-                <Link href={`/post/${post.slug}`}>{post.title}</Link>
-              </h3>
-              <p className="meta">{post.date}</p>
-              <p>{post.excerpt}</p>
-            </article>
-          ))}
+        <div className="container">
+          <PostGrid variant="page">
+            {list.map((post, index) => (
+              <PostCard
+                key={post.slug}
+                post={post}
+                categoryLabels={post.categories.map(
+                  (item) => collection.categories.find((c) => c.slug === item)?.label ?? item,
+                )}
+                minReadSuffix={siteContent.chrome.blog.minReadSuffix}
+                sizes="(max-width: 639px) 50vw, (max-width: 1279px) 33vw, 25vw"
+                priority={index < 2}
+              />
+            ))}
+          </PostGrid>
         </div>
       </section>
     </>

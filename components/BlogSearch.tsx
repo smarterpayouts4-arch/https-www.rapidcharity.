@@ -1,8 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
+import { PostCard, PostGrid } from "@/components/blog/PostCard";
 import type { BlogPost, BlogTaxonomy } from "@/lib/content";
 import styles from "./BlogSearch.module.css";
 
@@ -53,41 +52,20 @@ export function BlogSearch({
         onChange={(event) => setQuery(event.target.value)}
         className={styles.search}
       />
-      <div className={styles.grid}>
-        {filtered.map((post) => (
-          <article key={post.slug} className={styles.card} data-reveal-item>
-            <Link href={`/post/${post.slug}`} className={styles.cardLink}>
-              <div className={styles.thumb}>
-                {post.image ? (
-                  <Image
-                    src={post.image}
-                    alt={post.imageAlt || post.title}
-                    width={480}
-                    height={280}
-                    className={styles.img}
-                  />
-                ) : (
-                  <div className={styles.placeholder} />
-                )}
-              </div>
-              <div className={styles.body}>
-                <p className={styles.cats}>
-                  {post.categories.map((slug) => (
-                    <span key={slug} className={styles.chip}>
-                      {categories.find((item) => item.slug === slug)?.label ?? slug}
-                    </span>
-                  ))}
-                </p>
-                <h3 className={styles.title}>{post.title}</h3>
-                <p className={`meta ${styles.meta}`}>
-                  {post.author} · {post.date} · {post.readMinutes} {minReadSuffix}
-                </p>
-                <p className={styles.excerpt}>{post.excerpt}</p>
-              </div>
-            </Link>
-          </article>
+      <PostGrid variant="page">
+        {filtered.map((post, index) => (
+          <PostCard
+            key={post.slug}
+            post={post}
+            categoryLabels={post.categories.map(
+              (slug) => categories.find((item) => item.slug === slug)?.label ?? slug,
+            )}
+            minReadSuffix={minReadSuffix}
+            sizes="(max-width: 639px) 50vw, (max-width: 1279px) 33vw, 25vw"
+            priority={index < 2}
+          />
         ))}
-      </div>
+      </PostGrid>
       {filtered.length === 0 ? <p className="meta">{labels.noResultsLabel}</p> : null}
     </div>
   );

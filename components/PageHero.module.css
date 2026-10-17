@@ -33,10 +33,6 @@
   .hero h1 { font-size: 1.7rem; }
   .hero p {
     max-width: 65ch;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
   }
 }
 

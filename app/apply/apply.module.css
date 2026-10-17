@@ -6,9 +6,13 @@
   color: var(--color-text-primary);
   margin: 0 0 1rem;
 }
+/* Keep the .container gutters: a zero inline margin pushed the copy flush
+   against the left edge on phones and the right column off the screen. */
 .prose {
   max-width: 65ch;
-  margin-inline: 0;
+  margin-inline: auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .intro {
   text-align: left;

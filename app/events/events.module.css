@@ -5,7 +5,7 @@
 
 .row {
   display: grid;
-  grid-template-columns: 9.5rem 1fr;
+  grid-template-columns: 9.5rem minmax(0, 1fr);
   gap: 1.25rem;
   align-items: start;
   padding: 1.1rem 1.15rem;
@@ -85,7 +85,7 @@
 
 @media (max-width: 767px) {
   .row {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 0.6rem;
     padding: 1rem;
   }

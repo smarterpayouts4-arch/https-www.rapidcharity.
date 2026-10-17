@@ -1,0 +1,148 @@
+/* Blog card grid shared by /blog, category and tag pages and the homepage teasers. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem 0.85rem;
+  align-items: stretch;
+}
+
+@media (min-width: 640px) {
+  .grid { gap: 1.5rem 1.25rem; }
+  .page { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .page,
+  .home3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .home4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1280px) {
+  .page { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+.card {
+  min-width: 0;
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.link {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+.link:hover { text-decoration: none; }
+.link:hover .title { color: var(--color-brand-primary); }
+.link:focus-visible {
+  outline: 2px solid var(--color-brand-deep);
+  outline-offset: -2px;
+}
+
+.media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--color-background-alt);
+}
+.img {
+  object-fit: cover;
+  object-position: center;
+}
+.placeholder {
+  position: absolute;
+  inset: 0;
+  background: var(--color-background-alt);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+  padding: 0.95rem 1.05rem 1.1rem;
+  flex: 1;
+}
+
+.kicker {
+  margin: 0;
+  font-family: var(--font-button);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-brand-primary);
+  overflow-wrap: break-word;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-text-primary);
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.2s ease;
+}
+
+.excerpt {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--color-text-body);
+  overflow-wrap: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.meta {
+  margin: auto 0 0;
+  padding-top: 0.35rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .card { transition: transform 0.45s var(--ease-out), box-shadow 0.45s ease; }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 36px rgba(26, 26, 26, 0.09);
+  }
+  .img { transition: transform 0.7s var(--ease-out); }
+  .card:hover .img { transform: scale(1.04); }
+}
+
+/* Homepage teasers stay to two rows on phones; the blog lists every post. */
+@media (max-width: 639px) {
+  .home3 > :nth-child(n + 5) { display: none; }
+}
+
+/* Two columns on phones: compact type so titles and excerpts stay readable. */
+@media (max-width: 639px) {
+  .card { border-radius: 12px; }
+  .body { padding: 0.7rem 0.75rem 0.8rem; gap: 0.3rem; }
+  .kicker { font-size: 0.62rem; letter-spacing: 0.08em; }
+  .title {
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .excerpt { font-size: 0.8rem; line-height: 1.45; }
+  .meta { font-size: 0.72rem; }
+}

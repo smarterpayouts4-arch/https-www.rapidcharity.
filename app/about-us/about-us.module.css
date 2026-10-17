@@ -169,6 +169,6 @@
 @media (max-width: 700px) {
   .grid2,
   .steps {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
