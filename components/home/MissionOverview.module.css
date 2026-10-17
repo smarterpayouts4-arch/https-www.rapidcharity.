@@ -1,0 +1,222 @@
+.section {
+  background: var(--color-background-page);
+}
+
+.band {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  min-height: 34rem;
+  background: var(--color-brand-deep);
+  color: var(--color-text-inverse);
+}
+
+.statement {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(3rem, 6vw, 5.5rem);
+  max-width: 40rem;
+}
+
+.eyebrow {
+  margin: 0 0 1rem;
+  font-family: var(--font-button);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-on-brand-muted);
+}
+
+.title {
+  margin: 0 0 1.1rem;
+  color: var(--color-text-inverse);
+  font-size: clamp(2.6rem, 4.5vw, 4.4rem);
+  line-height: 0.98;
+  max-width: 12ch;
+}
+
+.title em {
+  font-style: italic;
+  font-weight: 500;
+}
+
+.lead {
+  margin: 0 0 1.6rem;
+  color: var(--color-text-on-brand-muted);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  max-width: 36rem;
+}
+
+.visual {
+  position: relative;
+  min-height: 22rem;
+}
+
+.videoPanel {
+  height: 100%;
+  min-height: 22rem;
+  background: var(--color-background-dark);
+}
+
+.videoLabel {
+  position: absolute;
+  z-index: 2;
+  top: 1rem;
+  left: 1rem;
+  margin: 0;
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--radius-pill);
+  background: rgba(26, 26, 26, 0.45);
+  color: var(--color-text-inverse);
+  font-family: var(--font-button);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.visual { position: relative; }
+
+.video,
+.fbWrap,
+.fallback {
+  width: 100%;
+  height: 100%;
+  min-height: 34rem;
+}
+
+.video {
+  display: block;
+  object-fit: cover;
+  background: #1a1a1a;
+}
+
+.fbWrap,
+.fallback {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(26, 26, 26, 0.12), rgba(26, 26, 26, 0.35)),
+    url("/assets/images/home/video-poster.jpg") center / cover no-repeat;
+}
+
+.fbFrame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.fallback img { object-fit: cover; }
+
+.fallbackCopy {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1rem 1.1rem 1.15rem;
+  background: linear-gradient(180deg, transparent, rgba(26, 26, 26, 0.82));
+  color: var(--color-text-inverse);
+}
+
+.fallbackCopy p { margin: 0 0 0.35rem; }
+.fallbackCopy a {
+  color: var(--color-text-inverse);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.journeyWrap {
+  padding: var(--space-section) 0;
+}
+
+.quoteCard {
+  margin: 0 0 2.5rem;
+  max-width: 40rem;
+  padding: 0;
+  border: 0;
+}
+
+.quoteCard p {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  line-height: 1.25;
+  color: var(--color-text-primary);
+}
+
+.pillars {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.pillar {
+  display: grid;
+  align-content: start;
+  gap: 0.55rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border-strong);
+}
+
+.step {
+  justify-self: start;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-brand-tint);
+  color: var(--color-brand-deep);
+  font-family: var(--font-button);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.pillar[data-current="true"] .step {
+  background: var(--color-brand-primary);
+  color: var(--color-text-on-brand);
+}
+
+.pillar h3 {
+  margin: 0.35rem 0 0;
+  font-family: var(--font-serif);
+  font-size: 1.55rem;
+}
+
+.pillar p {
+  margin: 0;
+  color: var(--color-text-body);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 900px) {
+  .band { grid-template-columns: 1fr; }
+  .video, .fbWrap, .fallback { min-height: 22rem; }
+  .pillars { grid-template-columns: 1fr 1fr; }
+  .title { max-width: none; }
+}
+
+@media (max-width: 767px) {
+  .statement { padding: 1.35rem 1.1rem; }
+  .title { font-size: 1.85rem; }
+  .video, .fbWrap, .fallback { min-height: 11rem; }
+  .journeyWrap { padding: 1.35rem 0; }
+  .quoteCard { margin-bottom: 1rem; }
+  .quoteCard p { font-size: 1.2rem; }
+  .pillars { grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+  .pillar { padding-top: 0.65rem; }
+  .pillar h3 { font-size: 1.1rem; }
+  .pillar p {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 0.82rem;
+  }
+}

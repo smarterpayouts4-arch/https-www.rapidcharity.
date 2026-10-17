@@ -1,0 +1,638 @@
+{
+  "generatedAt": "2026-10-16T16:50:08.454Z",
+  "base": "http://127.0.0.1:4721",
+  "counts": {
+    "staticRoutes": 11,
+    "postRoutes": 27,
+    "categoryRoutes": 4,
+    "tagRoutes": 2,
+    "publicRoutes": 44,
+    "previewRoutes": 12,
+    "adminAndGetApis": 4,
+    "redirects": 4,
+    "criticalAssets": 37,
+    "events": 6,
+    "failures": 0
+  },
+  "expectedMissing": [
+    "/assets/videos/rapid.mp4",
+    "/assets/documents/report-2025.pptx"
+  ],
+  "routeResults": [
+    {
+      "path": "/",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/about-us",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/apply",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/donate",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/reports",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/blog",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/events",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/education-scholarships1",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/general-8",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/robert-mathais-scholarship",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/ivy-azariah-scholarship",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/rapid-charity-hosts-educational-seminar-on-css-and-pms-competitive-exams",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/giving-back-moving-forward-rapid-charity-launches-alumni-network",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/scholarship-applications-for-spring-2027-semester-open-now",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/from-scholarship-to-success-the-inspiring-journey-of-ashar-nadeem",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/opening-of-scholarship-applications-for-fall-semester-2025",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/opening-of-scholarship-applications-for-fall-semester-2025-1",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/a-dream-come-true-youas-shaleem-s-story",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/farah-tariq-story-of-empowering-through-education",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/maher-mall-a-future-nurse-with-a-big-heart",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/scholarship-success-story-timmer-younas",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/rapid-scholars-get-together-2025-in-foreman-christian-college",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/rapid-charity-honored-by-forman-christian-college-university-for-supporting-underprivileged-students",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/rapid-charity-s-literacy-program-for-out-of-school-children-bearing-fruit",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/how-christmas-inspires-hope-love-in-ordinary-lives",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/impact-stories-of-rapid-charity-initiative",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/wishing-a-joyful-easter-to-all-our-rapid-scholars-friends",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/10-december-universal-declaration-of-human-rights",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/anmol-munisha",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/believe-you-can-and-you-re-halfway-there-angela-john-rapid-scholar",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/invitation-to-rapid-charity-s-annual-scholars-gathering-celebrate-reconnect-and-empower",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/meet-samuel-fiaz-recipient-of-john-ivy-azariah-scholarship",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/merry-christmas-blessed-new-year",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/rapid-charity-helps-loadicea-shahid-earn-her-doctorate",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/rapid-scholar-nouman-stephen-s-story",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/rapid-scholars-annual-get-together-announced-15-february-2025",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/rapid-scholars-get-together-in-kinnaird-college",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/tabish-raheel-and-the-rapid-charity-scholarship",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/blog/categories/event",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/blog/categories/impact-stories",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/blog/categories/announcement",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/blog/categories/rapid-alumni",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/blog/tags/impact",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/blog/tags/scholarship-impact",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    }
+  ],
+  "redirectResults": [
+    {
+      "path": "/form",
+      "status": 308,
+      "expected": 308,
+      "ok": true
+    },
+    {
+      "path": "/copy-of-apply-1",
+      "status": 308,
+      "expected": 308,
+      "ok": true
+    },
+    {
+      "path": "/copy-of-john-ivy-form",
+      "status": 308,
+      "expected": 308,
+      "ok": true
+    },
+    {
+      "path": "/profile/azher-adil/profile",
+      "status": 308,
+      "expected": 308,
+      "ok": true
+    }
+  ],
+  "previewResults": [
+    {
+      "path": "/?preview=1",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/about-us?preview=1",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/apply?preview=1",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/donate?preview=1",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/reports?preview=1",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/blog?preview=1",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/events?preview=1",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/education-scholarships1?preview=1",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/general-8?preview=1",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/robert-mathais-scholarship?preview=1",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/ivy-azariah-scholarship?preview=1",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/post/rapid-charity-hosts-educational-seminar-on-css-and-pms-competitive-exams?preview=1",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    }
+  ],
+  "adminResults": [
+    {
+      "path": "/admin",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/api/admin/content",
+      "status": 401,
+      "expected": 401,
+      "ok": true
+    },
+    {
+      "path": "/api/admin/blog",
+      "status": 401,
+      "expected": 401,
+      "ok": true
+    },
+    {
+      "path": "/api/admin/events",
+      "status": 401,
+      "expected": 401,
+      "ok": true
+    }
+  ],
+  "assetResults": [
+    {
+      "path": "/assets/documents/report-2025.pptx",
+      "status": 404,
+      "expected": 404,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/alumni-network-meeting.png",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/angela-john.jpeg",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/anmol-munisha.jpg",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/annual-gathering-announce.png",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/ashar-nadeem.jpeg",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/christmas-message-2025.png",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/css-pms-seminar.png",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/easter-message.png",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/fall-2025-apps-dup.png",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/fall-2025-apps.png",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/farah-tariq.jpg",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/fccu-get-together-2025.jpg",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/fccu-honor-badge.jpg",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/human-rights-day.jpg",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/impact-stories.jpg",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/invitation-gathering.jpg",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/kinnaird-get-together.jpg",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/literacy-program.png",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/loadicea-shahid.png",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/maher-mall.jpg",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/merry-christmas.png",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/nouman-stephen.jpg",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/samuel-fiaz.jpg",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/spring-2027-applications-open.png",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/tabish-raheel.jpeg",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/timmer-younas.jpg",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/blog/youas-shaleem.jpg",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/donate/group-1096.png",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/donate/group-1105.png",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/generated/banner-graduation-handshake-a.jpg",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/generated/group-campus-scholars.jpg",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/generated/hero-graduation-handshake-landscape.jpg",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/home/carousel-e1b1d67a.jpg",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/images/home/video-poster.jpg",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/logos/rapid-charity-logo.png",
+      "status": 200,
+      "expected": 200,
+      "ok": true
+    },
+    {
+      "path": "/assets/videos/rapid.mp4",
+      "status": 404,
+      "expected": 404,
+      "ok": true
+    }
+  ],
+  "failures": []
+}

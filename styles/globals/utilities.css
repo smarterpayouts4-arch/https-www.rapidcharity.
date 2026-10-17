@@ -1,0 +1,20 @@
+/* ═══════════════════════════════════════════════════
+   Typography utilities
+   ═══════════════════════════════════════════════════ */
+.text-xs { font-size: var(--text-xs); }
+.text-sm { font-size: var(--text-sm); }
+.text-base { font-size: var(--text-base); }
+.text-md { font-size: var(--text-md); }
+.text-lg { font-size: var(--text-lg); }
+.text-xl { font-size: var(--text-xl); }
+.text-2xl { font-size: var(--text-2xl); }
+.text-3xl { font-size: var(--text-3xl); }
+.text-4xl { font-size: var(--text-4xl); }
+.text-5xl { font-size: var(--text-5xl); }
+.font-serif { font-family: var(--font-serif); }
+.font-sans { font-family: var(--font-sans); }
+.text-muted { color: var(--color-text-muted); }
+.text-body { color: var(--color-text-body); }
+.text-primary { color: var(--color-text-primary); }
+.text-brand { color: var(--color-brand-primary); }
+

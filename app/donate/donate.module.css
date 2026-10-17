@@ -1,0 +1,104 @@
+.top {
+  padding-top: 2.5rem;
+  padding-bottom: 1.5rem;
+}
+.wrap {
+  max-width: 52rem;
+  margin-inline: auto;
+  text-align: center;
+}
+.heroTitle {
+  margin: 0 0 0.75rem;
+  color: var(--color-primary);
+  font-size: clamp(1.85rem, 4vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.ctaWrap {
+  margin: 0 0 1.25rem;
+}
+.donateCta {
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #4a90c7 !important;
+  text-transform: uppercase;
+}
+.intro {
+  color: var(--color-primary);
+  font-size: 1.02rem;
+  max-width: 65ch;
+  margin: 0 auto 1.75rem;
+  line-height: 1.65;
+}
+.heroImg {
+  margin: 0 auto 0.5rem;
+  max-width: 980px;
+}
+.img {
+  width: 100%;
+  height: auto;
+  border-radius: 0.15rem;
+}
+.dear {
+  background: var(--color-soft);
+  padding: 2.75rem 0;
+}
+.dear .wrap {
+  text-align: left;
+  max-width: 65ch;
+}
+.dearTitle {
+  text-align: center;
+  margin: 0 0 1.5rem;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.dearAccent {
+  color: var(--color-primary);
+}
+.thanks {
+  padding: 0;
+  margin: 0;
+}
+.thanksInner {
+  position: relative;
+  max-width: 980px;
+  margin: 0 auto;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.thanksBg {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: brightness(0.55);
+}
+.thanksCopy {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  text-align: center;
+  color: #fff;
+}
+.thanksLine {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.25rem, 2.8vw, 1.75rem);
+  font-weight: 600;
+  color: #fff;
+}
+.team {
+  margin: 0.5rem 0 0;
+  font-size: 1rem;
+  color: #fff;
+  letter-spacing: 0.06em;
+}

@@ -1,0 +1,414 @@
+.hero {
+  background: #f7f4ef;
+  color: #1a1a1a;
+  padding: 1.35rem 0 2.75rem;
+}
+
+.intro,
+.after {
+  width: min(100% - 2.5rem, var(--max));
+  margin-inline: auto;
+}
+
+.intro {
+  display: grid;
+  justify-items: center;
+  gap: 1.5rem;
+}
+
+.copy {
+  max-width: 42rem;
+  text-align: center;
+}
+
+.eyebrow {
+  display: block;
+  font-family: var(--font-button);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #8b0a24;
+  margin: 0 0 0.85rem;
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.7rem, 6vw, 5rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0 0 1rem;
+  line-height: 0.96;
+  color: #1a1a1a;
+}
+
+.titleInk {
+  color: #1a1a1a;
+}
+
+.titleBrand {
+  color: #b20f3a;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.mobileBreak {
+  display: none;
+}
+
+.lead {
+  font-size: 1.0625rem;
+  color: #222222;
+  margin: 0 auto 1.5rem;
+  line-height: 1.65;
+  max-width: 40rem;
+}
+
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem 1rem;
+  margin-bottom: 1.6rem;
+}
+
+.ctas :global(a.btn-white) {
+  background: #ffffff;
+  border-color: #8b0a24;
+  color: #8b0a24;
+  box-shadow: none;
+}
+
+.ctas :global(a.btn-white:hover) {
+  background: #8b0a24;
+  border-color: #8b0a24;
+  color: #ffffff;
+}
+
+.quote {
+  margin: 0 auto;
+  padding: 0 0 0 1rem;
+  border: 0;
+  border-left: 3px solid #b20f3a;
+  max-width: 34rem;
+  text-align: left;
+}
+
+.quote p {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  line-height: 1.4;
+}
+
+.hero .appCardDesktop,
+.hero .appCardMobile {
+  width: 100%;
+  max-width: 22.5rem;
+  justify-self: center;
+}
+
+.appCardDesktop {
+  display: none;
+}
+
+.appCardMobile {
+  display: block;
+  max-width: none;
+}
+
+.media {
+  margin-top: 1.75rem;
+}
+
+.scroller {
+  position: relative;
+  display: flex;
+  gap: 0.9rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  padding: 0.4rem max(1.25rem, calc((100% - var(--max)) / 2)) 1.15rem;
+  scroll-padding-inline: max(1.25rem, calc((100% - var(--max)) / 2));
+}
+
+.scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.card {
+  position: relative;
+  flex: 0 0 calc(100% - 2.75rem);
+  scroll-snap-align: start;
+  aspect-ratio: 16 / 10;
+  margin: 0;
+  border-radius: 24px;
+  overflow: hidden;
+  background: #222222;
+  box-shadow:
+    0 18px 40px rgba(34, 34, 34, 0.14),
+    0 2px 8px rgba(34, 34, 34, 0.06);
+}
+
+.photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.controls {
+  width: min(100% - 2.5rem, var(--max));
+  margin: 0.15rem auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.arrow,
+.pause {
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: var(--font-button);
+}
+
+.arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1.5px solid #8b0a24;
+  background: #ffffff;
+  color: #8b0a24;
+}
+
+.pause {
+  border: 1.5px solid #8b0a24;
+  background: #8b0a24;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.9rem;
+}
+
+.pauseIcon {
+  display: none;
+}
+
+.arrow:focus-visible,
+.pause:focus-visible,
+.dot:focus-visible {
+  outline: 2px solid #8b0a24;
+  outline-offset: 2px;
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.dot {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.dot::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #4e4946;
+  transform: translate(-50%, -50%);
+}
+
+.dotActive::before {
+  width: 10px;
+  height: 10px;
+  background: #b20f3a;
+}
+
+.after {
+  display: grid;
+  justify-items: center;
+  gap: 1.35rem;
+  margin-top: 1.35rem;
+}
+
+.motif {
+  margin: 0;
+  max-width: 40rem;
+  color: #8b0a24;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1.45;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .title {
+    font-size: clamp(2.5rem, 10vw, 2.75rem);
+    line-height: 0.94;
+  }
+
+  .mobileBreak {
+    display: inline;
+  }
+
+  .desktopSpace {
+    display: none;
+  }
+
+  .ctas {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ctas :global(.btn),
+  .ctas :global(.btn-white) {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero .appCardMobile {
+    max-width: none;
+  }
+
+  .controls {
+    width: calc(100% - 2rem);
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) 44px 44px;
+    column-gap: 0.25rem;
+    align-items: center;
+  }
+
+  .pause {
+    grid-column: 1;
+    grid-row: 1;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    letter-spacing: 0;
+  }
+
+  .pauseLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .pauseIcon {
+    display: inline-flex;
+  }
+
+  .dots {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+    justify-content: center;
+  }
+
+  .dot {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    max-width: 36px;
+  }
+
+  .arrowPrev {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .arrowNext {
+    grid-column: 4;
+    grid-row: 1;
+  }
+}
+
+@media (min-width: 768px) {
+  .card {
+    flex-basis: calc((100% - 0.9rem) / 2);
+  }
+}
+
+@media (min-width: 960px) {
+  .intro {
+    grid-template-columns: minmax(0, 1fr) 20.5rem;
+    justify-items: stretch;
+    align-items: center;
+    gap: 2rem 2.5rem;
+  }
+
+  .copy {
+    text-align: left;
+    max-width: none;
+  }
+
+  .lead {
+    margin-left: 0;
+  }
+
+  .ctas {
+    justify-content: flex-start;
+  }
+
+  .appCardDesktop {
+    display: block;
+  }
+
+  .appCardMobile {
+    display: none;
+  }
+
+  .after {
+    justify-items: start;
+    margin-top: 0.35rem;
+  }
+
+  .motif {
+    text-align: left;
+  }
+}
+
+@media (min-width: 1100px) {
+  .card {
+    flex-basis: calc((100% - 1.8rem) / 3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroller {
+    scroll-behavior: auto;
+  }
+}

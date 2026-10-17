@@ -1,0 +1,808 @@
+{
+  "version": 1,
+  "updatedAt": "2026-09-21T16:40:00-04:00",
+  "nav": {
+    "brandName": "RAPID Charity",
+    "brandTag": "Reconciliation And Peace Innovative Development",
+    "items": [
+      {
+        "label": "Home",
+        "href": "/"
+      },
+      {
+        "label": "About Us",
+        "href": "/about-us"
+      },
+      {
+        "label": "Reports",
+        "href": "/reports"
+      },
+      {
+        "label": "Scholarship Programs",
+        "children": [
+          {
+            "label": "John-Ivy Azariah Scholarship",
+            "href": "/general-8"
+          },
+          {
+            "label": "Robert Mathais Scholarship",
+            "href": "/robert-mathais-scholarship"
+          },
+          {
+            "label": "Ivy Azariah Scholarship",
+            "href": "/ivy-azariah-scholarship"
+          }
+        ]
+      },
+      {
+        "label": "Apply",
+        "href": "/apply"
+      },
+      {
+        "label": "Events",
+        "href": "/events"
+      },
+      {
+        "label": "News",
+        "href": "/blog"
+      }
+    ],
+    "donateCta": {
+      "label": "Donate",
+      "href": "/donate"
+    },
+    "logo": {
+      "src": "/assets/logos/rapid-charity-logo.png",
+      "alt": "RAPID Charity logo"
+    },
+    "homeAriaLabel": "RAPID Charity home",
+    "menuOpenLabel": "Open menu",
+    "menuCloseLabel": "Close menu",
+    "primaryAriaLabel": "Primary"
+  },
+  "footer": {
+    "tagline": "Promoting career-based higher education and building confidence among those who need it most.",
+    "quickLinksTitle": "Quick Links",
+    "quickLinks": [
+      {
+        "label": "Home",
+        "href": "/"
+      },
+      {
+        "label": "About Us",
+        "href": "/about-us"
+      },
+      {
+        "label": "Reports",
+        "href": "/reports"
+      },
+      {
+        "label": "Apply",
+        "href": "/apply"
+      },
+      {
+        "label": "Events",
+        "href": "/events"
+      },
+      {
+        "label": "News",
+        "href": "/blog"
+      },
+      {
+        "label": "Donate",
+        "href": "/donate"
+      },
+      {
+        "label": "John-Ivy Azariah Scholarship",
+        "href": "/general-8"
+      },
+      {
+        "label": "Robert Mathais Scholarship",
+        "href": "/robert-mathais-scholarship"
+      },
+      {
+        "label": "Ivy Azariah Scholarship",
+        "href": "/ivy-azariah-scholarship"
+      }
+    ],
+    "contactTitle": "Contact Us",
+    "contactLines": [
+      "Serving communities across Pakistan",
+      "Registered nonprofit \u00b7 United States"
+    ],
+    "communityTitle": "Join Our Community",
+    "social": {
+      "facebook": {
+        "label": "Facebook",
+        "href": "https://www.facebook.com/profile.php?id=61568719323011"
+      },
+      "instagram": {
+        "label": "Instagram",
+        "href": "https://www.instagram.com/rapid.charity"
+      }
+    },
+    "legal": [
+      {
+        "label": "About",
+        "href": "/about-us"
+      },
+      {
+        "label": "Reports",
+        "href": "/reports"
+      },
+      {
+        "label": "Donate",
+        "href": "/donate"
+      }
+    ],
+    "copyrightName": "RAPID Charity",
+    "email": "info@rapidcharity.org",
+    "logo": {
+      "src": "/assets/logos/rapid-charity-logo.png",
+      "alt": "RAPID Charity logo"
+    },
+    "subscribe": {
+      "emailLabel": "Email *",
+      "placeholder": "e.g., email@example.com",
+      "submitLabel": "Join",
+      "consentLabel": "I want to subscribe to your mailing list.",
+      "successMessage": "Opening your email client to complete subscription\u2026",
+      "mailSubject": "RAPID Charity newsletter subscription request",
+      "mailBodyIntro": "Please add this email to the newsletter list:"
+    },
+    "legalAriaLabel": "Legal",
+    "contactLinkLabel": "Contact",
+    "copyrightSuffix": "All rights reserved."
+  },
+  "homepage": {
+    "sections": [
+      {
+        "id": "hero",
+        "visible": true
+      },
+      {
+        "id": "missionOverview",
+        "visible": true
+      },
+      {
+        "id": "impactStats",
+        "visible": true
+      },
+      {
+        "id": "scholarshipPrograms",
+        "visible": true
+      },
+      {
+        "id": "studentStories",
+        "visible": true
+      },
+      {
+        "id": "latestNews",
+        "visible": true
+      },
+      {
+        "id": "leadership",
+        "visible": true
+      },
+      {
+        "id": "reportsShowcase",
+        "visible": true
+      },
+      {
+        "id": "donateBanner",
+        "visible": true
+      }
+    ]
+  },
+  "hero": {
+    "eyebrow": "Students today, brighter tomorrows.",
+    "titleLine1": "Education Empowers",
+    "titleLine2": "Brighter Futures.",
+    "lead": "RAPID Charity promotes career-based higher education for talented young people in deprived situations, building confidence, opportunity, and lasting community change.",
+    "primaryCta": {
+      "label": "Apply for a Scholarship",
+      "href": "/apply"
+    },
+    "secondaryCta": {
+      "label": "Learn About Our Mission",
+      "href": "/about-us"
+    },
+    "quote": "When education is within reach, extraordinary things become possible.",
+    "motif": "PEOPLE \u00b7 EDUCATION \u00b7 PEACE \u00b7 A BRIGHTER TOMORROW",
+    "ariaLabel": "Hero",
+    "slidesAriaLabel": "Hero images",
+    "slides": [
+      {
+        "src": "/assets/images/generated/hero-graduation-handshake-landscape.jpg",
+        "alt": "Graduates shaking hands with diploma at commencement",
+        "objectPosition": "center 42%"
+      },
+      {
+        "src": "/assets/images/generated/banner-graduation-handshake-a.jpg",
+        "alt": "Graduation handshake with diploma ribbon",
+        "objectPosition": "center 40%"
+      },
+      {
+        "src": "/assets/images/home/carousel-e1b1d67a.jpg",
+        "alt": "RAPID scholars and community gathering",
+        "objectPosition": "center 28%"
+      },
+      {
+        "src": "/assets/images/blog/fccu-get-together-2025.jpg",
+        "alt": "RAPID scholars at FCCU get-together 2025",
+        "objectPosition": "center 30%"
+      },
+      {
+        "src": "/assets/images/blog/kinnaird-get-together.jpg",
+        "alt": "RAPID scholars gathering at Kinnaird College",
+        "objectPosition": "center 32%"
+      },
+      {
+        "src": "/assets/images/generated/group-campus-scholars.jpg",
+        "alt": "Campus scholars gathering outdoors",
+        "objectPosition": "center 35%"
+      }
+    ]
+  },
+  "applicationCard": {
+    "title": "Spring Semester 2027 Applications Open",
+    "deadlineLabel": "Deadline",
+    "deadlineValue": "15 October 2026",
+    "programsLabel": "Programs",
+    "programsValue": "Multiple scholarships",
+    "applyHref": "/apply",
+    "applyLabel": "Apply Now",
+    "guideHref": "/education-scholarships1",
+    "guideLabel": "View Application Guide",
+    "ariaLabel": "Application status"
+  },
+  "missionOverview": {
+    "eyebrow": "Who We Are",
+    "title": "Education for People. Progress for Communities.",
+    "lead": "Reconciliation And Peace Innovative Development (RAPID) is a non-political, non-sectarian, non-profit organization registered in the United States, committed to serving those in need through educational empowerment.",
+    "ctaLabel": "Learn More About Us",
+    "ctaHref": "/about-us",
+    "quote": "Education changes not just individual lives, but entire communities.",
+    "video": {
+      "src": "/assets/videos/rapid.mp4",
+      "embedUrl": "",
+      "label": "RAPID",
+      "poster": "/assets/images/home/video-poster.jpg",
+      "ariaLabel": "RAPID Charity introduction video",
+      "facebookHref": "https://www.facebook.com/Umeed.e.Nau.Networks/videos/915714405912729",
+      "embedTitle": "RAPID Charity video on Facebook",
+      "unsupportedText": "Your browser does not support the video tag.",
+      "downloadLabel": "Download the video",
+      "missingText": "Video not found. Upload via Admin."
+    },
+    "pillars": [
+      {
+        "title": "Expanding Access",
+        "body": "Opening doors to career-based higher education for talented students facing financial hardship."
+      },
+      {
+        "title": "Building Leaders",
+        "body": "Equipping scholars with confidence, skills, and networks to lead in their professions and communities."
+      },
+      {
+        "title": "Stronger Communities",
+        "body": "Investing in education that lifts families and strengthens neighborhoods across Pakistan."
+      },
+      {
+        "title": "A More Peaceful Tomorrow",
+        "body": "Encouraging trust and cooperation across communities through shared opportunity and dignity."
+      }
+    ]
+  },
+  "impactStats": {
+    "eyebrow": "Our Impact",
+    "title": "Real People. Lasting Change.",
+    "stats": [
+      {
+        "value": "147",
+        "label": "Scholarships Awarded",
+        "hint": "2025",
+        "verified": true
+      },
+      {
+        "value": "Growing",
+        "label": "Scholar Community",
+        "hint": "Across campuses",
+        "verified": false
+      },
+      {
+        "value": "7",
+        "label": "Board Members",
+        "hint": "Committed directors",
+        "verified": true
+      },
+      {
+        "value": "Multiple",
+        "label": "Regions Across Pakistan",
+        "hint": "Chapters & gatherings",
+        "verified": false
+      }
+    ]
+  },
+  "scholarshipPrograms": {
+    "eyebrow": "Our Scholarship Programs",
+    "title": "Investing in Bright Minds",
+    "lead": "Three focused programs help talented students overcome financial barriers and complete career-based higher education.",
+    "ctaLabel": "Explore All Programs",
+    "ctaHref": "/apply",
+    "programs": [
+      {
+        "href": "/general-8",
+        "title": "John-Ivy Azariah Scholarship",
+        "blurb": "Support for high-achieving students from minority backgrounds pursuing higher education outside business degrees.",
+        "image": "/assets/images/blog/nouman-stephen.jpg",
+        "alt": "RAPID scholar Nouman Stephen",
+        "learnMoreLabel": "Learn More"
+      },
+      {
+        "href": "/robert-mathais-scholarship",
+        "title": "Robert Mathais Scholarship",
+        "blurb": "Dedicated to graduate students in business programs, continuing a legacy of professional excellence and service.",
+        "image": "/assets/images/blog/farah-tariq.jpg",
+        "alt": "RAPID scholar Farah Tariq",
+        "learnMoreLabel": "Learn More"
+      },
+      {
+        "href": "/ivy-azariah-scholarship",
+        "title": "Ivy Azariah Scholarship",
+        "blurb": "In memory of Ivy Azariah, awarded to women focused on developing others and passing skills across generations.",
+        "image": "/assets/images/blog/youas-shaleem.jpg",
+        "alt": "RAPID scholar Youas Shaleem",
+        "learnMoreLabel": "Learn More"
+      }
+    ]
+  },
+  "studentStories": {
+    "eyebrow": "Student Stories",
+    "title": "Real Stories. Brighter Tomorrows.",
+    "lead": "Meet RAPID scholars whose education journeys show what becomes possible when opportunity meets determination.",
+    "ctaLabel": "Watch Student Stories",
+    "ctaHref": "/events",
+    "image": "/assets/images/blog/kinnaird-get-together.jpg",
+    "imageAlt": "RAPID scholars at a community gathering",
+    "playAriaLabel": "View RAPID events and gatherings",
+    "quote": "Education changed my life, and RAPID made it possible.",
+    "cite": "RAPID Scholar",
+    "script": "Different People \u00b7 Brighter Tomorrows"
+  },
+  "latestNews": {
+    "eyebrow": "Latest News & Updates",
+    "title": "What's Happening at RAPID Charity",
+    "ctaLabel": "View All News",
+    "ctaHref": "/blog",
+    "readMoreLabel": "Read More"
+  },
+  "leadership": {
+    "eyebrow": "Our Leadership",
+    "title": "A Team Committed to Change",
+    "lead": "RAPID has a 7-member Board of Directors from diverse ethnic, racial, professional, and religious backgrounds in the United States.",
+    "ctaLabel": "Meet Our Board",
+    "ctaHref": "/about-us",
+    "seats": [
+      {
+        "initials": "01",
+        "label": "Board Director"
+      },
+      {
+        "initials": "02",
+        "label": "Board Director"
+      },
+      {
+        "initials": "03",
+        "label": "Board Director"
+      },
+      {
+        "initials": "04",
+        "label": "Board Director"
+      },
+      {
+        "initials": "05",
+        "label": "Board Director"
+      },
+      {
+        "initials": "06",
+        "label": "Board Director"
+      },
+      {
+        "initials": "07",
+        "label": "Board Director"
+      }
+    ],
+    "listAriaLabel": "Board of Directors"
+  },
+  "reportsShowcase": {
+    "eyebrow": "Transparency",
+    "title": "Annual Report 2025",
+    "lead": "Explore RAPID's year in scholarships, gatherings, and community impact, available as an interactive presentation or downloadable PowerPoint.",
+    "viewLabel": "View Report",
+    "viewHref": "/reports",
+    "downloadLabel": "Download PPTX",
+    "downloadHref": "/assets/documents/report-2025.pptx",
+    "cardBadge": "2025",
+    "cardEyebrow": "Annual Report",
+    "cardTitle": "Reconciliation And Peace Innovative Development",
+    "cardMeta": "53 slides \u00b7 Scholarships \u00b7 Impact \u00b7 Community",
+    "cardLinkLabel": "Open full report"
+  },
+  "donateBanner": {
+    "title": "Make Education Possible.",
+    "ctaLabel": "Donate Now",
+    "ctaHref": "/donate",
+    "script": "Education \u00b7 People \u00b7 Brighter Tomorrow"
+  },
+  "aboutTeaser": {
+    "title": "Learn more about RAPID",
+    "body": "RAPID is a 501(c)(3) organization (EIN 82-2731074) advancing education, dignity, and peaceful communities.",
+    "href": "/about-us"
+  },
+  "about": {
+    "heroTitle": "About Us",
+    "heroSubtitle": "Reconciliation And Peace Innovative Development",
+    "whoWeAre": {
+      "title": "Who we are",
+      "lead": "Rapid Charity is the public face of Reconciliation And Peace Innovative Development (RAPID), a non-political, non-sectarian, non-profit organization registered in the United States of America. We focus on philanthropic goals with a commitment to serving those in need, especially through educational empowerment.",
+      "body": "RAPID is a 501(c)(3) charitable organization. Independent nonprofit directories list the legal entity as Reconciliation And Peace Innovative Development - Rapid (EIN 82-2731074), based in Rancho Cucamonga, California.",
+      "meta": [
+        "US-registered nonprofit",
+        "501(c)(3) \u00b7 EIN 82-2731074",
+        "Non-political \u00b7 Non-sectarian",
+        "7-member Board of Directors"
+      ],
+      "factsAriaLabel": "Organization facts"
+    },
+    "mission": {
+      "title": "Our mission",
+      "paragraphs": [
+        "Our mission is to promote career-based higher education among talented, qualified, and ambitious young people, assisting them to realize their full potential in deprived and peripheral situations within the Indo-Pakistan context.",
+        "To give and distribute donor funding to financially poor and able individuals in need, by making charitable giving positive for purposes of leading to advancement of education in professional and career development, self-reliance, and confidence building.",
+        "To encourage activities leading to the implementation of peace, with the goal of building trust and cooperation among different faith communities through joint programs.",
+        "To organize, encourage, conduct, and participate in development programs and training courses for promoting the rights and dignity of all people, with emphasis on better utilization of local resources.",
+        "To work with medical centers, nursing homes, orphanages, and centers for the mentally and physically disabled, in order to equip and help beneficiaries to acquire quality of life.",
+        "For the implementation of its goals, RAPID partners with religious bodies, non-political organizations, and institutions of proven credibility."
+      ]
+    },
+    "whatWeDo": {
+      "title": "What we do",
+      "intro": "Our core work is scholarship support for talented youth from marginalized communities who lack the resources to complete career-based higher education. Donations are directed to education costs such as application fees, tuition, and supplies.",
+      "scholarshipProgramsTitle": "Scholarship programs",
+      "scholarshipPrograms": [
+        {
+          "label": "John-Ivy Azariah Scholarship",
+          "href": "/general-8",
+          "description": "open to students other than those in business programs; supports high-achieving students from minority backgrounds in Pakistan."
+        },
+        {
+          "label": "Robert Mathais Scholarship",
+          "href": "/robert-mathais-scholarship",
+          "description": "for students enrolled in business programs."
+        },
+        {
+          "label": "Ivy Azariah Scholarship",
+          "href": "/ivy-azariah-scholarship",
+          "description": "for women, in memory of Ivy Azariah."
+        }
+      ],
+      "awardsTitle": "Awards & reach",
+      "awards": [
+        "Scholarship awards typically range from US$500 to US$5,000 and may support tuition, books, research, and related education expenses.",
+        "RAPID scholarships are available to students residing in India and Pakistan for graduate and postgraduate study, with preference for financially needy students with strong academic records.",
+        "John-Ivy awards emphasize motivated students in minority communities of Pakistan (for example GPA 3.5+ or 90th percentile) seeking admission to strong professional programs such as law, medicine, engineering, information technology, or CSS."
+      ]
+    },
+    "howItWorks": {
+      "title": "How RAPID works",
+      "intro": "Scholars are identified with attention to leadership potential, commitment to a professional career, prior academic achievement, and prospects for continued success. A rigorous application and interview process helps assess goals, future impact, and need.",
+      "steps": [
+        {
+          "title": "Pre-qualify",
+          "body": "Submit the pre-qualification form on our website when you are deciding on, applying to, or already accepted by a professional school."
+        },
+        {
+          "title": "Review",
+          "body": "RAPID reviews applications and documents and verifies authenticity. Incomplete applications are not considered."
+        },
+        {
+          "title": "Second stage",
+          "body": "Shortlisted students receive a second application. RAPID staff correspond with the relevant institution(s)."
+        },
+        {
+          "title": "Direct support",
+          "body": "For selected scholars, arrangements are made for direct reimbursement of payment to the professional institution."
+        }
+      ],
+      "primaryCta": {
+        "label": "View current applications",
+        "href": "/apply"
+      },
+      "secondaryCta": {
+        "label": "Criteria overview",
+        "href": "/education-scholarships1"
+      }
+    },
+    "leadership": {
+      "title": "Leadership",
+      "body": "RAPID has a 7-member committed Board of Directors from different ethnic, racial, professional, and religious backgrounds in the United States of America."
+    },
+    "contact": {
+      "title": "Contact",
+      "emailLabel": "Email",
+      "websiteLabel": "Website",
+      "facebookLabel": "Facebook",
+      "instagramLabel": "Instagram",
+      "websiteDisplay": "www.rapidcharity.org",
+      "facebookHref": "https://www.facebook.com/profile.php?id=61568719323011",
+      "instagramHref": "https://www.instagram.com/rapid.charity",
+      "websiteHref": "https://www.rapidcharity.org",
+      "primaryCta": {
+        "label": "Support a scholar",
+        "href": "/donate"
+      },
+      "secondaryCta": {
+        "label": "Report 2025",
+        "href": "/reports"
+      },
+      "facebookDisplay": "RAPID Charity on Facebook",
+      "instagramDisplay": "@rapid.charity"
+    }
+  },
+  "apply": {
+    "title": "Apply for a Scholarship",
+    "intro": "Rapid Charity is dedicated to supporting students in their educational journey through our scholarship programs. We offer three distinct scholarships, each designed to cater to different fields of study.",
+    "programs": [
+      {
+        "id": "john-ivy",
+        "heading": "1. John-Ivy Azariah Scholarship",
+        "body": "The John-Ivy Azariah Scholarship is open to all students except those pursuing a business degree. This scholarship aims to support students in various fields of study, encouraging academic excellence and providing financial assistance to those in need.",
+        "applyLabel": "Apply for John-Ivy Azariah Scholarship",
+        "applyHref": "/apply?scholarship=john-ivy-azariah"
+      },
+      {
+        "id": "robert-mathais",
+        "heading": "2. Robert Mathais Scholarship (for business students only)",
+        "body": "The Robert Mathais Scholarship is specifically for students enrolled in business programs. This scholarship is intended to support future business leaders, providing them with the resources they need to succeed in their academic and professional endeavors.",
+        "applyLabel": "Apply for Robert Mathais Scholarship",
+        "applyHref": "/apply?scholarship=robert-mathias"
+      },
+      {
+        "id": "ivy-azariah",
+        "heading": "3. Ivy Azariah Scholarship (for Women only)",
+        "body": "Ivy Azariah Scholarship: This scholarship is in memory of a dignified woman who was not passionate for the materialistic goods this world had to offer but rather the intangible qualities that can remain on this earth for years to come. \u201cA woman that has the willingness to apply the skills learned for the greater good of the society and while maintaining respect and dignity for herself and those around her demonstrates exemplary behavior. Ivy Azariah believed these qualities were the true measure of success: 1) respect for God, your family and yourself, 2) education and 3) discipline. While she had almost every type of relationship during her time on this earth, the one she valued the most was of her family. She married at a young age and during her time moved to two different countries to be with her family, which required her to learn different languages, customs and culture all while supporting her family in anyway she could; whether that be having a career as a principal or being a caregiver for her grand children. She was strong willed and believed that with God at the center any obstacle could be overcome. For our wonderful grandmother we would like to give this award to an individual that is not looking for just making themselves better but how they could be an important part in the development of others as true success can be measured by the skills that can be passed from generation to generation.\u201d",
+        "applyLabel": "Apply for Ivy Azariah Scholarship",
+        "applyHref": "/apply?scholarship=ivy-azariah"
+      }
+    ],
+    "closing": "We look forward to receiving your application and supporting your educational journey. If you have any questions about the application process or eligibility criteria, please feel free to contact us.",
+    "contactEmail": "info@rapidcharity.org",
+    "deadlines": [
+      {
+        "title": "Spring Semester 2027",
+        "body": "The last date of submitting online Scholarship Applications for Spring 2027 Semester is 15 October 2026."
+      },
+      {
+        "title": "Fall Semester 2027",
+        "body": "The last date of submitting online Scholarship Application for Fall 2027 Semester is 15 April 2027"
+      }
+    ],
+    "landings": {
+      "criteria": {
+        "title": "Scholarship Criteria",
+        "subtitle": "Application requirements drawn from RAPID's published guidelines",
+        "paragraphs": [
+          "The following criteria and process are published on Rapid Charity's scholarship guidelines. For the current application cycle and forms, use the Apply page."
+        ],
+        "listItems": [],
+        "note": "Use the deadlines published on the Apply page (Spring 2027: 15 October 2026; Fall 2027: 15 April 2027). Older dates that may appear on archived Wix criteria pages are not used here.",
+        "applyLabel": "Apply",
+        "applyHref": "",
+        "backLabel": "Back to Apply",
+        "backHref": "/apply",
+        "ctaLabel": "Go to Apply",
+        "ctaHref": "/apply",
+        "sections": [
+          {
+            "title": "Eligibility themes",
+            "paragraphs": [],
+            "listItems": [
+              "RAPID scholarships are available to students residing in India and Pakistan for graduate and postgraduate programs.",
+              "Preference is given to financially needy students with high academic grades.",
+              "Award amounts typically range from US$500 to US$5,000 and may support tuition, books, research activities, and other education-related expenses.",
+              "Applications are judged on their own merit, based on experience, motivation, and achievement. Scholars are selected primarily for leadership potential, commitment to a professional career, high academic achievement, and prospects for continuing academic success."
+            ],
+            "orderedItems": []
+          },
+          {
+            "title": "John-Ivy Azariah Scholarship Fund: goals & qualification",
+            "paragraphs": [
+              "John-Ivy Azariah Scholarships support high-achieving students with financial need in minority communities of Pakistan, encouraging paths into leading professions."
+            ],
+            "listItems": [
+              "Motivated, focused, high-achieving students in minority communities of Pakistan",
+              "Competitive academic record (GPA 3.5 & above or 90th percentile)",
+              "Qualified for admission to a top-ranked professional school",
+              "Fields such as Law, Medicine, Engineering, Information Technology, or CSS, among others",
+              "Expressed need for financial support for tuition/fees"
+            ],
+            "orderedItems": []
+          },
+          {
+            "title": "How to apply",
+            "paragraphs": [],
+            "listItems": [],
+            "orderedItems": [
+              "Start when you are deciding on, applying to, already applied to, or accepted by a professional school. Aim for top-ranking institutions where possible.",
+              "Complete the pre-qualification form on the website and submit it.",
+              "Once applications and documents are received, RAPID reviews and verifies authenticity. Shortlisted students receive a second application. RAPID staff correspond with the institution(s). For students who qualify, arrangements are made for direct reimbursement of payment to the professional institution."
+            ]
+          },
+          {
+            "title": "Current cycle deadlines",
+            "paragraphs": [
+              "Use the deadlines published on the Apply page (Spring 2027: 15 October 2026; Fall 2027: 15 April 2027). Older dates that may appear on archived Wix criteria pages are not used here."
+            ],
+            "listItems": [],
+            "orderedItems": []
+          }
+        ]
+      },
+      "johnIvy": {
+        "title": "John-Ivy Azariah Scholarship",
+        "subtitle": "",
+        "paragraphs": [
+          "The John & Ivy Azariah Scholarship, established by their children, is a beacon of hope for promising Christian Pakistani minority students pursuing higher education. Mr. John Azariah and Mrs. Ivy Azariah, who spent their lives in Pakistan, were inspirational figures in their community.",
+          "This scholarship honors their legacy by providing financial support to high-achieving students from minority backgrounds, enabling them to access top-tier educational opportunities and achieve their professional dreams."
+        ],
+        "listItems": [],
+        "note": "",
+        "applyLabel": "Apply",
+        "applyHref": "/apply?scholarship=john-ivy-azariah",
+        "backLabel": "Back to Apply",
+        "backHref": "/apply"
+      },
+      "robertMathais": {
+        "title": "Robert Mathais Scholarship",
+        "subtitle": "",
+        "paragraphs": [
+          "Rapid Charity is pleased to introduce Robert Mathias Scholarship for students pursuing graduate studies in Business.",
+          "Here is an inspiring story about Mr. Robert Mathias: \u201cI have the privilege of sharing the story of Robert Mathias, a figure whose legacy continues to inspire many. Born on April 18, 1918, in Gurdaspur, India, Robert chose a path that led him to become an esteemed Accountant and Fiscal Manager\u2026\u201d",
+          "With this scholarship, it is our hope to continue his memory and legacy, supporting future generations to pursue their professional aspirations with the same spirit and dedication that Robert Mathias championed.",
+          "David Mathias\nSon of Robert Mathias"
+        ],
+        "listItems": [
+          "Graduate studies in Business.",
+          "Only students studying business are eligible to apply.",
+          "Students in other fields are not eligible for this scholarship."
+        ],
+        "note": "(Note: Only students studying business are eligible to apply for the Robert Mathais Scholarship.)",
+        "applyLabel": "Apply",
+        "applyHref": "/apply?scholarship=robert-mathias",
+        "backLabel": "Back to Apply",
+        "backHref": "/apply"
+      },
+      "ivyAzariah": {
+        "title": "Ivy Azariah Scholarship",
+        "subtitle": "",
+        "paragraphs": [
+          "This scholarship is in memory of a dignified woman who was not passionate for the materialistic goods this world had to offer but rather the intangible qualities that can remain on this earth for years to come.",
+          "\u201cA woman that has the willingness to apply the skills learned for the greater good of the society and while maintaining respect and dignity for herself and those around her demonstrates exemplary behavior.",
+          "Ivy Azariah believed these qualities were the true measure of success:",
+          "For our wonderful grandmother we would like to give this award to an individual that is not looking for just making themselves better but how they could be an important part in the development of others as true success can be measured by the skills that can be passed from generation to generation.\u201d",
+          "Granddaughter of Ivy Azariah"
+        ],
+        "listItems": [
+          "1) respect for God, your family and yourself,",
+          "2) education and",
+          "3) discipline."
+        ],
+        "note": "",
+        "applyLabel": "Apply",
+        "applyHref": "/apply?scholarship=ivy-azariah",
+        "backLabel": "Back to Apply",
+        "backHref": "/apply"
+      }
+    },
+    "deadlinesAriaLabel": "Application deadlines"
+  },
+  "donate": {
+    "heroTitle": "YOU ARE EDUCATING",
+    "ctaLabel": "PLEASE DONATE",
+    "paypalHref": "https://www.paypal.com/donate?hosted_button_id=EDMX8GB44KF4N",
+    "intro": "Our success, and the success of these talented youth, are entirely dependent on your loving generosity. Make your donation today via credit card. We thank you in advance for your consideration.",
+    "heroImage": "/assets/images/donate/group-1096.png",
+    "dearTitleAccent": "DEAR",
+    "dearTitleRest": "FRIENDS",
+    "dearParagraphs": [
+      "For families and students seeking to break the cycle of poverty, higher education makes all the difference. However, in these communities, access to higher education is difficult and often financially unattainable. Reconciliation and Peace Innovative Development (RAPID), a 501(c)(3) charitable organization, is focused on supporting talented youth in South Asian countries, who belong to marginalized communities and lack resources, to reach their education potential and fulfill their professional dreams.",
+      "RAPID scholars are identified and recommended on the basis of their leadership potential, commitment to a professional career, prior academic achievements, and prospects for continuing academic success. They are then subject to a rigorous application and interview process, which helps assess their goals, future impact, and need. We work diligently to ensure that the chosen group of scholars are worthy and deserving of your support.",
+      "Your tax-deductible contribution will go directly towards the education costs, including application fees, tuition, and supplies, for these exceptional individuals.",
+      "Our success, and the success of these talented youth, are entirely dependent on your loving generosity. Make your donation today via credit card at our website just by clicking on the Donate button."
+    ],
+    "donateLinkPhrase": "clicking on the Donate button",
+    "thanksLine": "We Thank you in advance for your consideration",
+    "thanksTeam": "Team RAPID",
+    "thanksImage": "/assets/images/donate/group-1105.png",
+    "shareTitle": "Donate to RAPID Charity",
+    "heroImageAlt": "",
+    "thanksImageAlt": "",
+    "thanksAriaLabel": "Thank you"
+  },
+  "reports": {
+    "heroTitle": "Annual Reports",
+    "heroSubtitle": "Transparency on scholarships, gatherings, and community impact",
+    "featuredEyebrow": "Featured",
+    "reportTitle": "Report 2025",
+    "reportDescription": "Reconciliation And Peace Innovative Development (RAPID): year in review presentation (53 slides).",
+    "downloadLabel": "Download PPTX",
+    "pptxPath": "/assets/documents/report-2025.pptx",
+    "publicSrc": "https://b07ae32a-0639-4809-8204-c9cf72265b3a.usrfiles.com/ugd/020f6f_8d3c56e48c0045ea87520500c1eaa3bb.pptx",
+    "officeEmbedSrc": "https://view.officeapps.live.com/op/embed.aspx?src=https%3A%2F%2Fb07ae32a-0639-4809-8204-c9cf72265b3a.usrfiles.com%2Fugd%2F020f6f_8d3c56e48c0045ea87520500c1eaa3bb.pptx",
+    "iframeTitle": "RAPID Report 2025 PowerPoint",
+    "noteBefore": "Prefer offline viewing?",
+    "noteLinkLabel": "Download the PowerPoint",
+    "noteAfter": "(~10 MB). The embedded viewer requires an internet connection."
+  },
+  "blog": {
+    "title": "News",
+    "subtitle": "Updates, impact stories, and announcements from RAPID Charity."
+  },
+  "events": {
+    "title": "Events",
+    "subtitle": "Chapter get-togethers and scholar gatherings"
+  },
+  "verified": {
+    "scholarshipsAwarded": "147",
+    "boardMembers": "7",
+    "ein": "82-2731074",
+    "is501c3": true,
+    "contactEmail": "info@rapidcharity.org",
+    "applicationCycle": "Spring Semester 2027",
+    "applicationDeadline": "15 October 2026"
+  },
+  "chrome": {
+    "preview": {
+      "message": "Draft preview: not published.",
+      "liveLabel": "View live"
+    },
+    "share": {
+      "heading": "Share:",
+      "ariaLabel": "Share Buttons",
+      "labels": {
+        "facebook": "Facebook",
+        "x": "X (Twitter)",
+        "whatsapp": "WhatsApp",
+        "linkedin": "LinkedIn",
+        "pinterest": "Pinterest",
+        "copy": "Copy Link",
+        "copied": "Copied",
+        "copyAria": "Copy link",
+        "copiedAria": "Link copied"
+      }
+    },
+    "blog": {
+      "searchLabel": "Search news",
+      "searchPlaceholder": "Search",
+      "noResultsLabel": "No posts match your search.",
+      "allPostsLabel": "All Posts",
+      "categoryAriaLabel": "Blog categories",
+      "categorySubtitle": "News category",
+      "tagSubtitle": "News tag",
+      "recentPostsTitle": "Recent Posts",
+      "seeAllLabel": "See All",
+      "backLabel": "\u2190 All Posts",
+      "minReadSuffix": "min read"
+    },
+    "notFound": {
+      "title": "Page not found",
+      "subtitle": "The page you requested does not exist on this site.",
+      "body": "Please use the navigation above, or return to the home page.",
+      "cta": {
+        "label": "Back to Home",
+        "href": "/"
+      }
+    }
+  }
+}

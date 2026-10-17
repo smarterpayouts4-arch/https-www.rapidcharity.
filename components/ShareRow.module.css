@@ -1,0 +1,97 @@
+.row {
+  margin: 2rem 0 1.5rem;
+  text-align: center;
+}
+.heading {
+  margin: 0 0 0.85rem;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-muted);
+}
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem 1.35rem;
+}
+.item {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  text-decoration: none;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+}
+.item:hover { text-decoration: none; }
+.icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+.label {
+  font-size: 0.72rem;
+  color: var(--color-muted);
+  line-height: 1.2;
+}
+.facebook .icon { background: #1877f2; }
+.x .icon { background: #111; }
+.whatsapp .icon { background: #25d366; }
+.linkedin .icon { background: #0a66c2; }
+.pinterest .icon { background: #e60023; }
+.copy .icon {
+  background: #6b7280;
+}
+.compact {
+  margin: 1.25rem 0 0;
+  text-align: left;
+}
+.compact .list {
+  justify-content: flex-start;
+  gap: 0.55rem;
+}
+.compact .icon {
+  width: 36px;
+  height: 36px;
+}
+.compact .item {
+  flex-direction: row;
+}
+
+/* Wix post share: outline glyphs, not filled brand circles */
+.compact .icon {
+  width: 32px;
+  height: 32px;
+  background: transparent !important;
+  color: #5a5a5a;
+  border: 1px solid #c8c4c5;
+  border-radius: 50%;
+}
+.compact .icon svg {
+  width: 15px;
+  height: 15px;
+}
+.compact .item:hover .icon {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.compact .facebook .icon,
+.compact .x .icon,
+.compact .linkedin .icon,
+.compact .copy .icon,
+.compact .whatsapp .icon,
+.compact .pinterest .icon {
+  background: transparent;
+}

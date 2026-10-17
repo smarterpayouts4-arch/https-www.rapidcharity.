@@ -1,0 +1,62 @@
+/* Scroll reveals and hover motion.
+   Nothing here changes color. Visitors who prefer reduced motion, and
+   browsers without scroll-driven animations, keep every element visible. */
+
+@keyframes rc-rise {
+  from {
+    opacity: 0;
+    translate: 0 1.35rem;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .btn:hover,
+  .btn-secondary:hover,
+  .btn-outline:hover,
+  .btn-on-dark:hover,
+  .btn-white:hover {
+    transform: translateY(-2px);
+  }
+
+  .btn:active,
+  .btn-secondary:active,
+  .btn-outline:active,
+  .btn-on-dark:active,
+  .btn-white:active {
+    transform: translateY(0);
+  }
+
+  .text-link,
+  .text-link-arrow {
+    transition: color 0.2s ease;
+  }
+
+  @supports (animation-timeline: view()) {
+    [data-reveal],
+    [data-reveal-item] {
+      animation: rc-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 22%;
+    }
+
+    [data-reveal-item]:nth-child(2) {
+      animation-range: entry 5% cover 28%;
+    }
+
+    [data-reveal-item]:nth-child(3) {
+      animation-range: entry 10% cover 34%;
+    }
+
+    [data-reveal-item]:nth-child(4) {
+      animation-range: entry 15% cover 40%;
+    }
+
+    [data-reveal-item]:nth-child(n + 5) {
+      animation-range: entry 18% cover 44%;
+    }
+  }
+}

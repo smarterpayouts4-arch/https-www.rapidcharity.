@@ -1,0 +1,524 @@
+{
+ "version": "2026-10-16",
+ "note": "Canonical institution list for the Rapid Charity form. Searchable select + 'Other (please specify)' free text. Sources: 2025-26 JIA/RM responses + Excel Analyzr seed/dictionary.json active institutions. seenInData = answers across present+previous institution questions.",
+ "other": {
+  "id": "other",
+  "name": "Other (please specify)",
+  "requiresText": true
+ },
+ "options": [
+  {
+   "id": "abasyn_university_peshawar",
+   "name": "Abasyn University, Peshawar",
+   "seenInData": 1
+  },
+  {
+   "id": "al_ain_institute_of_medical_sciences_gujranwala",
+   "name": "Al-Ain Institute of Medical Sciences, Gujranwala",
+   "seenInData": 1
+  },
+  {
+   "id": "allama_iqbal_open_university",
+   "name": "Allama Iqbal Open University",
+   "seenInData": 1
+  },
+  {
+   "id": "alliant_college_of_professional_studies_acps",
+   "name": "Alliant College of Professional Studies (ACPS)",
+   "seenInData": 0
+  },
+  {
+   "id": "askari_institute_of_health_sciences",
+   "name": "Askari Institute of Health Sciences",
+   "seenInData": 1
+  },
+  {
+   "id": "bahria_university",
+   "name": "Bahria University",
+   "seenInData": 0
+  },
+  {
+   "id": "bannu_medical_college",
+   "name": "Bannu Medical College",
+   "seenInData": 2
+  },
+  {
+   "id": "barki_college_and_university",
+   "name": "Barki College and University",
+   "seenInData": 0
+  },
+  {
+   "id": "beaconhouse_national_university_lahore",
+   "name": "Beaconhouse National University, Lahore",
+   "seenInData": 1
+  },
+  {
+   "id": "beaconhouse_school_system",
+   "name": "Beaconhouse School System",
+   "seenInData": 2
+  },
+  {
+   "id": "cecos_university_of_it_and_emerging_sciences_peshawar",
+   "name": "CECOS University of IT and Emerging Sciences, Peshawar",
+   "seenInData": 2
+  },
+  {
+   "id": "city_university_of_science_and_information_technology_peshaw",
+   "name": "City University of Science and Information Technology, Peshawar",
+   "seenInData": 4
+  },
+  {
+   "id": "cleveland_state_university_usa",
+   "name": "Cleveland State University (USA)",
+   "seenInData": 1
+  },
+  {
+   "id": "college_of_nursing_christian_hospital_quetta",
+   "name": "College of Nursing, Christian Hospital, Quetta",
+   "seenInData": 5
+  },
+  {
+   "id": "convent_of_jesus_and_mary",
+   "name": "Convent of Jesus and Mary",
+   "seenInData": 2
+  },
+  {
+   "id": "crescent_college_of_accountancy",
+   "name": "Crescent College of Accountancy",
+   "seenInData": 4
+  },
+  {
+   "id": "ecole_law_college_hyderabad",
+   "name": "Ecole Law College, Hyderabad",
+   "seenInData": 0
+  },
+  {
+   "id": "edwardes_college_peshawar",
+   "name": "Edwardes College, Peshawar",
+   "seenInData": 3
+  },
+  {
+   "id": "faran_boys_higher_secondary_school_pirmahal",
+   "name": "Faran Boys Higher Secondary School, Pirmahal",
+   "seenInData": 2
+  },
+  {
+   "id": "farkhanda_institute_of_nursing_and_public_health_peshawar",
+   "name": "Farkhanda Institute of Nursing and Public Health, Peshawar",
+   "seenInData": 2
+  },
+  {
+   "id": "fatima_jinnah_women_university",
+   "name": "Fatima Jinnah Women University",
+   "seenInData": 0
+  },
+  {
+   "id": "fazaia_college_peshawar",
+   "name": "Fazaia College, Peshawar",
+   "seenInData": 5
+  },
+  {
+   "id": "federal_urdu_university_of_arts_science_and_technology_fuuas",
+   "name": "Federal Urdu University of Arts, Science and Technology (FUUAST)",
+   "seenInData": 0
+  },
+  {
+   "id": "forman_christian_college_a_chartered_university_lahore",
+   "name": "Forman Christian College (A Chartered University), Lahore",
+   "seenInData": 61,
+   "exportGroup": "FCCU"
+  },
+  {
+   "id": "foundation_university_islamabad",
+   "name": "Foundation University Islamabad",
+   "seenInData": 1
+  },
+  {
+   "id": "ghulam_ishaq_khan_institute_of_engineering_sciences_and_tech",
+   "name": "Ghulam Ishaq Khan Institute of Engineering Sciences and Technology (GIKI)",
+   "seenInData": 0
+  },
+  {
+   "id": "government_college_of_nursing_khyber_teaching_hospital_pesha",
+   "name": "Government College of Nursing, Khyber Teaching Hospital, Peshawar",
+   "seenInData": 4
+  },
+  {
+   "id": "government_college_university_faisalabad",
+   "name": "Government College University Faisalabad",
+   "seenInData": 6
+  },
+  {
+   "id": "government_girls_degree_college_bacha_khan_peshawar",
+   "name": "Government Girls Degree College Bacha Khan, Peshawar",
+   "seenInData": 4
+  },
+  {
+   "id": "government_graduate_college_for_women_city_unspecified",
+   "name": "Government Graduate College for Women (city unspecified)",
+   "seenInData": 8
+  },
+  {
+   "id": "grace_neil_institute_rawalpindi",
+   "name": "Grace Neil Institute, Rawalpindi",
+   "seenInData": 2
+  },
+  {
+   "id": "hayatabad_institute_of_medical_sciences_hims_peshawar",
+   "name": "Hayatabad Institute of Medical Sciences (HIMS), Peshawar",
+   "seenInData": 3
+  },
+  {
+   "id": "heart_institute_of_nursing_and_health_sciences",
+   "name": "Heart Institute of Nursing and Health Sciences",
+   "seenInData": 2
+  },
+  {
+   "id": "horizon_institute_of_health_sciences_hassan_abdal",
+   "name": "Horizon Institute of Health Sciences, Hassan Abdal",
+   "seenInData": 2
+  },
+  {
+   "id": "institute_of_chartered_accountants_of_pakistan_icap",
+   "name": "Institute of Chartered Accountants of Pakistan (ICAP)",
+   "seenInData": 0
+  },
+  {
+   "id": "inter_boys_college_quetta",
+   "name": "Inter Boys College, Quetta",
+   "seenInData": 2
+  },
+  {
+   "id": "iqra_national_university_peshawar",
+   "name": "Iqra National University, Peshawar",
+   "seenInData": 7
+  },
+  {
+   "id": "iqra_university",
+   "name": "Iqra University",
+   "seenInData": 1
+  },
+  {
+   "id": "islamabad_model_college_for_girls_f_7_4_islamabad",
+   "name": "Islamabad Model College for Girls F-7/4, Islamabad",
+   "seenInData": 2
+  },
+  {
+   "id": "islamia_university_of_bahawalpur",
+   "name": "The Islamia University of Bahawalpur",
+   "seenInData": 2
+  },
+  {
+   "id": "jinnah_college_for_women_peshawar",
+   "name": "Jinnah College for Women, Peshawar",
+   "seenInData": 2
+  },
+  {
+   "id": "jinnah_university_for_women_karachi",
+   "name": "Jinnah University for Women, Karachi",
+   "seenInData": 1
+  },
+  {
+   "id": "kbcma_college_of_veterinary_and_animal_sciences_narowal",
+   "name": "KBCMA College of Veterinary and Animal Sciences, Narowal",
+   "seenInData": 2
+  },
+  {
+   "id": "khyber_medical_university_kmu_peshawar",
+   "name": "Khyber Medical University (KMU), Peshawar",
+   "seenInData": 4
+  },
+  {
+   "id": "kinnaird_college_for_women_university_lahore",
+   "name": "Kinnaird College for Women University, Lahore",
+   "seenInData": 26,
+   "exportGroup": "KC"
+  },
+  {
+   "id": "kmu_institute_of_health_sciences_swabi",
+   "name": "KMU Institute of Health Sciences, Swabi",
+   "seenInData": 0
+  },
+  {
+   "id": "lahore_college_for_women_university",
+   "name": "Lahore College for Women University",
+   "seenInData": 1
+  },
+  {
+   "id": "lahore_grammar_school",
+   "name": "Lahore Grammar School",
+   "seenInData": 1
+  },
+  {
+   "id": "mehran_university_of_engineering_and_technology",
+   "name": "Mehran University of Engineering and Technology",
+   "seenInData": 0
+  },
+  {
+   "id": "mehreen_institute_of_nursing_and_allied_health_sciences",
+   "name": "Mehreen Institute of Nursing and Allied Health Sciences",
+   "seenInData": 0
+  },
+  {
+   "id": "misali_zakariya_group_of_schools_colleges",
+   "name": "Misali Zakariya Group of Schools & Colleges",
+   "seenInData": 1
+  },
+  {
+   "id": "mok_school_of_law_lahore",
+   "name": "MOK School of Law, Lahore",
+   "seenInData": 1
+  },
+  {
+   "id": "national_college_of_arts_lahore",
+   "name": "National College of Arts, Lahore",
+   "seenInData": 1
+  },
+  {
+   "id": "national_college_of_business_administration_and_economics_nc",
+   "name": "National College of Business Administration and Economics (NCBA&E)",
+   "seenInData": 1
+  },
+  {
+   "id": "national_university_of_modern_languages_numl",
+   "name": "National University of Modern Languages (NUML)",
+   "seenInData": 1
+  },
+  {
+   "id": "national_university_of_sciences_and_technology_nust",
+   "name": "National University of Sciences and Technology (NUST)",
+   "seenInData": 1
+  },
+  {
+   "id": "new_international_college_of_nursing_and_health_sciences_lah",
+   "name": "New International College of Nursing and Health Sciences, Lahore",
+   "seenInData": 5
+  },
+  {
+   "id": "nfc_institute_of_engineering_and_fertilizer_research_faisala",
+   "name": "NFC Institute of Engineering and Fertilizer Research, Faisalabad",
+   "seenInData": 1
+  },
+  {
+   "id": "nur_international_university",
+   "name": "NUR International University",
+   "seenInData": 0
+  },
+  {
+   "id": "nursing_college_hitec_ims_taxila",
+   "name": "Nursing College HITEC-IMS, Taxila",
+   "seenInData": 1
+  },
+  {
+   "id": "obaid_noor_institute_of_medical_sciences",
+   "name": "Obaid Noor Institute of Medical Sciences",
+   "seenInData": 0
+  },
+  {
+   "id": "pak_turk_maarif_international_schools_colleges",
+   "name": "Pak-Turk Maarif International Schools & Colleges",
+   "seenInData": 1
+  },
+  {
+   "id": "peace_institute_of_nursing_and_health_sciences_karachi",
+   "name": "Peace Institute of Nursing and Health Sciences, Karachi",
+   "seenInData": 1
+  },
+  {
+   "id": "pef_university_college_peshawar",
+   "name": "PEF University College, Peshawar",
+   "seenInData": 6
+  },
+  {
+   "id": "pmas_arid_agriculture_university_rawalpindi",
+   "name": "PMAS Arid Agriculture University, Rawalpindi",
+   "seenInData": 2
+  },
+  {
+   "id": "premier_institute_of_nursing_sciences_peshawar",
+   "name": "Premier Institute of Nursing Sciences, Peshawar",
+   "seenInData": 2
+  },
+  {
+   "id": "prime_institute_of_health_sciences_pihs",
+   "name": "Prime Institute of Health Sciences (PIHS)",
+   "seenInData": 0
+  },
+  {
+   "id": "prime_institute_of_health_sciences_pihs_islamabad",
+   "name": "Prime Institute of Health Sciences (PIHS), Islamabad",
+   "seenInData": 0
+  },
+  {
+   "id": "professional_academy_of_commerce",
+   "name": "Professional Academy of Commerce",
+   "seenInData": 0
+  },
+  {
+   "id": "punjab_group_of_colleges_pgc",
+   "name": "Punjab Group of Colleges (PGC)",
+   "seenInData": 22
+  },
+  {
+   "id": "qurtuba_university_of_science_and_it",
+   "name": "Qurtuba University of Science and IT",
+   "seenInData": 2
+  },
+  {
+   "id": "rawal_college_of_nursing_islamabad",
+   "name": "Rawal College of Nursing, Islamabad",
+   "seenInData": 3
+  },
+  {
+   "id": "rehman_medical_institute_rmi_peshawar",
+   "name": "Rehman Medical Institute (RMI), Peshawar",
+   "seenInData": 1
+  },
+  {
+   "id": "riphah_international_university",
+   "name": "Riphah International University",
+   "seenInData": 2
+  },
+  {
+   "id": "roots_ivy_international_schools",
+   "name": "Roots IVY International Schools",
+   "seenInData": 1
+  },
+  {
+   "id": "saifee_burhani_college_of_nursing",
+   "name": "Saifee Burhani College of Nursing",
+   "seenInData": 1
+  },
+  {
+   "id": "sargodha_medical_college",
+   "name": "Sargodha Medical College",
+   "seenInData": 1
+  },
+  {
+   "id": "sarhad_university_of_science_and_it_peshawar",
+   "name": "Sarhad University of Science and IT, Peshawar",
+   "seenInData": 2
+  },
+  {
+   "id": "school_of_health_sciences_peshawar",
+   "name": "School of Health Sciences, Peshawar",
+   "seenInData": 0
+  },
+  {
+   "id": "shaheed_benazir_bhutto_university_lyari_karachi",
+   "name": "Shaheed Benazir Bhutto University, Lyari, Karachi",
+   "seenInData": 2
+  },
+  {
+   "id": "shaheed_mohtarma_benazir_bhutto_medical_college_lyari",
+   "name": "Shaheed Mohtarma Benazir Bhutto Medical College, Lyari",
+   "seenInData": 0
+  },
+  {
+   "id": "shaheed_zulfiqar_ali_bhutto_medical_university",
+   "name": "Shaheed Zulfiqar Ali Bhutto Medical University",
+   "seenInData": 0
+  },
+  {
+   "id": "shaheed_zulfiqar_ali_bhutto_medical_university_pims_islamaba",
+   "name": "Shaheed Zulfiqar Ali Bhutto Medical University (PIMS), Islamabad",
+   "seenInData": 4
+  },
+  {
+   "id": "shifa_tameer_e_millat_university",
+   "name": "Shifa Tameer-e-Millat University",
+   "seenInData": 0
+  },
+  {
+   "id": "sk_royal_college_of_nursing_lahore",
+   "name": "SK Royal College of Nursing, Lahore",
+   "seenInData": 2
+  },
+  {
+   "id": "skans_school_of_accountancy",
+   "name": "SKANS School of Accountancy",
+   "seenInData": 0
+  },
+  {
+   "id": "st_mary_s_academy",
+   "name": "St. Mary's Academy",
+   "seenInData": 2
+  },
+  {
+   "id": "superior_group_of_colleges",
+   "name": "Superior Group of Colleges",
+   "seenInData": 6
+  },
+  {
+   "id": "superior_university_lahore",
+   "name": "The Superior University, Lahore",
+   "seenInData": 3
+  },
+  {
+   "id": "szabist_university",
+   "name": "SZABIST University",
+   "seenInData": 0
+  },
+  {
+   "id": "unique_group_of_institutions",
+   "name": "Unique Group of Institutions",
+   "seenInData": 1
+  },
+  {
+   "id": "unique_science_academy",
+   "name": "Unique Science Academy",
+   "seenInData": 0
+  },
+  {
+   "id": "university_of_chenab",
+   "name": "The University of Chenab",
+   "seenInData": 1
+  },
+  {
+   "id": "university_of_kamalia",
+   "name": "University of Kamalia",
+   "seenInData": 1
+  },
+  {
+   "id": "university_of_lahore",
+   "name": "The University of Lahore",
+   "seenInData": 4
+  },
+  {
+   "id": "university_of_okara",
+   "name": "University of Okara",
+   "seenInData": 0
+  },
+  {
+   "id": "university_of_peshawar",
+   "name": "University of Peshawar",
+   "seenInData": 3
+  },
+  {
+   "id": "university_of_sargodha",
+   "name": "University of Sargodha",
+   "seenInData": 2
+  },
+  {
+   "id": "university_of_sindh",
+   "name": "University of Sindh",
+   "seenInData": 0
+  },
+  {
+   "id": "university_of_the_punjab_lahore",
+   "name": "University of the Punjab, Lahore",
+   "seenInData": 12
+  },
+  {
+   "id": "virtual_university_of_pakistan",
+   "name": "Virtual University of Pakistan",
+   "seenInData": 1
+  },
+  {
+   "id": "wilderness_school_college_quetta",
+   "name": "Wilderness School & College, Quetta",
+   "seenInData": 0
+  }
+ ],
+ "exportGroupNote": "Institutions with exportGroup get their own sheet in the final workbook (FCCU, KC); business students there go to FCCU-BBA / KC-BBA in the Summary."
+}

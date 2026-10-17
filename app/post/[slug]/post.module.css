@@ -1,0 +1,47 @@
+.article {
+  padding-top: 1.5rem;
+  padding-bottom: 2.5rem;
+}
+.wrap {
+  max-width: 740px;
+}
+.title {
+  margin: 0.35rem 0 0.5rem;
+  font-size: clamp(1.75rem, 3.5vw, 2.35rem);
+  font-weight: 600;
+}
+.meta {
+  margin: 0 0 1.25rem;
+}
+.featured {
+  margin: 0 0 1.75rem;
+  border-radius: 0.35rem;
+  overflow: hidden;
+  background: var(--color-soft);
+}
+.featuredImg {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  aspect-ratio: 2 / 1;
+}
+.body {
+  margin-bottom: 0.5rem;
+  max-width: 65ch;
+}
+.body h2 {
+  margin: 2rem 0 0.85rem;
+  font-size: clamp(1.35rem, 2.5vw, 1.65rem);
+  font-weight: 600;
+}
+.body ul {
+  margin: 0 0 1.15rem;
+  padding-left: 1.35rem;
+}
+.body li {
+  margin: 0 0 0.55rem;
+}
+.body li strong {
+  font-weight: 600;
+}

@@ -1,0 +1,144 @@
+raw_value,count,field_of_study,canonical_program,match_method
+3.3,1,(none / invalid answer),,null
+BS,1,(none / invalid answer),,null
+Nill,1,(none / invalid answer),,null
+no,1,(none / invalid answer),,null
+Yes,1,(none / invalid answer),,null
+ACCA (AFD),1,Accounting,Chartered Accountancy / ACCA,rule
+Baccalaureate,2,Accounting,Chartered Accountancy / ACCA,rule
+Chartered accountancy,2,Accounting,Chartered Accountancy / ACCA,rule
+Accounting and Finance,1,Accounting & Finance,BS / ADP Accounting & Finance,rule
+ADP ( Accounting and finance),1,Accounting & Finance,BS / ADP Accounting & Finance,rule
+Associate Degree in Accounting and Finance,1,Accounting & Finance,BS / ADP Accounting & Finance,rule
+Bachelors in Business with plan to specialize in Accounting & Finance,1,Accounting & Finance,BS / ADP Accounting & Finance,rule
+BS Accounting and Finance,2,Accounting & Finance,BS / ADP Accounting & Finance,rule
+Course. PAEDIATRIC TEACHNICAIN,1,Allied Health (other),Paediatric Technician course,rule
+BS ANESTHESIA,1,Anesthesia Technology,BS Anesthesia Technology,rule
+BS Anesthesia technology,1,Anesthesia Technology,BS Anesthesia Technology,rule
+Masters in Art and Design Studies,1,Art & Design,Masters Art & Design,rule
+Artificial Intelligence,1,Artificial Intelligence,BS/MS Artificial Intelligence,rule
+Artificial Intelligence (AI),1,Artificial Intelligence,BS/MS Artificial Intelligence,rule
+MS Artificial Intelligence,1,Artificial Intelligence,BS/MS Artificial Intelligence,rule
+Bs-AUDIOLOGY,1,Audiology,BS Audiology,rule
+Biotechnology,2,Biotechnology,BS Biotechnology,rule
+Bachelor of Business,1,Business,BS Business (BSB/BST),rule
+Bachelor's in Business,1,Business,BS Business (BSB/BST),rule
+Bachelor's in business,1,Business,BS Business (BSB/BST),rule
+Bachelors in Business,1,Business,BS Business (BSB/BST),rule
+Bachelors in Business BSB,1,Business,BS Business (BSB/BST),rule
+Bachelors in Business Studies (BSB),1,Business,BS Business (BSB/BST),rule
+BS Business,1,Business,BS Business (BSB/BST),rule
+Bs Business Honors,1,Business,BS Business (BSB/BST),rule
+BS Bussiness,1,Business,BS Business (BSB/BST),rule
+BS.Business,2,Business,BS Business (BSB/BST),rule
+BSB (Bachelor of Studies in Business),1,Business,BS Business (BSB/BST),rule
+BSB Business,1,Business,BS Business (BSB/BST),rule
+BST,2,Business,BS Business (BSB/BST),rule
+Business,2,Business,BS Business (BSB/BST),rule
+BST (Bachelor of Studies in Data Analytics),1,Business / Data Analytics,BS Business Analytics,rule
+Business Analytics,1,Business / Data Analytics,BS Business Analytics,rule
+BBA,1,Business Administration,BBA,rule
+Bachelor in Business Administration,1,Business Administration,MPhil Business Administration,rule
+M.Phil Business Administration,1,Business Administration,MPhil Business Administration,rule
+Bs chemistry,1,Chemistry,BS/MPhil Chemistry,rule
+BS Chemistry,1,Chemistry,BS/MPhil Chemistry,rule
+MPhil Chemistry,1,Chemistry,BS/MPhil Chemistry,rule
+Bachelors in Christian Studies,1,Christian Studies,BA Christian Studies,rule
+Christian Studies and Psychology,1,Christian Studies,BA Christian Studies & Psychology,rule
+Bsc. CIVIL ENGINEERING,1,Civil Engineering,BSc Civil Engineering,rule
+Bachelor's In Computer Science,1,Computer Science,BS Computer Science,rule
+BCS,1,Computer Science,BS Computer Science,rule
+BCS Computer science,1,Computer Science,BS Computer Science,rule
+BS(CS),1,Computer Science,BS Computer Science,rule
+Cyber Security and Digital Forensics,1,Cyber Security,BS Cyber Security,rule
+Bachelor in Economics,1,Economics,BS Economics,rule
+Bachelor's in economics,1,Economics,BS Economics,rule
+BS Economics,1,Economics,BS Economics,rule
+B.ed elementary,1,Education,B.Ed / BS Education,rule
+B.Ed.(Hons).,1,Education,B.Ed / BS Education,rule
+Bachelor of Education (B.ED 1.5 Years),1,Education,B.Ed / BS Education,rule
+Bachelor Of Education (B.Ed),1,Education,B.Ed / BS Education,rule
+Bs Education,1,Education,B.Ed / BS Education,rule
+Degree in Elementary education from IER department,1,Education,B.Ed / BS Education,rule
+Elementary education,1,Education,B.Ed / BS Education,rule
+Ph.D. Education,1,Education,PhD Education,rule
+BA English,1,English,BS/MPhil English Literature,rule
+BS English Literature,3,English,BS/MPhil English Literature,rule
+Mphil English (Literature),1,English,BS/MPhil English Literature,rule
+BS. Food Science and Nutirition,1,Food Science & Nutrition,BS Food Science & Human Nutrition,rule
+Food Science and Human Nutrition,1,Food Science & Nutrition,BS Food Science & Human Nutrition,rule
+Bachelors in Political Science with specialization in International Relations,1,International Relations,BS International Relations / Political Science,rule
+BS-International Relations,1,International Relations,BS International Relations / Political Science,rule
+Planning to pursue LLB from University of London,1,Law,LLB,rule
+BS Marketing and Selling,1,Marketing,BS Business (Marketing),rule
+Bs. Business (Marketing & Sales),1,Marketing,BS Business (Marketing),rule
+Business (Marketing & Sales),1,Marketing,BS Business (Marketing),rule
+online course of marketing,1,Marketing,BS Business (Marketing),rule
+Bachelors in Media and Development Communication,1,Mass Communication,BS Mass Communication / Media,rule
+Mass Communication,3,Mass Communication,BS Mass Communication / Media,rule
+Double major (Mass communication and Chirstain study),1,Mass Communication,Double major Mass Comm & Christian Studies,rule
+Bachelors Of Medical Imaging Sciences,1,Medical Imaging / Radiology,BS Medical Imaging Technology,rule
+BS Radiology,1,Medical Imaging / Radiology,BS Medical Imaging Technology,rule
+Bachelor in Medicine and Bachelor in Surgery (Mbbs),1,Medicine,MBBS,rule
+Mbbs,1,Medicine,MBBS,rule
+BS Microbiology,2,Microbiology,BS/MS Microbiology,rule
+Microbiology,1,Microbiology,BS/MS Microbiology,rule
+MS | Microbiology and Molecular Genetics,1,Microbiology,BS/MS Microbiology,rule
+Bachelor of nursing ( BSN ),1,Nursing,BSN Generic (4-year),rule
+Bachelor of science in nurisng,1,Nursing,BSN Generic (4-year),rule
+Bachelor of science in nursing,1,Nursing,BSN Generic (4-year),rule
+Bachelor of Science in Nursing (BSN),3,Nursing,BSN Generic (4-year),rule
+Bachelor of science in nursing.,1,Nursing,BSN Generic (4-year),rule
+Bachelor's In Science of Nursing,1,Nursing,BSN Generic (4-year),rule
+Bachelor's in Science of Nursing (BsN),2,Nursing,BSN Generic (4-year),rule
+Bachelor's Of Science In Nursing,1,Nursing,BSN Generic (4-year),rule
+Bachelors in nursing,1,Nursing,BSN Generic (4-year),rule
+Bachelors in Science & Nursing,1,Nursing,BSN Generic (4-year),rule
+Bachelors of science in nursing,1,Nursing,BSN Generic (4-year),rule
+Bachlor of Science in Nursing,1,Nursing,BSN Generic (4-year),rule
+Ban gernic nursing 4 years degree,1,Nursing,BSN Generic (4-year),rule
+Bs nursing,4,Nursing,BSN Generic (4-year),rule
+BS Nursing,5,Nursing,BSN Generic (4-year),rule
+Bs Nursing,1,Nursing,BSN Generic (4-year),rule
+Bs NURSING,1,Nursing,BSN Generic (4-year),rule
+BS NURSING 2nd semester,1,Nursing,BSN Generic (4-year),rule
+BS- Nursing,1,Nursing,BSN Generic (4-year),rule
+BS-Nursing,2,Nursing,BSN Generic (4-year),rule
+Bs-NURSING,1,Nursing,BSN Generic (4-year),rule
+BSN,2,Nursing,BSN Generic (4-year),rule
+BSN ( Bachelor of Science in Nursing),1,Nursing,BSN Generic (4-year),rule
+BSN ( Bachelor's of Science in Nursing),1,Nursing,BSN Generic (4-year),rule
+BSN (bachelors of science in nursing),1,Nursing,BSN Generic (4-year),rule
+BSN 7th semester,1,Nursing,BSN Generic (4-year),rule
+BSN Generic Nursing,2,Nursing,BSN Generic (4-year),rule
+BSN program currently doing,1,Nursing,BSN Generic (4-year),rule
+BsN( Bachelors in Science of Nursing),1,Nursing,BSN Generic (4-year),rule
+Generic BSN,5,Nursing,BSN Generic (4-year),rule
+Generic bsn,1,Nursing,BSN Generic (4-year),rule
+Generic nursing,1,Nursing,BSN Generic (4-year),rule
+GENERIC Nursing 4 years Degree program,1,Nursing,BSN Generic (4-year),rule
+Nursing,1,Nursing,BSN Generic (4-year),rule
+Post RN,1,Nursing,BSN Post-RN,rule
+Pharm – D,1,Pharmacy,Doctor of Pharmacy (Pharm-D),rule
+Pharm-D,3,Pharmacy,Doctor of Pharmacy (Pharm-D),rule
+Pharm.D,1,Pharmacy,Doctor of Pharmacy (Pharm-D),rule
+Doctor of Physical tberapy,1,Physical Therapy,Doctor of Physical Therapy (DPT),rule
+DPT 7 semester,1,Physical Therapy,Doctor of Physical Therapy (DPT),rule
+DPT doctor of physical therapy,1,Physical Therapy,Doctor of Physical Therapy (DPT),rule
+Fsc Pre Medical Part 2,1,Pre-Medical,FSc Pre-Medical,rule
+Fsc.pre-medical,1,Pre-Medical,FSc Pre-Medical,rule
+PhD- PROJECT MANAGEMENT,1,Project Management,PhD Project Management,rule
+Applied Psychology,1,Psychology,BS Psychology,rule
+Bachelor's in applied psychology.,1,Psychology,BS Psychology,rule
+Bachelor's in Psychology,1,Psychology,BS Psychology,rule
+Bachelors in Psychology,1,Psychology,BS Psychology,rule
+BS Psychology,1,Psychology,BS Psychology,rule
+It will be psychology,1,Psychology,BS Psychology,rule
+Advance diploma in clinical psychology,1,Psychology,Diploma/BS Clinical Psychology,rule
+B's Clinical Psychogy,1,Psychology,Diploma/BS Clinical Psychology,rule
+Public Administration,1,Public Administration,BS Public Administration,rule
+Bs Sociology,1,Sociology,BS Sociology,rule
+MPhil Statistics,2,Statistics,BS/MPhil Statistics,rule
+Statistics,1,Statistics,BS/MPhil Statistics,rule
+Doctor of veterinary medicines,1,Veterinary Medicine,Doctor of Veterinary Medicine (DVM),rule
+DVM,3,Veterinary Medicine,Doctor of Veterinary Medicine (DVM),rule

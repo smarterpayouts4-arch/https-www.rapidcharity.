@@ -1,0 +1,565 @@
+{
+ "version": "2026-10-16",
+ "note": "Form uses Degree level + Field of study (required dropdowns, each with Other + free text). 'programs' = full canonical program titles (data + Excel Analyzr) for optional typeahead/admin mapping. dataCount = applicants per field in 2025-26 responses.",
+ "levels": [
+  {
+   "id": "intermediate",
+   "label": "Intermediate (FSc / FA / ICS / I.Com) / A Level"
+  },
+  {
+   "id": "diploma",
+   "label": "Diploma / Certificate"
+  },
+  {
+   "id": "associate",
+   "label": "Associate Degree (ADP, 2 years)"
+  },
+  {
+   "id": "bachelor",
+   "label": "Bachelor's (BS / BA / BSc / BBA / B.Ed)"
+  },
+  {
+   "id": "professional",
+   "label": "Professional degree (MBBS, Pharm-D, DPT, DVM, LLB)"
+  },
+  {
+   "id": "professional_cert",
+   "label": "Professional certification (CA / ACCA)"
+  },
+  {
+   "id": "master",
+   "label": "Master's (MS / MA / MBA)"
+  },
+  {
+   "id": "mphil",
+   "label": "MPhil"
+  },
+  {
+   "id": "phd",
+   "label": "PhD"
+  },
+  {
+   "id": "other",
+   "label": "Other (please specify)",
+   "requiresText": true
+  }
+ ],
+ "fieldsOfStudy": [
+  {
+   "id": "accounting",
+   "label": "Accounting",
+   "dataCount": 5
+  },
+  {
+   "id": "accounting_finance",
+   "label": "Accounting & Finance",
+   "dataCount": 6
+  },
+  {
+   "id": "agriculture",
+   "label": "Agriculture",
+   "dataCount": 0
+  },
+  {
+   "id": "anesthesia_technology",
+   "label": "Anesthesia Technology",
+   "dataCount": 2
+  },
+  {
+   "id": "architecture",
+   "label": "Architecture",
+   "dataCount": 0
+  },
+  {
+   "id": "art_design",
+   "label": "Art & Design",
+   "dataCount": 1
+  },
+  {
+   "id": "artificial_intelligence",
+   "label": "Artificial Intelligence",
+   "dataCount": 3
+  },
+  {
+   "id": "audiology",
+   "label": "Audiology",
+   "dataCount": 1
+  },
+  {
+   "id": "biology",
+   "label": "Biology",
+   "dataCount": 0
+  },
+  {
+   "id": "biotechnology",
+   "label": "Biotechnology",
+   "dataCount": 2
+  },
+  {
+   "id": "business",
+   "label": "Business",
+   "dataCount": 17
+  },
+  {
+   "id": "business_data_analytics",
+   "label": "Business / Data Analytics",
+   "dataCount": 2
+  },
+  {
+   "id": "business_administration",
+   "label": "Business Administration",
+   "dataCount": 3
+  },
+  {
+   "id": "chemistry",
+   "label": "Chemistry",
+   "dataCount": 3
+  },
+  {
+   "id": "christian_studies",
+   "label": "Christian Studies",
+   "dataCount": 2
+  },
+  {
+   "id": "civil_engineering",
+   "label": "Civil Engineering",
+   "dataCount": 1
+  },
+  {
+   "id": "computer_science",
+   "label": "Computer Science",
+   "dataCount": 4
+  },
+  {
+   "id": "cyber_security",
+   "label": "Cyber Security",
+   "dataCount": 1
+  },
+  {
+   "id": "dentistry",
+   "label": "Dentistry",
+   "dataCount": 0
+  },
+  {
+   "id": "developmental_studies",
+   "label": "Developmental Studies",
+   "dataCount": 0
+  },
+  {
+   "id": "eastern_medicine",
+   "label": "Eastern Medicine",
+   "dataCount": 0
+  },
+  {
+   "id": "economics",
+   "label": "Economics",
+   "dataCount": 3
+  },
+  {
+   "id": "education",
+   "label": "Education",
+   "dataCount": 8
+  },
+  {
+   "id": "electrical_engineering",
+   "label": "Electrical Engineering",
+   "dataCount": 0
+  },
+  {
+   "id": "english",
+   "label": "English",
+   "dataCount": 5
+  },
+  {
+   "id": "environmental_sciences",
+   "label": "Environmental Sciences",
+   "dataCount": 0
+  },
+  {
+   "id": "fashion_design",
+   "label": "Fashion Design",
+   "dataCount": 0
+  },
+  {
+   "id": "finance",
+   "label": "Finance",
+   "dataCount": 0
+  },
+  {
+   "id": "fine_arts",
+   "label": "Fine Arts",
+   "dataCount": 0
+  },
+  {
+   "id": "food_science_nutrition",
+   "label": "Food Science & Nutrition",
+   "dataCount": 2
+  },
+  {
+   "id": "history",
+   "label": "History",
+   "dataCount": 0
+  },
+  {
+   "id": "hospitality_tourism",
+   "label": "Hospitality & Tourism",
+   "dataCount": 0
+  },
+  {
+   "id": "human_resource_management",
+   "label": "Human Resource Management",
+   "dataCount": 0
+  },
+  {
+   "id": "information_technology",
+   "label": "Information Technology",
+   "dataCount": 0
+  },
+  {
+   "id": "international_relations",
+   "label": "International Relations",
+   "dataCount": 2
+  },
+  {
+   "id": "islamic_studies",
+   "label": "Islamic Studies",
+   "dataCount": 0
+  },
+  {
+   "id": "journalism",
+   "label": "Journalism",
+   "dataCount": 0
+  },
+  {
+   "id": "law",
+   "label": "Law",
+   "dataCount": 1
+  },
+  {
+   "id": "marketing",
+   "label": "Marketing",
+   "dataCount": 4
+  },
+  {
+   "id": "mass_communication",
+   "label": "Mass Communication",
+   "dataCount": 5
+  },
+  {
+   "id": "mathematics",
+   "label": "Mathematics",
+   "dataCount": 0
+  },
+  {
+   "id": "mechanical_engineering",
+   "label": "Mechanical Engineering",
+   "dataCount": 0
+  },
+  {
+   "id": "medical_imaging_radiology",
+   "label": "Medical Imaging / Radiology",
+   "dataCount": 2
+  },
+  {
+   "id": "medical_laboratory_technology",
+   "label": "Medical Laboratory Technology",
+   "dataCount": 0
+  },
+  {
+   "id": "medicine",
+   "label": "Medicine",
+   "dataCount": 2
+  },
+  {
+   "id": "microbiology",
+   "label": "Microbiology",
+   "dataCount": 4
+  },
+  {
+   "id": "midwifery",
+   "label": "Midwifery",
+   "dataCount": 0
+  },
+  {
+   "id": "nursing",
+   "label": "Nursing",
+   "dataCount": 52
+  },
+  {
+   "id": "optometry",
+   "label": "Optometry",
+   "dataCount": 0
+  },
+  {
+   "id": "pharmacy",
+   "label": "Pharmacy",
+   "dataCount": 5
+  },
+  {
+   "id": "physical_therapy",
+   "label": "Physical Therapy",
+   "dataCount": 3
+  },
+  {
+   "id": "physics",
+   "label": "Physics",
+   "dataCount": 0
+  },
+  {
+   "id": "political_science",
+   "label": "Political Science",
+   "dataCount": 0
+  },
+  {
+   "id": "project_management",
+   "label": "Project Management",
+   "dataCount": 1
+  },
+  {
+   "id": "psychology",
+   "label": "Psychology",
+   "dataCount": 8
+  },
+  {
+   "id": "public_administration",
+   "label": "Public Administration",
+   "dataCount": 1
+  },
+  {
+   "id": "public_health",
+   "label": "Public Health",
+   "dataCount": 0
+  },
+  {
+   "id": "social_work",
+   "label": "Social Work",
+   "dataCount": 0
+  },
+  {
+   "id": "sociology",
+   "label": "Sociology",
+   "dataCount": 1
+  },
+  {
+   "id": "software_engineering",
+   "label": "Software Engineering",
+   "dataCount": 0
+  },
+  {
+   "id": "statistics",
+   "label": "Statistics",
+   "dataCount": 3
+  },
+  {
+   "id": "theology_divinity",
+   "label": "Theology / Divinity",
+   "dataCount": 0
+  },
+  {
+   "id": "urdu",
+   "label": "Urdu",
+   "dataCount": 0
+  },
+  {
+   "id": "veterinary_medicine",
+   "label": "Veterinary Medicine",
+   "dataCount": 4
+  },
+  {
+   "id": "zoology",
+   "label": "Zoology",
+   "dataCount": 0
+  },
+  {
+   "id": "other",
+   "label": "Other (please specify)",
+   "requiresText": true
+  }
+ ],
+ "programs": [
+  "A Level",
+  "ACCA qualification",
+  "Associate degree in Computer Science",
+  "B.Ed / BS Education",
+  "BA Christian Studies",
+  "BA Christian Studies & Psychology",
+  "Bachelor International Relations",
+  "Bachelor Medical Imaging Sciences",
+  "Bachelor of Business Administration",
+  "Bachelor of Science in Computer Science",
+  "Bachelor of Science in Nursing - track unspecified",
+  "Bachelor of Studies in Business",
+  "Bachelor of Studies in Computer Science",
+  "Bachelor of Studies Mass Communication",
+  "Bachelor Political Science",
+  "BBA",
+  "BCS Computer Science",
+  "BE Electronic Engineering",
+  "BE Telecommunication",
+  "BFA Textile",
+  "BS / ADP Accounting & Finance",
+  "BS Accounting And Finance",
+  "BS Ai",
+  "BS Anesthesia Technology",
+  "BS Applied Psychology",
+  "BS Audiology",
+  "BS Biblical Studies",
+  "BS Biotechnology",
+  "BS Business",
+  "BS Business (BSB/BST)",
+  "BS Business (Marketing)",
+  "BS Business Analytics",
+  "BS Chemistry",
+  "BS Clinical Psychology",
+  "BS Computer Engineering",
+  "BS Computer Science",
+  "BS Cyber Security",
+  "BS Data Analytics",
+  "BS Economics",
+  "BS English",
+  "BS English In Languages And Literature",
+  "BS English Literature",
+  "BS Food Science & Human Nutrition",
+  "BS Food Science And Human Nutrition",
+  "BS International Relations / Political Science",
+  "BS Mass Communication / Media",
+  "BS Medical Imaging Technology",
+  "BS Microbiology",
+  "BS Psychology",
+  "BS Public Administration",
+  "BS Sociology",
+  "BS Software Engineering",
+  "BS Zoology",
+  "BS/MPhil Chemistry",
+  "BS/MPhil English Literature",
+  "BS/MPhil Statistics",
+  "BS/MS Artificial Intelligence",
+  "BS/MS Microbiology",
+  "BSc Civil Engineering",
+  "BSc Economics",
+  "BSN - Generic",
+  "BSN - Post RN",
+  "BSN Generic (4-year)",
+  "BSN Post-RN",
+  "Chartered Accountancy",
+  "Chartered Accountancy / ACCA",
+  "Christian Studies (award unspecified)",
+  "Diploma/BS Clinical Psychology",
+  "Doctor of Pharmacy",
+  "Doctor of Pharmacy (Pharm-D)",
+  "Doctor of Physical Therapy",
+  "Doctor of Physical Therapy (DPT)",
+  "Doctor of Veterinary Medicine",
+  "Doctor of Veterinary Medicine (DVM)",
+  "Double major Mass Comm & Christian Studies",
+  "Eastern Medicine (award unspecified; likely BEMS)",
+  "FA Humanities",
+  "FSc Pre-Medical",
+  "Intermediate (stream unspecified)",
+  "LLB",
+  "Master of Business Administration",
+  "Masters Art & Design",
+  "MBBS",
+  "MPhil Business Administration",
+  "MPhil Chemistry",
+  "MPhil English Literature",
+  "MPhil Environmental Sciences",
+  "MPhil Mass Communication",
+  "MPhil Physics",
+  "MPhil Social Work",
+  "MS Developmental Studies",
+  "MS Microbiology And Molecular Genetics",
+  "MS Social Sciences (Clinical Psychology)",
+  "O Level",
+  "Paediatric Technician course",
+  "PhD Education",
+  "PhD Project Management"
+ ],
+ "previousStudyStreams": [
+  "Matric Science",
+  "Matric Arts",
+  "O Level",
+  "FSc Pre-Medical",
+  "FSc Pre-Engineering",
+  "ICS (Computer Science)",
+  "I.Com (Commerce)",
+  "FA (Humanities)",
+  "A Level",
+  "IB Diploma",
+  "Other (please specify)"
+ ],
+ "exportCategories": [
+  {
+   "id": "medical",
+   "sheet": "Medical",
+   "label": "MBBS / DVM / DPT",
+   "rule": "field in Medicine, Veterinary Medicine, Physical Therapy (professional degree)"
+  },
+  {
+   "id": "nursing",
+   "sheet": "Nursing",
+   "label": "Nursing (BSN Generic / Post-RN)",
+   "rule": "field = Nursing"
+  },
+  {
+   "id": "undergrads",
+   "sheet": "Pre-Grads",
+   "label": "Under Grads / F.Sc / School",
+   "rule": "degree_level = intermediate (or below)"
+  },
+  {
+   "id": "graduates",
+   "sheet": "Grads",
+   "label": "Bachelors / BS",
+   "rule": "degree_level in bachelor/associate/diploma, not in another category"
+  },
+  {
+   "id": "post_grads",
+   "sheet": "Post-Grads",
+   "label": "Masters / MPhil / PhD / Pharm-D",
+   "rule": "degree_level in master/mphil/phd OR field = Pharmacy (A files Pharm-D here)"
+  },
+  {
+   "id": "kc",
+   "sheet": "KC",
+   "label": "Kinnaird College for Women",
+   "rule": "institution exportGroup = KC (overrides level); Summary splits KC vs KC-BBA"
+  },
+  {
+   "id": "fccu",
+   "sheet": "FCCU",
+   "label": "Forman Christian College",
+   "rule": "institution exportGroup = FCCU (overrides level); Summary splits FCCU vs FCCU-BBA"
+  },
+  {
+   "id": "business",
+   "sheet": "BBA",
+   "label": "Business / ACCA / CA (Robert Mathias)",
+   "rule": "field in Business family or Accounting/CA/ACCA, institution not FCCU/KC"
+  },
+  {
+   "id": "blind",
+   "sheet": "Blind",
+   "label": "Visually impaired students",
+   "rule": "disability = visual impairment (overrides all)"
+  }
+ ],
+ "exportCategoryPriority": [
+  "blind",
+  "fccu",
+  "kc",
+  "medical",
+  "nursing",
+  "business",
+  "post_grads",
+  "undergrads",
+  "graduates"
+ ],
+ "termProgressLabels": {
+  "semester": "1st–12th Semester",
+  "prof": "1st–5th Prof (MBBS/DPT annual system)",
+  "year": "1st–5th Year",
+  "part": "Part I / Part II (FSc, BA)",
+  "paper": "CA/ACCA paper/level"
+ }
+}

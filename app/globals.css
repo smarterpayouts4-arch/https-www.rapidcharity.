@@ -1,0 +1,6 @@
+@import "../styles/globals/tokens.css";
+@import "../styles/globals/base.css";
+@import "../styles/globals/layout.css";
+@import "../styles/globals/components.css";
+@import "../styles/globals/utilities.css";
+@import "../styles/globals/motion.css";

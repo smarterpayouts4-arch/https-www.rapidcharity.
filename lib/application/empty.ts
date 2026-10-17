@@ -1,0 +1,126 @@
+import { CYCLE_TERMS } from "./constants";
+import type { ApplicationInput, ResultValue, TermRow } from "./types";
+
+function emptyResult(): ResultValue {
+  return { type: "CGPA", value: null, max: 4, grade: "" };
+}
+
+export function emptyTerms(): TermRow[] {
+  return CYCLE_TERMS.map((item) => ({
+    term: item.term,
+    unit: item.future ? "semester" : "",
+    number: null,
+    status: item.future ? "future" : "",
+    result: emptyResult(),
+  }));
+}
+
+export function emptyChoice() {
+  return { option_id: "", other_text: "" };
+}
+
+export function emptyMoney(period: "month" | "semester" | "year") {
+  return { amount: null as number | null, currency: "PKR" as const, period, value_state: "known" as const };
+}
+
+export function emptyApplication(scholarship: ApplicationInput["scholarship"] = ""): ApplicationInput {
+  return {
+    client_id: "",
+    scholarship,
+    applicant_type: "",
+    first_name: "",
+    last_name: "",
+    full_name_as_on_cnic: "",
+    date_of_birth: "",
+    gender: "",
+    disability: "",
+    disability_other: "",
+    marital_status: "",
+    spouse_name: "",
+    spouse_monthly_income: emptyMoney("month"),
+    religion: emptyChoice(),
+    cnic: "",
+    email: "",
+    email_confirm: "",
+    mobile_phone: "",
+    secondary_phone: "",
+    address_line: "",
+    city: emptyChoice(),
+    province: "",
+    employment_status: "",
+    employment_job: "",
+    employment_employer: "",
+    monthly_income: emptyMoney("month"),
+    father_name: "",
+    mother_name: "",
+    father_status: "",
+    mother_status: "",
+    father_occupation: emptyChoice(),
+    mother_occupation: emptyChoice(),
+    father_monthly_income: emptyMoney("month"),
+    mother_monthly_income: emptyMoney("month"),
+    guardian_phone: "",
+    siblings_count: null,
+    siblings_studying_count: null,
+    siblings_working_count: null,
+    siblings_married_count: null,
+    siblings_other_count: null,
+    siblings_notes: "",
+    current_institution: emptyChoice(),
+    campus_city: emptyChoice(),
+    degree_level: emptyChoice(),
+    field_of_study: emptyChoice(),
+    program_title: "",
+    program_track: "",
+    program_track_other: "",
+    specialization: "",
+    study_years: null,
+    completion_term: "",
+    completion_year: null,
+    roll_number: "",
+    terms: emptyTerms(),
+    previous_institution: emptyChoice(),
+    previous_qualification: emptyChoice(),
+    previous_completion_year: null,
+    fee: emptyMoney("semester"),
+    fee_due_date: "",
+    institution_phone: "",
+    institution_address: "",
+    rapid_received: "",
+    rapid_semesters: [],
+    rapid_amount: emptyMoney("semester"),
+    other_financial_support: "",
+    support_provider: emptyChoice(),
+    support_value_kind: "",
+    support_percent: null,
+    support_amount: emptyMoney("semester"),
+    heard_about: emptyChoice(),
+    church_name: "",
+    denomination: emptyChoice(),
+    pastor_title: "",
+    pastor_title_other: "",
+    pastor_name: "",
+    pastor_phone: "",
+    pastor_email: "",
+    faculty_ref_name: "",
+    faculty_ref_designation: "",
+    faculty_ref_phone: "",
+    faculty_ref_email: "",
+    family_ref_name: "",
+    family_ref_relationship: emptyChoice(),
+    family_ref_phone: "",
+    family_ref_email: "",
+    attend_events: "",
+    life_goal: "",
+    community_contribution: "",
+    plan_if_denied: "",
+    future_plan: "",
+    reuse_photo: false,
+    reuse_cnic: false,
+    reuse_guardian: false,
+    documents: [],
+    consent_accepted: false,
+    consent_name: "",
+    website: "",
+  };
+}

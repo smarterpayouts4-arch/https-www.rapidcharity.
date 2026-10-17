@@ -1,0 +1,115 @@
+.wrap {
+  display: grid;
+  gap: 1rem;
+  max-width: 40rem;
+  margin: 0 auto 1.5rem;
+  text-align: left;
+}
+
+.toggle {
+  display: inline-flex;
+  justify-self: center;
+  padding: 0.2rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: #fff;
+}
+
+.toggle button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-weight: 600;
+  padding: 0.45rem 0.95rem;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  color: var(--color-text-secondary);
+}
+
+.toggle button[data-on="true"] {
+  background: var(--color-text-primary);
+  color: #fff;
+}
+
+.amounts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.7rem;
+}
+
+.amounts button {
+  appearance: none;
+  display: grid;
+  gap: 0.15rem;
+  justify-items: start;
+  padding: 0.9rem 0.85rem;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border-strong);
+  background: #fff;
+  font: inherit;
+  cursor: pointer;
+  color: var(--color-text-primary);
+}
+
+.amounts button span {
+  font-family: var(--font-serif);
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.amounts button small {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+.amounts button[data-on="true"] {
+  background: var(--color-brand-tint);
+  border-color: var(--color-brand-primary);
+}
+
+.note {
+  margin: 0;
+  text-align: center;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .toggle button,
+  .amounts button {
+    transition: background 0.22s ease, border-color 0.22s ease, color 0.22s ease, transform 0.22s ease;
+  }
+  .amounts button:hover { transform: translateY(-2px); }
+  .amounts button:active { transform: translateY(0) scale(0.98); }
+}
+
+.sticky {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .amounts { grid-template-columns: 1fr 1fr; }
+  .sticky {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    position: sticky;
+    bottom: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-border-strong);
+    box-shadow: var(--shadow-elevated);
+    color: var(--color-text-primary);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .sticky strong {
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    font-size: 0.82rem;
+    text-align: right;
+  }
+}

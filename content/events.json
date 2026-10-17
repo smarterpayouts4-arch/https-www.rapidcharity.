@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "updatedAt": "2026-09-21T21:07:00-04:00",
+  "items": [
+    {
+      "id": "fccu-2025",
+      "title": "RAPID Scholars Get-Together 2025 in FCCU",
+      "body": "The Rapid Charity (Lahore Chapter) hosted a beautiful get-together with our scholarship recipients and alumni on 6th December 2025. In 2025, 147 scholarships were awarded across Pakistan, and it was amazing to seeing so many bright faces gathered in one place.",
+      "status": "published"
+    },
+    {
+      "id": "kinnaird-2024",
+      "title": "RAPID Scholars Get-Together in Kinnaird College 2024",
+      "body": "Lahore, November 23, 2024. Thirty John-Ivy Azariah Scholarship recipients gathered for a year-end Christmas celebration in Haladia Hall, Kinnaird College for Women University, Lahore.",
+      "status": "published"
+    },
+    {
+      "id": "peshawar-2023",
+      "title": "RAPID-Peshawar Chapter, Get-together October 2023",
+      "body": "RAPID-Peshawar Chapter Get-together 2023 was organized at Christian Study Center Rawalpindi. In this event 17 students from Peshawar and Rawalpindi were present. Mr. Emmanuel Azariah was guest of honor.",
+      "status": "published"
+    },
+    {
+      "id": "lahore-2023",
+      "title": "Rapid-Lahore Chapter, Get Together Dec. 2023",
+      "body": "Reconciliation And Peace Innovative Development (RAPID)-Lahore Chapter get-together 2023 held on December 9, 2023 at Elahi building Forman Christian College University.",
+      "status": "published"
+    },
+    {
+      "id": "lahore-2022",
+      "title": "RapidCharity-Lahore Chapter Get-together December 2022",
+      "body": "Reconciliation And Peace Innovative Development (RAPID)-Lahore Chapter get-together 2022 held in December, 2022 at National Council of Churches in Pakistan.",
+      "status": "published"
+    },
+    {
+      "id": "karachi-2022",
+      "title": "Rapid-Karachi Chapter, Get Together, March 2022",
+      "body": "Karachi Chapter gathering for RAPID scholars and friends, March 2022.",
+      "status": "published"
+    }
+  ]
+}

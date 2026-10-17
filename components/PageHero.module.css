@@ -1,0 +1,53 @@
+/* Shared page hero (secondary routes) */
+.hero {
+  background: linear-gradient(
+    135deg,
+    var(--color-brand-primary) 0%,
+    var(--color-brand-deep) 100%
+  );
+  color: var(--color-text-on-brand);
+  padding: clamp(2.75rem, 6vw, 4.5rem) 0 clamp(2.4rem, 5vw, 3.75rem);
+}
+.hero h1 {
+  color: var(--color-text-on-brand);
+  margin: 0;
+  font-size: clamp(2.15rem, 4.4vw, 3.15rem);
+  letter-spacing: -0.02em;
+}
+.hero p {
+  margin: 0.6rem 0 0;
+  color: var(--color-text-on-brand-muted);
+  max-width: 40rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero h1,
+  .hero p {
+    animation: page-hero-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .hero p { animation-delay: 0.12s; }
+}
+
+@media (max-width: 767px) {
+  .hero { padding: 1.35rem 0 1.15rem; }
+  .hero h1 { font-size: 1.7rem; }
+  .hero p {
+    max-width: 65ch;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+@keyframes page-hero-in {
+  from {
+    opacity: 0;
+    translate: 0 14px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+

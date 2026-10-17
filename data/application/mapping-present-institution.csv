@@ -1,0 +1,146 @@
+raw_value,count,canonical,match_method
+Nill,1,(none / invalid answer),null
+no,1,(none / invalid answer),null
+none,1,(none / invalid answer),null
+yet to apply,1,(none / invalid answer),null
+"Abasyn University, Peshawar Campus",1,"Abasyn University, Peshawar",rule
+"Adyala road near National Bank,Rawalpindi",1,"Adyala Road Near National Bank,Rawalpindi",unmatched(Other)
+Al- Ain Institute of Medical science.,1,"Al-Ain Institute of Medical Sciences, Gujranwala",rule
+Bannu medical college,1,Bannu Medical College,rule
+BeaconHouse National University,1,"Beaconhouse National University, Lahore",rule
+cecos university,1,"CECOS University of IT and Emerging Sciences, Peshawar",rule
+CECOS University of IT and emerging Sciences,1,"CECOS University of IT and Emerging Sciences, Peshawar",rule
+City University of science & information technology,1,"City University of Science and Information Technology, Peshawar",rule
+City university of science and information technology,1,"City University of Science and Information Technology, Peshawar",rule
+City University of Science and Information Technology Peshawar,1,"City University of Science and Information Technology, Peshawar",rule
+Cleveland State University,1,Cleveland State University (USA),rule
+College of nursing christian hospital Quetta,1,"College of Nursing, Christian Hospital, Quetta",rule
+College of nursing Christian hospital Quetta,1,"College of Nursing, Christian Hospital, Quetta",rule
+"College Of Nursing, Christian Hospital Quetta",2,"College of Nursing, Christian Hospital, Quetta",rule
+"College of Nursing, Christian Hospital, Quetta",1,"College of Nursing, Christian Hospital, Quetta",rule
+Crescent college of accountancy,2,Crescent College of Accountancy,rule
+Edwardes College Peshawar,1,"Edwardes College, Peshawar",rule
+"Farkhanda Institute of Nursing and Public Health, Gandhara University",1,"Farkhanda Institute of Nursing and Public Health, Peshawar",rule
+Current university = Forman christian college and a chartered university,1,"Forman Christian College (A Chartered University), Lahore",rule
+"FC College (A Chartered University), Lahore",1,"Forman Christian College (A Chartered University), Lahore",rule
+Forman Chirstain college and chartered university,1,"Forman Christian College (A Chartered University), Lahore",rule
+Forman Christian chartered university,1,"Forman Christian College (A Chartered University), Lahore",rule
+Forman Christian College,3,"Forman Christian College (A Chartered University), Lahore",rule
+Forman Christian college,1,"Forman Christian College (A Chartered University), Lahore",rule
+Forman Christian college ( A charted university),1,"Forman Christian College (A Chartered University), Lahore",rule
+Forman Christian College ( A Charted University),1,"Forman Christian College (A Chartered University), Lahore",rule
+Forman Christian College ( Charted University ),1,"Forman Christian College (A Chartered University), Lahore",rule
+Forman Christian College ( Chartered University ),1,"Forman Christian College (A Chartered University), Lahore",rule
+Forman Christian College (A Chartered University),2,"Forman Christian College (A Chartered University), Lahore",rule
+"Forman Christian College (A Chartered University), Lahore.",1,"Forman Christian College (A Chartered University), Lahore",rule
+Forman Christian College (A Chartered University).,1,"Forman Christian College (A Chartered University), Lahore",rule
+Forman Christian College a charted university,1,"Forman Christian College (A Chartered University), Lahore",rule
+Forman Christian College a Chartered University,1,"Forman Christian College (A Chartered University), Lahore",rule
+Forman Christian college a chartered university,1,"Forman Christian College (A Chartered University), Lahore",rule
+Forman Christian College and University,4,"Forman Christian College (A Chartered University), Lahore",rule
+Forman Christian College and university ( Fc College),1,"Forman Christian College (A Chartered University), Lahore",rule
+Forman Christian College Lahore,2,"Forman Christian College (A Chartered University), Lahore",rule
+Forman Christian College Univerisity,1,"Forman Christian College (A Chartered University), Lahore",rule
+Forman Christian College University,9,"Forman Christian College (A Chartered University), Lahore",rule
+Forman Christian College University Lahore,1,"Forman Christian College (A Chartered University), Lahore",rule
+Forman Christian College University(FCCU),1,"Forman Christian College (A Chartered University), Lahore",rule
+"Forman Christian College University, Lahore",2,"Forman Christian College (A Chartered University), Lahore",rule
+"Forman Christian College, A Chartered University, Lahore",1,"Forman Christian College (A Chartered University), Lahore",rule
+"Forman Christian College, University, Lahore",8,"Forman Christian College (A Chartered University), Lahore",rule
+University: Forman Christian College,1,"Forman Christian College (A Chartered University), Lahore",rule
+Foundation University Islamabad,1,Foundation University Islamabad,rule
+Gcon KTH Peshawar,1,"Government College of Nursing, Khyber Teaching Hospital, Peshawar",rule
+Government College Of Nursing KTH Peshawar.,1,"Government College of Nursing, Khyber Teaching Hospital, Peshawar",rule
+"Government college of nursing, Khyber Teaching Hospital Peshawar",1,"Government College of Nursing, Khyber Teaching Hospital, Peshawar",rule
+"Government College Of Nursing, KTH Peshawar",1,"Government College of Nursing, Khyber Teaching Hospital, Peshawar",rule
+GC University Fasilabad,1,Government College University Faisalabad,rule
+Government College University Faisalabad,1,Government College University Faisalabad,rule
+Govt collage university Faisalabad,1,Government College University Faisalabad,excel_analyzr
+Govt College University Faisalabad,1,Government College University Faisalabad,rule
+Govt. FB Ghousia Graduate Science College,1,Govt. Fb Ghousia Graduate Science College,unmatched(Other)
+Grace Neil institute Chandni Chowk Rawalpindi,1,"Grace Neil Institute, Rawalpindi",rule
+Hayatabad institute of medical sciences,1,"Hayatabad Institute of Medical Sciences (HIMS), Peshawar",rule
+HIMS college of nursing,1,"Hayatabad Institute of Medical Sciences (HIMS), Peshawar",rule
+Heart institute of nursing and health science,2,Heart Institute of Nursing and Health Sciences,rule
+Horizon Institute of Health Sciences Hassan Abdal,1,"Horizon Institute of Health Sciences, Hassan Abdal",rule
+Inspire College of Nursing,1,Inspire College Of Nursing,unmatched(Other)
+Iqra National University,1,"Iqra National University, Peshawar",rule
+Iqra National University of Peshawar,1,"Iqra National University, Peshawar",rule
+Iqra national university Peshawar,3,"Iqra National University, Peshawar",rule
+Iqra National University Peshawar,1,"Iqra National University, Peshawar",rule
+SCHOOL OF NURSING IQRA NATIONAL UNIVERSITY PESHAWAR,1,"Iqra National University, Peshawar",rule
+Iqra University H-9 Campus,1,Iqra University,rule
+J.A School of Accountancy and Management,1,J.A School Of Accountancy And Management,unmatched(Other)
+Jinnah University for Women,1,"Jinnah University for Women, Karachi",rule
+KBCMA College of veterinary and animal sciences Narowal,1,"KBCMA College of Veterinary and Animal Sciences, Narowal",rule
+KBCMA CVAS Narowal UVAS Lahore,1,"KBCMA College of Veterinary and Animal Sciences, Narowal",rule
+Khyber institute of Nursing & Health science,1,Khyber Institute Of Nursing & Health Science,unmatched(Other)
+Khyber Medical University,1,"Khyber Medical University (KMU), Peshawar",rule
+KHYBER MEDICAL UNIVERSITY PESHAWAR,1,"Khyber Medical University (KMU), Peshawar",rule
+KMU IHS Mardan,1,"Khyber Medical University (KMU), Peshawar",rule
+Kinnaird college for women,1,"Kinnaird College for Women University, Lahore",rule
+Kinnaird College For Women,1,"Kinnaird College for Women University, Lahore",rule
+Kinnaird College for Women,1,"Kinnaird College for Women University, Lahore",rule
+Kinnaird College for Women University,3,"Kinnaird College for Women University, Lahore",rule
+Kinnaird College For Women University,1,"Kinnaird College for Women University, Lahore",rule
+Kinnaird college for Women University,1,"Kinnaird College for Women University, Lahore",rule
+Kinnaird college for women university Lahore,1,"Kinnaird College for Women University, Lahore",rule
+"Kinnaird College for Women, University",1,"Kinnaird College for Women University, Lahore",rule
+Kinnaird College for Women.,1,"Kinnaird College for Women University, Lahore",rule
+Kinnaird College of Women University,1,"Kinnaird College for Women University, Lahore",rule
+"Lahore College for Women University, Lahore",1,Lahore College for Women University,rule
+NCBA&E (National College of Business Administration and Economics),1,National College of Business Administration and Economics (NCBA&E),rule
+National excellence institute,1,National Excellence Institute,unmatched(Other)
+NUML,1,National University of Modern Languages (NUML),rule
+NUST,1,National University of Sciences and Technology (NUST),rule
+New International College Of Nursing And Health Sciences,1,"New International College of Nursing and Health Sciences, Lahore",rule
+New International College of Nursing and health Sciences,1,"New International College of Nursing and Health Sciences, Lahore",rule
+"New international college of nursing and Health sciences, Lahore",1,"New International College of Nursing and Health Sciences, Lahore",rule
+The new International College of Nursing and health Sciences,1,"New International College of Nursing and Health Sciences, Lahore",rule
+"NFC IE&FR, Faisalabad",1,"NFC Institute of Engineering and Fertilizer Research, Faisalabad",rule
+"Nursing college hitec ims, taxila",1,"Nursing College HITEC-IMS, Taxila",rule
+Oxford Group of Nursing Colleges Sheikhupura,1,Oxford Group Of Nursing Colleges Sheikhupura,unmatched(Other)
+Peace institute of nursing and health sciences,1,"Peace Institute of Nursing and Health Sciences, Karachi",rule
+PEF University College,1,"PEF University College, Peshawar",rule
+Pgcn post Graduate College Of Nursing,1,Pgcn Post Graduate College Of Nursing,unmatched(Other)
+PMAS Arid Agriculture University,1,"PMAS Arid Agriculture University, Rawalpindi",rule
+PMAS Arid agriculture Univetsity,1,"PMAS Arid Agriculture University, Rawalpindi",rule
+Premier Institute of Nursing sciences Peshawar,1,"Premier Institute of Nursing Sciences, Peshawar",rule
+"Punjab college,ayub park campus",1,Punjab Group of Colleges (PGC),rule
+Qurtuba University of Science and IT,1,Qurtuba University of Science and IT,rule
+RAHBAR COLLEGE OF NURSING,1,Rahbar College Of Nursing,unmatched(Other)
+RAWAL COLLEGE OF NURSING,1,"Rawal College of Nursing, Islamabad",rule
+Rawal college of Nursing,1,"Rawal College of Nursing, Islamabad",rule
+Rehman Medical Institute (RMI),1,"Rehman Medical Institute (RMI), Peshawar",rule
+Riphah International University,1,Riphah International University,rule
+RIPHAH INTERNATIONAL UNIVERSTY LAHORE,1,Riphah International University,rule
+Royal Metropolitan University,1,Royal Metropolitan University,unmatched(Other)
+Sachal sermast collage of nursing near chaindia mor civil hospital Khairpar Mirs,1,Sachal Sermast Collage Of Nursing Near Chaindia Mor Civil Hospital Khairpar Mirs,unmatched(Other)
+Saifee Burhani College of Nursing,1,Saifee Burhani College of Nursing,rule
+Sargodha Medical College,1,Sargodha Medical College,rule
+Sarhad University Peshawar,1,"Sarhad University of Science and IT, Peshawar",rule
+Benazir Bhutto Shaheed University Lyari Karachi,1,"Shaheed Benazir Bhutto University, Lyari, Karachi",rule
+"Benazir bhutto Shaheeed University Lyari, Karachi",1,"Shaheed Benazir Bhutto University, Lyari, Karachi",rule
+School of Nursing PIMS Islamabad,1,"Shaheed Zulfiqar Ali Bhutto Medical University (PIMS), Islamabad",rule
+"SCHOOL OF NURSING, PIMS ISLAMABAD",1,"Shaheed Zulfiqar Ali Bhutto Medical University (PIMS), Islamabad",rule
+Szabmu PIMS,1,"Shaheed Zulfiqar Ali Bhutto Medical University (PIMS), Islamabad",rule
+Sk Royal college for nursing.,1,"SK Royal College of Nursing, Lahore",rule
+SK ROYAL COLLEGE OF NURSUNG,1,"SK Royal College of Nursing, Lahore",rule
+Superior Group of Colleges,1,Superior Group of Colleges,rule
+The divine institute of nursing and health science Karachi,1,The Divine Institute Of Nursing And Health Science Karachi,unmatched(Other)
+Islamia University of Bahawalpur,1,The Islamia University of Bahawalpur,rule
+"The next college , Multan.",1,"The Next College , Multan",unmatched(Other)
+Superior university Lahore,1,"The Superior University, Lahore",rule
+University of Chenab,1,The University of Chenab,rule
+The University of Lahore,1,The University of Lahore,rule
+The University of lahore,1,The University of Lahore,rule
+University Of Lahore,1,The University of Lahore,rule
+University of Kamalia,1,University of Kamalia,rule
+Peshawar University,1,University of Peshawar,rule
+University of peshawar,2,University of Peshawar,rule
+University of sargodha,1,University of Sargodha,rule
+University of science and technology,1,University Of Science And Technology,unmatched(Other)
+"School of Communication Studies, University of the Punjab, Lahore",1,"University of the Punjab, Lahore",rule
+The Punjab university,2,"University of the Punjab, Lahore",rule
+University of the Punjab,1,"University of the Punjab, Lahore",rule
+"University of the Punjab, Lahore",1,"University of the Punjab, Lahore",rule
