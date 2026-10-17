@@ -1,6 +1,7 @@
 import type { HomepageSectionId, SiteContent } from "@/lib/content/schema";
 import styles from "@/app/admin/admin.module.css";
 import { ContentFields } from "../ContentFields";
+import { LegacyFields } from "../LegacyFields";
 import { HOME_KEYS, SECTION_LABELS, type ContentChange } from "../config";
 
 type Props = { content: SiteContent; onChange: ContentChange; uploadBusy: boolean; onUpload: (file: File | null) => void };
@@ -29,6 +30,7 @@ export function HomeSection({ content, onChange, uploadBusy, onUpload }: Props) 
         disabled={uploadBusy} onChange={(event) => { onUpload(event.target.files?.[0] ?? null); event.target.value = ""; }} />
         <span className={styles.hint}>Optional local clip (8 MB max, dev only). Prefer Mission Overview → Video → Embed Url with a YouTube or Vimeo link. Set MISSION_VIDEO_EMBED_URL to override on the server.</span></div>
       {HOME_KEYS.map((key) => <ContentFields key={key} value={content[key]} path={[key]} onChange={onChange} />)}
+      <LegacyFields content={content} onChange={onChange} prefixes={["applicationCard"]} />
     </section>
   </>;
 }

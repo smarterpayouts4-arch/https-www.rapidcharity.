@@ -8,6 +8,8 @@ import {
   UploadStorageError,
 } from "@/lib/application/blobStore";
 import { emptyChecks } from "@/lib/application/documents";
+import { loadFormState } from "@/lib/application/formSettings";
+import { getSubmission } from "@/lib/application/store";
 import {
   MAX_FILE_BYTES,
   MAX_PDF_PAGES,
@@ -67,6 +69,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Choose a document slot." }, { status: 400 });
   }
   if (!(file instanceof File)) return NextResponse.json({ error: "Choose a JPG, PNG, or PDF." }, { status: 400 });
+  // Re-uploads for an existing submission stay in that submission's cycle and
+  // work while the form is closed; new uploads need the form to be open.
+  let uploadCycle: string;
+  try {
+    const existingSubmission = /^[0-9a-f-]{36}$/i.test(applicationId) ? await getSubmission(applicationId) : null;
+    if (existingSubmission) {
+      uploadCycle = existingSubmission.cycle;
+    } else {
+      const formState = await loadFormState();
+      if (!formState.open) return NextResponse.json({ error: formState.closedMessage }, { status: 403 });
+      uploadCycle = formState.cycleId;
+    }
+  } catch {
+    return NextResponse.json({ error: "The upload could not be checked. Try again in a moment." }, { status: 503 });
+  }
   const bytes = Buffer.from(await file.arrayBuffer());
   if (bytes.length < 32 || bytes.length > MAX_FILE_BYTES) {
     return NextResponse.json({ error: "Each file must be 5 MB or smaller." }, { status: 400 });
@@ -113,7 +130,7 @@ export async function POST(request: Request) {
   }
   let relative: string;
   try {
-    relative = safeObjectPath(applicationId, slot, index, mime);
+    relative = safeObjectPath(applicationId, slot, index, mime, uploadCycle);
   } catch (error) {
     const message = error instanceof Error ? error.message : "The file could not be stored.";
     return NextResponse.json({ error: message }, { status: 400 });

@@ -860,5 +860,12 @@
     "linkHref": "",
     "startsOn": "",
     "endsOn": ""
+  },
+  "applicationForm": {
+    "cycleId": "spring-2027",
+    "cycleName": "Spring Semester 2027",
+    "availability": "always-open",
+    "intakeId": "spring-2027",
+    "closedMessage": ""
   }
 }

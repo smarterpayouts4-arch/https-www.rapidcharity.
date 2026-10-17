@@ -72,7 +72,33 @@ export const announcementSchema = z.object({
   endsOn: optionalIsoDate,
 });
 
+/** Application form batch settings. Cycle ids must look like spring-2027 or fall-2027. */
+export const applicationFormAvailability = ["always-open", "closed", "follow-intake"] as const;
+export type ApplicationFormAvailability = (typeof applicationFormAvailability)[number];
+
+export const DEFAULT_APPLICATION_FORM = {
+  cycleId: "spring-2027",
+  cycleName: "Spring Semester 2027",
+  availability: "always-open" as ApplicationFormAvailability,
+  intakeId: "spring-2027",
+  closedMessage: "",
+};
+
+export const applicationFormSchema = z.object({
+  cycleId: z
+    .string()
+    .regex(/^(spring|fall)-\d{4}$/, "Use spring-YYYY or fall-YYYY, for example spring-2027"),
+  cycleName: z.string().trim().min(1, "Display name is required"),
+  availability: z.enum(applicationFormAvailability).optional().default("always-open"),
+  /** Intake used by "follow-intake". Empty = the intake whose id equals cycleId. */
+  intakeId: z.string().optional().default(""),
+  /** Optional extra sentence on the closed form. */
+  closedMessage: z.string().optional().default(""),
+});
+export type ApplicationFormSettings = z.infer<typeof applicationFormSchema>;
+
 export const scheduleContentShape = {
+  applicationForm: applicationFormSchema.optional().default(DEFAULT_APPLICATION_FORM),
   intakes: intakesSchema.optional().default(DEFAULT_INTAKES),
   announcement: announcementSchema.optional().default(DEFAULT_ANNOUNCEMENT),
 };

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { assertOwnedFiles, UploadStorageError } from "@/lib/application/blobStore";
 import { buildSubmission } from "@/lib/application/record";
+import { loadFormState } from "@/lib/application/formSettings";
 import { validateApplication } from "@/lib/application/schema";
 import { BatchClosedError } from "@/lib/application/batches";
 import {
@@ -14,6 +15,10 @@ import {
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
+  const form = await loadFormState();
+  if (!form.open) {
+    return NextResponse.json({ formError: form.closedMessage, closed: true }, { status: 403 });
+  }
   let body: unknown;
   try {
     body = await request.json();
@@ -67,6 +72,7 @@ export async function POST(request: Request) {
   const submission = buildSubmission(result.data, {
     id,
     submittedAt: new Date().toISOString(),
+    cycle: form.cycleId,
   });
 
   try {
@@ -77,7 +83,7 @@ export async function POST(request: Request) {
     }
     if (error instanceof DuplicateCnicError) {
       return NextResponse.json(
-        { fieldErrors: { cnic: "This CNIC was already submitted for Spring Semester 2027." } },
+        { fieldErrors: { cnic: `This CNIC was already submitted for ${form.cycleName}.` } },
         { status: 409 },
       );
     }

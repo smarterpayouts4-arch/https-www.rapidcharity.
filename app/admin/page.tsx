@@ -11,6 +11,7 @@ import {
 import { storageMode } from "@/lib/content/repository";
 import type { BatchRecord } from "@/lib/application/batches";
 import { listBatches, listSubmissions } from "@/lib/application/store";
+import { loadFormState } from "@/lib/application/formSettings";
 import type { StoredApplication } from "@/lib/application/types";
 
 export const metadata: Metadata = {
@@ -39,16 +40,17 @@ export default async function AdminPage() {
     loadDraftBlogContent(),
     loadDraftEventsContent(),
   ]);
+  const formState = await loadFormState();
   let applications: StoredApplication[] = [];
   let batches: BatchRecord[] = [];
   let applicationsError = "";
   try {
     applications = await listSubmissions();
-    batches = await listBatches(applications);
+    batches = await listBatches(applications, formState.cycleId);
   } catch (error) {
     applicationsError = error instanceof Error ? error.message : "Applications could not be loaded.";
     try {
-      batches = await listBatches();
+      batches = await listBatches([], formState.cycleId);
     } catch {
       batches = [];
     }
@@ -62,6 +64,7 @@ export default async function AdminPage() {
       applications={applications}
       batches={batches}
       applicationsError={applicationsError}
+      activeCycle={formState.cycleId}
       email={session.email}
       storage={storageMode()}
     />

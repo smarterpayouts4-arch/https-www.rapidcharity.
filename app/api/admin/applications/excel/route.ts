@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { cycleLabel, isCycleId } from "@/lib/application/batches";
 import { buildWorkbook } from "@/lib/application/excel";
+import { loadFormState } from "@/lib/application/formSettings";
 import { listSubmissions, markBatchExported, StorageNotConfiguredError } from "@/lib/application/store";
 import { isAuthFailure, requireAdminRead } from "@/lib/auth/guard";
 
@@ -23,7 +24,7 @@ export async function GET(request: Request) {
     const items = (await listSubmissions()).filter((item) => (cycle ? item.cycle === cycle : true));
     const buffer = await buildWorkbook(items, {
       usdRate: Number.isFinite(rate) && rate > 0 ? rate : 278,
-      cycleLabel: cycle ? cycleLabel(cycle) : "Spring 2027",
+      cycleLabel: cycleLabel(cycle || (await loadFormState()).cycleId),
     });
     if (finalExport) await markBatchExported(cycle);
     const filename = cycle ? `rapid-scholarship-${cycle}.xlsx` : "rapid-scholarship-review.xlsx";

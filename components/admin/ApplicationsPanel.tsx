@@ -14,15 +14,22 @@ export function ApplicationsPanel({
   initialBatches,
   storage,
   initialError,
+  activeCycle,
 }: {
   initial: StoredApplication[];
   initialBatches: BatchRecord[];
   storage: "firestore" | "local";
   initialError: string;
+  activeCycle?: string;
 }) {
   const [items, setItems] = useState(initial);
   const [batches, setBatches] = useState(initialBatches);
-  const [cycle, setCycle] = useState(initialBatches[0]?.cycle ?? APPLICATION_CYCLE);
+  const [cycle, setCycle] = useState(
+    (activeCycle && initialBatches.some((item) => item.cycle === activeCycle) ? activeCycle : undefined) ??
+      initialBatches[0]?.cycle ??
+      activeCycle ??
+      APPLICATION_CYCLE,
+  );
   const [status, setStatus] = useState(initialError);
   const [filter, setFilter] = useState("all");
   const [openId, setOpenId] = useState("");

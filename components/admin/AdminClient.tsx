@@ -26,6 +26,7 @@ type Props = {
   applications: StoredApplication[];
   batches: BatchRecord[];
   applicationsError: string;
+  activeCycle?: string;
 };
 
 export function AdminClient({
@@ -37,6 +38,7 @@ export function AdminClient({
   applications,
   batches,
   applicationsError,
+  activeCycle,
 }: Props) {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("home");
@@ -258,6 +260,7 @@ export function AdminClient({
               initialBatches={batches}
               storage={storage === "firestore" ? "firestore" : "local"}
               initialError={applicationsError}
+              activeCycle={activeCycle}
             />
           ) : null}
         </div>

@@ -1,12 +1,14 @@
 import styles from "@/app/admin/admin.module.css";
 import type { ContentChange, ContentPath } from "./config";
 import { labelFromKey } from "./contentPath";
+import { isLegacyPath } from "./LegacyFields";
 
-type Props = { value: unknown; path: ContentPath; onChange: ContentChange; disabled?: boolean; label?: string };
+type Props = { value: unknown; path: ContentPath; onChange: ContentChange; disabled?: boolean; label?: string; showLegacy?: boolean };
 const LONG_KEYS = /(body|lead|intro|description|paragraph|quote|tagline|subtitle|message|script|note|text)/i;
 const MONO_KEYS = /(href|src|path|image|poster|url)/i;
 
-export function ContentFields({ value, path, onChange, disabled = false, label }: Props) {
+export function ContentFields({ value, path, onChange, disabled = false, label, showLegacy = false }: Props) {
+  if (!showLegacy && isLegacyPath(path)) return null;
   const key = String(path[path.length - 1] ?? label ?? "field");
   const displayLabel = label ?? labelFromKey(key);
   const id = `field-${path.join("-")}`.replace(/[^a-zA-Z0-9_-]/g, "-");

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { isAuthFailure, requireAdminRead } from "@/lib/auth/guard";
 import { firestoreConfigured } from "@/lib/content/firestore";
+import { loadFormState } from "@/lib/application/formSettings";
 import { listBatches, listSubmissions, StorageNotConfiguredError } from "@/lib/application/store";
 
 export const dynamic = "force-dynamic";
@@ -10,7 +11,7 @@ export async function GET(request: Request) {
   if (isAuthFailure(session)) return session;
   try {
     const submissions = await listSubmissions();
-    const batches = await listBatches(submissions);
+    const batches = await listBatches(submissions, (await loadFormState()).cycleId);
     return NextResponse.json(
       { submissions, batches, storage: firestoreConfigured() ? "firestore" : "local" },
       { headers: { "Cache-Control": "no-store" } },

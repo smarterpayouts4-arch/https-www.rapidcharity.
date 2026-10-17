@@ -11,12 +11,14 @@ export function ReuploadForm({
   slot,
   index,
   reason,
+  cycleName = "Spring Semester 2027",
 }: {
   token: string;
   applicationId: string;
   slot: string;
   index: number;
   reason: string;
+  cycleName?: string;
 }) {
   const [status, setStatus] = useState("");
   const [done, setDone] = useState(false);
@@ -69,7 +71,7 @@ export function ReuploadForm({
 
   return (
     <div className={styles.card}>
-      <p className={styles.kicker}>Spring Semester 2027</p>
+      <p className={styles.kicker}>{cycleName}</p>
       <h1 className={styles.title}>Upload a replacement</h1>
       <p className={styles.lead}>{reason}</p>
       <label className={styles.field} htmlFor="replacement">

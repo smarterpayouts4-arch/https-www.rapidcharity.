@@ -67,9 +67,11 @@ function toIssues(fieldErrors: Errors): FormIssue[] {
 export function ApplicationForm({
   initialScholarship,
   promoted,
+  cycleName = "Spring Semester 2027",
 }: {
   initialScholarship: ScholarshipId | "";
   promoted: PromotedOption[];
+  cycleName?: string;
 }) {
   const [data, setData] = useState<ApplicationInput>(() => ({
     ...emptyApplication(initialScholarship),
@@ -411,7 +413,7 @@ export function ApplicationForm({
           <span /><span /><span /><span /><span />
         </div>
         <h2 className={styles.sectionTitle}>Application received</h2>
-        <p>Spring Semester 2027. Keep this reference. If a reviewer asks for a new file, they will give you a re-upload link.</p>
+        <p>{cycleName}. Keep this reference. If a reviewer asks for a new file, they will give you a re-upload link.</p>
         <p className={styles.ref}>{receipt.id}</p>
         <p className={styles.hint}>Submitted {new Date(receipt.submitted_at).toLocaleString()}</p>
         <a className="text-link" href="/apply">

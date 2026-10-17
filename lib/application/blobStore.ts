@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { atomicWriteFile } from "../content/localStore";
-import { APPLICATION_CYCLE } from "./constants";
+import { DEFAULT_APPLICATION_FORM } from "@/lib/content/schema/schedule";
 import { extensionFor, isDocSlot, type SniffedType } from "./fileRules";
 
 export type StorageName = "google-drive" | "cloudinary" | "local";
@@ -76,13 +76,20 @@ async function writeManifest(files: ManifestEntry[]): Promise<void> {
   await atomicWriteFile(manifestPath, `${JSON.stringify({ files }, null, 2)}\n`);
 }
 
-export function safeObjectPath(applicationId: string, slot: string, index: number, mime: SniffedType): string {
+export function safeObjectPath(
+  applicationId: string,
+  slot: string,
+  index: number,
+  mime: SniffedType,
+  cycle: string = DEFAULT_APPLICATION_FORM.cycleId,
+): string {
+  assertCycle(cycle);
   if (!/^[0-9a-f-]{36}$/i.test(applicationId)) throw new UploadStorageError("Invalid application id.");
   if (!isDocSlot(slot)) throw new UploadStorageError("Unknown document type.");
   if (!Number.isInteger(index) || index < 1 || index > 5) throw new UploadStorageError("Invalid file number.");
   const extension = extensionFor(mime);
   if (!extension || mime === "image/heic") throw new UploadStorageError("Save HEIC photos as JPG before storing.");
-  return `${APPLICATION_CYCLE}/${applicationId}/${slot}-${index}.${extension}`;
+  return `${cycle}/${applicationId}/${slot}-${index}.${extension}`;
 }
 
 export async function filesForApplication(applicationId: string): Promise<ManifestEntry[]> {

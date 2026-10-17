@@ -14,7 +14,7 @@ import {
   type BatchRecord,
 } from "./batches";
 import { deleteBatchFiles } from "./blobStore";
-import { APPLICATION_CYCLE } from "./constants";
+import { DEFAULT_APPLICATION_FORM } from "@/lib/content/schema/schedule";
 import { slugify } from "./normalize";
 import { decodeFirestore, encodeFirestore, type FirestoreValue } from "./firestoreValues";
 import { FIELD_TO_PROMOTED_LIST } from "./record";
@@ -457,10 +457,13 @@ async function saveBatchRecord(record: BatchRecord): Promise<void> {
   await writeStoredBatches(next);
 }
 
-export async function listBatches(submissions: StoredApplication[] = []): Promise<BatchRecord[]> {
+export async function listBatches(
+  submissions: StoredApplication[] = [],
+  activeCycle: string = DEFAULT_APPLICATION_FORM.cycleId,
+): Promise<BatchRecord[]> {
   const stored = await readStoredBatches();
   const byCycle = new Map(stored.map((item) => [item.cycle, item]));
-  const cycles = new Set<string>([APPLICATION_CYCLE, ...byCycle.keys()]);
+  const cycles = new Set<string>([...(isCycleId(activeCycle) ? [activeCycle] : []), ...byCycle.keys()]);
   for (const item of submissions) {
     if (isCycleId(item.cycle)) cycles.add(item.cycle);
   }

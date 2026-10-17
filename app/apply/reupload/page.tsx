@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { ReuploadForm } from "@/components/apply/ReuploadForm";
 import { findReupload } from "@/lib/application/store";
+import { cycleLabel } from "@/lib/application/batches";
+import { loadFormState } from "@/lib/application/formSettings";
 import styles from "../form/form.module.css";
 
 export const metadata: Metadata = { title: "Replace a document" };
@@ -13,6 +15,9 @@ export default async function ReuploadPage({ searchParams }: { searchParams?: Se
   const raw = params?.token;
   const token = Array.isArray(raw) ? raw[0] : raw;
   const found = token ? await findReupload(token).catch(() => null) : null;
+  const form = found ? await loadFormState() : null;
+  const cycleName =
+    found && form ? (found.application.cycle === form.cycleId ? form.cycleName : cycleLabel(found.application.cycle)) : undefined;
   return (
     <section className={styles.page}>
       <div className={styles.wrap}>
@@ -22,6 +27,7 @@ export default async function ReuploadPage({ searchParams }: { searchParams?: Se
             applicationId={found.application.id}
             slot={found.slot}
             index={found.index}
+            cycleName={cycleName}
             reason={found.reason || "Please upload a clearer copy of this document."}
           />
         ) : (

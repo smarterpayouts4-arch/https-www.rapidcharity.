@@ -1,4 +1,6 @@
-import { APPLICATION_CYCLE } from "./constants";
+import { DEFAULT_APPLICATION_FORM } from "@/lib/content/schema/schedule";
+
+const DEFAULT_CYCLE = DEFAULT_APPLICATION_FORM.cycleId;
 import { placeholderDocument } from "./documents";
 import { feeWithinTolerance, textContainsName } from "./fileRules";
 import { normalizeCnic, normalizePhone } from "./normalize";
@@ -93,7 +95,7 @@ function storedDocuments(input: ApplicationInput): StoredDocument[] {
   return documents;
 }
 
-export function buildSubmission(input: ApplicationInput, meta: { id: string; submittedAt: string }): StoredApplication {
+export function buildSubmission(input: ApplicationInput, meta: { id: string; submittedAt: string; cycle?: string }): StoredApplication {
   const cnic = normalizeCnic(input.cnic);
   const otherFields = collectOtherFields(input);
   const employed = input.employment_status === "Yes";
@@ -132,8 +134,8 @@ export function buildSubmission(input: ApplicationInput, meta: { id: string; sub
   const motherLate = input.mother_status === "Late";
   return {
     id: meta.id,
-    cycle: APPLICATION_CYCLE,
-    cycle_cnic: `${APPLICATION_CYCLE}_${cnic.digits}`,
+    cycle: meta.cycle ?? DEFAULT_CYCLE,
+    cycle_cnic: `${meta.cycle ?? DEFAULT_CYCLE}_${cnic.digits}`,
     submitted_at: meta.submittedAt,
     scholarship: input.scholarship,
     applicant_type: input.applicant_type,

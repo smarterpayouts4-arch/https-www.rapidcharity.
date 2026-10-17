@@ -1,4 +1,7 @@
-/** Spring Semester 2027 is the verified application cycle (deadline 15 October 2026). */
+/**
+ * Default application cycle. The live value is admin-editable
+ * (site.applicationForm.cycleId, read via lib/application/formSettings.ts).
+ */
 export const APPLICATION_CYCLE = "spring-2027";
 
 export const SCHOLARSHIPS = [

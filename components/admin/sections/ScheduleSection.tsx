@@ -2,7 +2,15 @@
 
 import styles from "@/app/admin/admin.module.css";
 import { applicationStatus, formatIntakeDate } from "@/lib/application/intakes";
-import { DEFAULT_ANNOUNCEMENT, DEFAULT_INTAKES, scholarshipIds, type Intake } from "@/lib/content/schema/schedule";
+import {
+  DEFAULT_ANNOUNCEMENT,
+  DEFAULT_APPLICATION_FORM,
+  DEFAULT_INTAKES,
+  scholarshipIds,
+  type ApplicationFormSettings,
+  type Intake,
+} from "@/lib/content/schema/schedule";
+import { resolveFormState } from "@/lib/application/formState";
 import type { SiteContent } from "@/lib/content/schema";
 import type { ContentChange } from "../config";
 import { Field } from "../Field";
@@ -30,6 +38,10 @@ export function ScheduleSection({ content, onChange }: Props) {
   const announcement = content.announcement ?? DEFAULT_ANNOUNCEMENT;
   const items = intakes.items as Intake[];
   const status = applicationStatus(intakes);
+  const form = content.applicationForm ?? DEFAULT_APPLICATION_FORM;
+  const formState = resolveFormState(form, intakes);
+  const cycleValid = /^(spring|fall)-\d{4}$/.test(form.cycleId);
+  const setForm = (key: keyof ApplicationFormSettings, value: unknown) => onChange(["applicationForm", key], value);
 
   const setItems = (next: Intake[]) => onChange(["intakes", "items"], next);
   const patchItem = (index: number, patch: Partial<Intake>) =>
@@ -175,6 +187,77 @@ export function ScheduleSection({ content, onChange }: Props) {
             Add intake
           </button>
         </div>
+      </section>
+
+      <section className={styles.card} data-testid="application-form-editor">
+        <h2>Application form</h2>
+        <p className={styles.cardLead}>
+          The cycle new submissions on /apply/form are filed under. It sets the form header, the duplicate CNIC check
+          (one submission per CNIC per cycle), the upload folder, and the default batch in the Applications tab.
+          Existing batches keep their own cycle. Publish to apply.
+        </p>
+        <p className={`${styles.status} ${formState.open ? styles.statusOk : styles.statusErr}`} role="status">
+          With these draft values the form is {formState.open ? "open" : "closed"} for {form.cycleName} ({form.cycleId}).
+        </p>
+        <div className={styles.row2}>
+          <Field
+            id="form-cycle-id"
+            label="Cycle id"
+            mono
+            value={form.cycleId}
+            onChange={(value) => setForm("cycleId", value.trim().toLowerCase())}
+            hint={cycleValid ? "Batch id, for example spring-2027." : "Use spring-YYYY or fall-YYYY, for example fall-2027."}
+          />
+          <Field
+            id="form-cycle-name"
+            label="Display name"
+            value={form.cycleName}
+            onChange={(value) => setForm("cycleName", value)}
+            hint="Shown on the form, for example Spring Semester 2027."
+          />
+        </div>
+        <div className={styles.row2}>
+          <div className={styles.field}>
+            <label htmlFor="form-availability">Availability</label>
+            <select
+              id="form-availability"
+              value={form.availability}
+              onChange={(event) => setForm("availability", event.target.value)}
+            >
+              <option value="always-open">Always open (default)</option>
+              <option value="closed">Closed</option>
+              <option value="follow-intake">Follow intake dates</option>
+            </select>
+            <p className={styles.hint}>
+              Closed shows a friendly message naming the next intake and the server refuses new submissions and uploads.
+              Re-upload links for existing applications keep working.
+            </p>
+          </div>
+          <div className={styles.field}>
+            <label htmlFor="form-intake">Intake to follow</label>
+            <select
+              id="form-intake"
+              value={form.intakeId}
+              disabled={form.availability !== "follow-intake"}
+              onChange={(event) => setForm("intakeId", event.target.value)}
+            >
+              <option value="">Same id as the cycle</option>
+              {items.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.name} ({item.id})
+                </option>
+              ))}
+            </select>
+            <p className={styles.hint}>Used only with Follow intake dates: open from its opens date to its deadline.</p>
+          </div>
+        </div>
+        <Field
+          id="form-closed-message"
+          label="Extra closed message (optional)"
+          multiline
+          value={form.closedMessage}
+          onChange={(value) => setForm("closedMessage", value)}
+        />
       </section>
 
       <section className={styles.card} data-testid="announcement-editor">
