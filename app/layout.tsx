@@ -51,10 +51,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/assets/images/generated/hero-graduation-handshake-landscape.jpg",
-        width: 2000,
-        height: 1250,
-        alt: "Graduates shaking hands with diploma at commencement",
+        url: "/assets/images/blog/fccu-get-together-2025.jpg",
+        width: 1800,
+        height: 867,
+        alt: "RAPID scholars at FCCU get-together 2025",
       },
     ],
   },
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: `${site.name} | ${site.fullName}`,
     description,
-    images: ["/assets/images/generated/hero-graduation-handshake-landscape.jpg"],
+    images: ["/assets/images/blog/fccu-get-together-2025.jpg"],
   },
 };
 

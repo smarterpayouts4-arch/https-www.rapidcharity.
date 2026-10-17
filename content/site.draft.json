@@ -213,16 +213,6 @@
     "slidesAriaLabel": "Hero images",
     "slides": [
       {
-        "src": "/assets/images/generated/hero-graduation-handshake-landscape.jpg",
-        "alt": "Graduates shaking hands with diploma at commencement",
-        "objectPosition": "center 42%"
-      },
-      {
-        "src": "/assets/images/generated/banner-graduation-handshake-a.jpg",
-        "alt": "Graduation handshake with diploma ribbon",
-        "objectPosition": "center 40%"
-      },
-      {
         "src": "/assets/images/home/carousel-e1b1d67a.jpg",
         "alt": "RAPID scholars and community gathering",
         "objectPosition": "center 28%"
@@ -236,11 +226,6 @@
         "src": "/assets/images/blog/kinnaird-get-together.jpg",
         "alt": "RAPID scholars gathering at Kinnaird College",
         "objectPosition": "center 32%"
-      },
-      {
-        "src": "/assets/images/generated/group-campus-scholars.jpg",
-        "alt": "Campus scholars gathering outdoors",
-        "objectPosition": "center 35%"
       }
     ]
   },
