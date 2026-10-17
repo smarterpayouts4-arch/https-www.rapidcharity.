@@ -27,7 +27,8 @@ test("desktop nav, dropdown, skip link, and active state", async ({ page }) => {
 
   const programs = page.getByRole("button", { name: "Scholarship Programs" });
   await programs.hover();
-  const john = page.getByRole("link", { name: "John-Ivy Azariah Scholarship" });
+  const primary = page.getByRole("navigation", { name: "Primary", exact: true });
+  const john = primary.getByRole("link", { name: "John-Ivy Azariah Scholarship" });
   await expect(john).toBeVisible();
 
   await programs.click();
@@ -45,11 +46,11 @@ test("desktop nav, dropdown, skip link, and active state", async ({ page }) => {
   await programs.press("ArrowDown");
   await expect(john).toBeFocused();
   await page.keyboard.press("Tab");
-  await expect(page.getByRole("link", { name: "Robert Mathais Scholarship" })).toBeFocused();
+  await expect(primary.getByRole("link", { name: "Robert Mathais Scholarship" })).toBeFocused();
   await page.keyboard.press("Tab");
-  await expect(page.getByRole("link", { name: "Ivy Azariah Scholarship", exact: true })).toBeFocused();
+  await expect(primary.getByRole("link", { name: /^Ivy Azariah Scholarship/ })).toBeFocused();
   await page.keyboard.press("Tab");
-  await expect(programs).toBeFocused();
+  await expect(primary.getByRole("link", { name: "Apply", exact: true })).toBeFocused();
 
   await page.goto("/about-us", { waitUntil: "domcontentloaded" });
   await expect(page.getByRole("link", { name: "About Us" }).first()).toHaveAttribute("aria-current", "page");
@@ -62,7 +63,7 @@ test("desktop nav, dropdown, skip link, and active state", async ({ page }) => {
   await page.goto("/general-8", { waitUntil: "domcontentloaded" });
   await expect(programs).toHaveAttribute("aria-current", "true");
   await programs.hover();
-  await expect(page.getByRole("link", { name: "John-Ivy Azariah Scholarship", exact: true })).toHaveAttribute("aria-current", "page");
+  await expect(primary.getByRole("link", { name: /^John-Ivy Azariah Scholarship/ })).toHaveAttribute("aria-current", "page");
 
   await page.goto("/post/giving-back-moving-forward-rapid-charity-launches-alumni-network", { waitUntil: "domcontentloaded" });
   await expect(page.locator("header").getByRole("link", { name: "News" })).toHaveAttribute("aria-current", "page");
@@ -85,11 +86,11 @@ test("mobile menu locks scroll, lists every link, and closes on navigation", asy
 
   const nav = page.locator("#mobile-drawer");
   for (const label of ["Home", "About Us", "Reports", "Apply", "Events", "News", "Donate"]) {
-    await expect(nav.getByRole("link", { name: label, exact: true })).toBeVisible();
+    await expect(nav.getByRole("link", { name: label, exact: true }).first()).toBeVisible();
   }
   await nav.getByRole("button", { name: "Scholarship Programs" }).click();
   for (const label of ["John-Ivy Azariah Scholarship", "Robert Mathais Scholarship", "Ivy Azariah Scholarship"]) {
-    await expect(nav.getByRole("link", { name: label, exact: true })).toBeVisible();
+    await expect(nav.getByRole("link", { name: label, exact: true }).first()).toBeVisible();
   }
 
   await page.keyboard.press("Escape");

@@ -397,7 +397,7 @@
 }
 
 @media (min-width: 1024px) {
-  .nav { display: block; }
+  .nav { display: flex; align-items: center; gap: 1rem; }
   .donate { display: inline-flex; }
   .menuToggle,
   .drawer,

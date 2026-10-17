@@ -39,6 +39,11 @@ export function MissionOverview({ content }: Props) {
             {accent ? <em>{accent}</em> : null}
           </h2>
           <p className={styles.lead}>{content.lead}</p>
+          {content.details?.map((text) => (
+            <p key={text.slice(0, 40)} className={styles.detail}>
+              {text}
+            </p>
+          ))}
           <Link className="btn-white" href={content.ctaHref}>
             {content.ctaLabel} <span aria-hidden="true">→</span>
           </Link>
@@ -84,6 +89,7 @@ export function MissionOverview({ content }: Props) {
                 </div>
               </div>
             )}
+            {content.videoCaption ? <p className={styles.videoCaption}>{content.videoCaption}</p> : null}
           </div>
         </div>
       </div>
@@ -92,6 +98,11 @@ export function MissionOverview({ content }: Props) {
         <blockquote className={styles.quoteCard}>
           <p>&ldquo;{content.quote}&rdquo;</p>
         </blockquote>
+        {content.motto ? (
+          <blockquote className={styles.quoteCard}>
+            <p>&ldquo;{content.motto}&rdquo;</p>
+          </blockquote>
+        ) : null}
         <ol className={styles.pillars}>
           {content.pillars.map((pillar, index) => (
             <li key={pillar.title} className={styles.pillar} data-current={index === 0}>

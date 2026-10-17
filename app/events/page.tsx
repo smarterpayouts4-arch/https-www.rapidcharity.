@@ -1,5 +1,5 @@
+import Image from "next/image";
 import type { Metadata } from "next";
-import { ReadableParagraph } from "@/components/content/Guide";
 import { PageHero } from "@/components/PageHero";
 import { PreviewBanner } from "@/components/PreviewBanner";
 import {
@@ -93,8 +93,27 @@ export default async function EventsPage({
                     <h3>{item.title}</h3>
                     <p className={styles.place}>{place}</p>
                     <div className={styles.detail}>
-                      <ReadableParagraph text={item.body} />
+                      {item.body.split(/\n\n+/).map((paragraph) => (
+                        <p key={paragraph.slice(0, 40)}>{paragraph}</p>
+                      ))}
                     </div>
+                    {item.images?.length ? (
+                      <ul className={styles.gallery} aria-label={`${item.title} photos`}>
+                        {item.images.map((image) => (
+                          <li key={image.src}>
+                            <a href={image.src} target="_blank" rel="noopener noreferrer">
+                              <Image
+                                src={image.src}
+                                alt={image.alt}
+                                width={480}
+                                height={360}
+                                sizes="(max-width: 767px) 50vw, 240px"
+                              />
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
                   </div>
                 </article>
               );

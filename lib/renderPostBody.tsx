@@ -1,3 +1,5 @@
+import { existsSync } from "fs";
+import { join } from "path";
 import type { ReactNode } from "react";
 import { isKeyFact, leadIn, splitSentences } from "@/lib/readable";
 
@@ -13,6 +15,46 @@ export function renderPostBody(body: string): ReactNode[] {
 
     if (block.startsWith("## ")) {
       nodes.push(<h2 key={key++}>{inline(block.slice(3))}</h2>);
+      continue;
+    }
+
+    // Media: ![alt](src "caption"), @video(src "caption"), @embed(src "title")
+    const media = block.match(/^(!\[([^\]]*)\]|@video|@embed)\(([^\s)]+)(?:\s+"([^"]*)")?\)$/);
+    if (media) {
+      const [, kind, alt, src, caption] = media;
+      if (kind === "@video" && !publicFileExists(src)) {
+        // Video file not deployed (large videos are kept out of git); keep the caption text.
+        if (caption) nodes.push(<p key={key++}>{caption}</p>);
+      } else if (kind === "@video") {
+        nodes.push(
+          <figure key={key++} className="post-media">
+            <video controls preload="metadata" playsInline src={src}>
+              <a href={src}>{caption || "Watch the video"}</a>
+            </video>
+            {caption ? <figcaption>{caption}</figcaption> : null}
+          </figure>,
+        );
+      } else if (kind === "@embed") {
+        nodes.push(
+          <figure key={key++} className="post-media post-embed">
+            <iframe
+              src={src}
+              title={caption || "Embedded video"}
+              loading="lazy"
+              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          </figure>,
+        );
+      } else {
+        nodes.push(
+          <figure key={key++} className="post-media">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={src} alt={alt} loading="lazy" decoding="async" />
+            {caption ? <figcaption>{caption}</figcaption> : null}
+          </figure>,
+        );
+      }
       continue;
     }
 
@@ -139,4 +181,13 @@ function inline(text: string): ReactNode[] {
   }
   if (last < text.length) parts.push(text.slice(last));
   return parts;
+}
+
+function publicFileExists(src: string): boolean {
+  if (!src.startsWith("/")) return true;
+  try {
+    return existsSync(join(process.cwd(), "public", src.replace(/^\//, "")));
+  } catch {
+    return false;
+  }
 }

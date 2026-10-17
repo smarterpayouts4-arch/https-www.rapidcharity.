@@ -61,7 +61,7 @@
     "primaryAriaLabel": "Primary"
   },
   "footer": {
-    "tagline": "Promoting career-based higher education and building confidence among those who need it most.",
+    "tagline": "Building confidence amongst the deprived and making charitable giving for purpose of leading advancement of education.",
     "quickLinksTitle": "Quick Links",
     "quickLinks": [
       {
@@ -108,7 +108,7 @@
     "contactTitle": "Contact Us",
     "contactLines": [
       "Serving communities across Pakistan",
-      "Registered nonprofit \u00b7 United States"
+      "Registered nonprofit · United States"
     ],
     "communityTitle": "Join Our Community",
     "social": {
@@ -146,7 +146,7 @@
       "placeholder": "e.g., email@example.com",
       "submitLabel": "Join",
       "consentLabel": "I want to subscribe to your mailing list.",
-      "successMessage": "Opening your email client to complete subscription\u2026",
+      "successMessage": "Opening your email client to complete subscription…",
       "mailSubject": "RAPID Charity newsletter subscription request",
       "mailBodyIntro": "Please add this email to the newsletter list:"
     },
@@ -208,7 +208,7 @@
       "href": "/about-us"
     },
     "quote": "When education is within reach, extraordinary things become possible.",
-    "motif": "PEOPLE \u00b7 EDUCATION \u00b7 PEACE \u00b7 A BRIGHTER TOMORROW",
+    "motif": "PEOPLE · EDUCATION · PEACE · A BRIGHTER TOMORROW",
     "ariaLabel": "Hero",
     "slidesAriaLabel": "Hero images",
     "slides": [
@@ -259,13 +259,13 @@
   "missionOverview": {
     "eyebrow": "Who We Are",
     "title": "Education for People. Progress for Communities.",
-    "lead": "Reconciliation And Peace Innovative Development (RAPID) is a non-political, non-sectarian, non-profit organization registered in the United States, committed to serving those in need through educational empowerment.",
+    "lead": "Reconciliation And Peace Innovative Development (RAPID) is a non-political, non-sectarian and non-profit organization registered in the United States of America, focusing on philanthropic goals with a commitment of serving those in need.",
     "ctaLabel": "Learn More About Us",
     "ctaHref": "/about-us",
     "quote": "Education changes not just individual lives, but entire communities.",
     "video": {
       "src": "/assets/videos/rapid.mp4",
-      "embedUrl": "",
+      "embedUrl": "https://www.facebook.com/Umeed.e.Nau.Networks/videos/915714405912729",
       "label": "RAPID",
       "poster": "/assets/images/home/video-poster.jpg",
       "ariaLabel": "RAPID Charity introduction video",
@@ -292,7 +292,13 @@
         "title": "A More Peaceful Tomorrow",
         "body": "Encouraging trust and cooperation across communities through shared opportunity and dignity."
       }
-    ]
+    ],
+    "details": [
+      "RAPID for the implementation of its goals will partner with religious bodies, non-political organizations and institutions of success with credibility.",
+      "Rapid Charity believes in the power of dream. And our objective is to empower students to believe they can achieve their dreams."
+    ],
+    "motto": "Life is never so busy that there is no time to serve.",
+    "videoCaption": "Watch the inspiring stories of students whose lives have been transformed by scholarships from Rapid Charity. Witness their journeys, achievements, and aspirations as they share how this support has empowered their futures and opened doors to new opportunities."
   },
   "impactStats": {
     "eyebrow": "Our Impact",
@@ -368,7 +374,7 @@
     "playAriaLabel": "View RAPID events and gatherings",
     "quote": "Education changed my life, and RAPID made it possible.",
     "cite": "RAPID Scholar",
-    "script": "Different People \u00b7 Brighter Tomorrows"
+    "script": "Different People · Brighter Tomorrows"
   },
   "latestNews": {
     "eyebrow": "Latest News & Updates",
@@ -426,14 +432,14 @@
     "cardBadge": "2025",
     "cardEyebrow": "Annual Report",
     "cardTitle": "Reconciliation And Peace Innovative Development",
-    "cardMeta": "53 slides \u00b7 Scholarships \u00b7 Impact \u00b7 Community",
+    "cardMeta": "53 slides · Scholarships · Impact · Community",
     "cardLinkLabel": "Open full report"
   },
   "donateBanner": {
     "title": "Make Education Possible.",
     "ctaLabel": "Donate Now",
     "ctaHref": "/donate",
-    "script": "Education \u00b7 People \u00b7 Brighter Tomorrow"
+    "script": "Education · People · Brighter Tomorrow"
   },
   "aboutTeaser": {
     "title": "Learn more about RAPID",
@@ -449,8 +455,8 @@
       "body": "RAPID is a 501(c)(3) charitable organization. Independent nonprofit directories list the legal entity as Reconciliation And Peace Innovative Development - Rapid (EIN 82-2731074), based in Rancho Cucamonga, California.",
       "meta": [
         "US-registered nonprofit",
-        "501(c)(3) \u00b7 EIN 82-2731074",
-        "Non-political \u00b7 Non-sectarian",
+        "501(c)(3) · EIN 82-2731074",
+        "Non-political · Non-sectarian",
         "7-member Board of Directors"
       ],
       "factsAriaLabel": "Organization facts"
@@ -571,7 +577,7 @@
       {
         "id": "ivy-azariah",
         "heading": "3. Ivy Azariah Scholarship (for Women only)",
-        "body": "Ivy Azariah Scholarship: This scholarship is in memory of a dignified woman who was not passionate for the materialistic goods this world had to offer but rather the intangible qualities that can remain on this earth for years to come. \u201cA woman that has the willingness to apply the skills learned for the greater good of the society and while maintaining respect and dignity for herself and those around her demonstrates exemplary behavior. Ivy Azariah believed these qualities were the true measure of success: 1) respect for God, your family and yourself, 2) education and 3) discipline. While she had almost every type of relationship during her time on this earth, the one she valued the most was of her family. She married at a young age and during her time moved to two different countries to be with her family, which required her to learn different languages, customs and culture all while supporting her family in anyway she could; whether that be having a career as a principal or being a caregiver for her grand children. She was strong willed and believed that with God at the center any obstacle could be overcome. For our wonderful grandmother we would like to give this award to an individual that is not looking for just making themselves better but how they could be an important part in the development of others as true success can be measured by the skills that can be passed from generation to generation.\u201d",
+        "body": "Ivy Azariah Scholarship: This scholarship is in memory of a dignified woman who was not passionate for the materialistic goods this world had to offer but rather the intangible qualities that can remain on this earth for years to come. “A woman that has the willingness to apply the skills learned for the greater good of the society and while maintaining respect and dignity for herself and those around her demonstrates exemplary behavior. Ivy Azariah believed these qualities were the true measure of success: 1) respect for God, your family and yourself, 2) education and 3) discipline. While she had almost every type of relationship during her time on this earth, the one she valued the most was of her family. She married at a young age and during her time moved to two different countries to be with her family, which required her to learn different languages, customs and culture all while supporting her family in anyway she could; whether that be having a career as a principal or being a caregiver for her grand children. She was strong willed and believed that with God at the center any obstacle could be overcome. For our wonderful grandmother we would like to give this award to an individual that is not looking for just making themselves better but how they could be an important part in the development of others as true success can be measured by the skills that can be passed from generation to generation.”",
         "applyLabel": "Apply for Ivy Azariah Scholarship",
         "applyHref": "/apply?scholarship=ivy-azariah"
       }
@@ -605,38 +611,55 @@
         "ctaHref": "/apply",
         "sections": [
           {
-            "title": "Eligibility themes",
+            "title": "Applications requirements and criteria",
             "paragraphs": [],
             "listItems": [
-              "RAPID scholarships are available to students residing in India and Pakistan for graduate and postgraduate programs.",
-              "Preference is given to financially needy students with high academic grades.",
-              "Award amounts typically range from US$500 to US$5,000 and may support tuition, books, research activities, and other education-related expenses.",
-              "Applications are judged on their own merit, based on experience, motivation, and achievement. Scholars are selected primarily for leadership potential, commitment to a professional career, high academic achievement, and prospects for continuing academic success."
+              "The RAPID Scholarships are available to students residing in India and Pakistan for graduate and postgraduate programs",
+              "Preference will be given to needy students with high academic grades",
+              "The Education Scholarship award amounts vary from US$500 to US$5000 and typically support tuition, books, research activities, and other education related expenses",
+              "Incomplete applications will not be submitted for consideration.",
+              "All eligible students will be notified of the results of their pre-selection approval in July via Email."
             ],
             "orderedItems": []
           },
           {
-            "title": "John-Ivy Azariah Scholarship Fund: goals & qualification",
+            "title": "Evaluation criteria",
             "paragraphs": [
-              "John-Ivy Azariah Scholarships support high-achieving students with financial need in minority communities of Pakistan, encouraging paths into leading professions."
+              "All scholarship applications are judged on their own merit, based on the experience, motivation and achievement level of the individual student.",
+              "RAPID Scholars are selected primarily on the basis of leadership potential, commitment to a professional career, high academic achievement, and prospects for continuing academic success.",
+              "RAPID team expresses thanks and appreciation to the generous donor of Ivy and John Azariah Scholarship Fund"
+            ],
+            "listItems": [],
+            "orderedItems": []
+          },
+          {
+            "title": "RAPID John-Ivy Azariah Scholarship Fund (Win Full or Partial Scholarship)",
+            "paragraphs": [
+              "John-Ivy Azariah Scholarships are available to high achieving students with financial Requirements in minority communities of Pakistan.",
+              "Goals: Encouraging students in rising to top professions in community, state and nation and thereby uplifting the needy students in minority communities of Pakistan.",
+              "Qualification:"
             ],
             "listItems": [
-              "Motivated, focused, high-achieving students in minority communities of Pakistan",
-              "Competitive academic record (GPA 3.5 & above or 90th percentile)",
-              "Qualified for admission to a top-ranked professional school",
-              "Fields such as Law, Medicine, Engineering, Information Technology, or CSS, among others",
-              "Expressed need for financial support for tuition/fees"
+              "Seeking motivated, focused and high achieving students in minority communities of Pakistan",
+              "Student who display competitive attitude by scoring highest academic grades (GPA 3.5 & above or 90 percentile)",
+              "Student who qualifies for admission to top ranked professional school",
+              "Qualify for admission in Law, Medicine, Engineering, Information Technology or CSS etc.",
+              "Expressed need for Financial support for tuition/fees."
             ],
             "orderedItems": []
           },
           {
-            "title": "How to apply",
-            "paragraphs": [],
+            "title": "How to Apply for Scholarship",
+            "paragraphs": [
+              "Start the application if you are in the process of deciding, applying, already applied or accepted to professional school. It is recommended that you aim for the top ranking professional institutions. Follow the process below:"
+            ],
             "listItems": [],
             "orderedItems": [
-              "Start when you are deciding on, applying to, already applied to, or accepted by a professional school. Aim for top-ranking institutions where possible.",
-              "Complete the pre-qualification form on the website and submit it.",
-              "Once applications and documents are received, RAPID reviews and verifies authenticity. Shortlisted students receive a second application. RAPID staff correspond with the institution(s). For students who qualify, arrangements are made for direct reimbursement of payment to the professional institution."
+              "Fill out the Pre-Qualification Form on our website just by clicking on the Pre-Qualification form button on the top right corner and click on Submit form once completed.",
+              "Once your application and documents are received they will be reviewed and verified for authenticity.",
+              "Shortlisted students will receive the second Application.",
+              "Correspondence with the Institution/s involved will be conducted by the RAPID staff.",
+              "For students who qualify and win scholarship arrangements will be made for direct reimbursement of payment to the professional institution."
             ]
           },
           {
@@ -654,7 +677,7 @@
         "subtitle": "",
         "paragraphs": [
           "The John & Ivy Azariah Scholarship, established by their children, is a beacon of hope for promising Christian Pakistani minority students pursuing higher education. Mr. John Azariah and Mrs. Ivy Azariah, who spent their lives in Pakistan, were inspirational figures in their community.",
-          "This scholarship honors their legacy by providing financial support to high-achieving students from minority backgrounds, enabling them to access top-tier educational opportunities and achieve their professional dreams."
+          "This scholarship honors their legacy by providing financial support to high-achieving students from minority backgrounds, enabling them to access top-tier educational opportunities and achieve their professional dreams. Through this initiative, the Azariah family’s commitment to education and community upliftment continues to inspire and empower future generations."
         ],
         "listItems": [],
         "note": "",
@@ -668,8 +691,12 @@
         "subtitle": "",
         "paragraphs": [
           "Rapid Charity is pleased to introduce Robert Mathias Scholarship for students pursuing graduate studies in Business.",
-          "Here is an inspiring story about Mr. Robert Mathias: \u201cI have the privilege of sharing the story of Robert Mathias, a figure whose legacy continues to inspire many. Born on April 18, 1918, in Gurdaspur, India, Robert chose a path that led him to become an esteemed Accountant and Fiscal Manager\u2026\u201d",
-          "With this scholarship, it is our hope to continue his memory and legacy, supporting future generations to pursue their professional aspirations with the same spirit and dedication that Robert Mathias championed.",
+          "Here is an inspiring story about Mr. Robert Mathias:",
+          "“I have the privilege of sharing the story of Robert Mathias, a figure whose legacy continues to inspire many. Born on April 18, 1918, in Gurdaspur, India, Robert chose a path that led him to become an esteemed Accountant and Fiscal Manager. His professional journey, marked by diligence and expertise, was just the beginning of his impact.",
+          "Robert held a profound vision for the Christian students at the Christian Institute in Raiwind. He recognized early on the potential within the Christian community to engage more deeply with the business world. Driven by this vision, he dedicated himself to teaching business classes, aiming not just to educate but to instill a professional spirit among the students. His commitment was transformative, nurturing a new generation of Christian professionals.",
+          "The impact he had on my sister and me was particularly profound. Under his guidance, we were prepared for the immediate commerce exams, a challenge we might not have tackled successfully without his mentorship. Robert did more than teach; he inspired, he guided, and he believed in us when we needed it most.",
+          "Through his efforts at the Christian Institute, he effectively promoted the integration of Christian values with business professionalism, fostering a community of capable and ethical leaders. Robert Mathias wasn’t just an educator; he was a visionary who played a crucial role in shaping the futures of many, including mine. His dedication to developing the concept of a business profession within the Christian community remains a guiding light for all of us who were fortunate enough to be his students.",
+          "With this scholarship, it is our hope to continue his memory and legacy, supporting future generations to pursue their professional aspirations with the same spirit and dedication that Robert Mathias championed.”",
           "David Mathias\nSon of Robert Mathias"
         ],
         "listItems": [
@@ -688,9 +715,10 @@
         "subtitle": "",
         "paragraphs": [
           "This scholarship is in memory of a dignified woman who was not passionate for the materialistic goods this world had to offer but rather the intangible qualities that can remain on this earth for years to come.",
-          "\u201cA woman that has the willingness to apply the skills learned for the greater good of the society and while maintaining respect and dignity for herself and those around her demonstrates exemplary behavior.",
+          "“A woman that has the willingness to apply the skills learned for the greater good of the society and while maintaining respect and dignity for herself and those around her demonstrates exemplary behavior.",
           "Ivy Azariah believed these qualities were the true measure of success:",
-          "For our wonderful grandmother we would like to give this award to an individual that is not looking for just making themselves better but how they could be an important part in the development of others as true success can be measured by the skills that can be passed from generation to generation.\u201d",
+          "While she had almost every type of relationship during her time on this earth, the one she valued the most was of her family.  She married at a young age and during her time moved to two different countries to be with her family, which required her to learn different languages, customs and culture all while supporting her family in anyway she could; whether that be having a career as a principal or being a caregiver for her grand children.  She was strong willed and believed that with God at the center any obstacle could be overcome.",
+          "For our wonderful grandmother we would like to give this award to an individual that is not looking for just making themselves better but how they could be an important part in the development of others as true success can be measured by the skills that can be passed from generation to generation.”",
           "Granddaughter of Ivy Azariah"
         ],
         "listItems": [
@@ -792,7 +820,7 @@
       "tagSubtitle": "News tag",
       "recentPostsTitle": "Recent Posts",
       "seeAllLabel": "See All",
-      "backLabel": "\u2190 All Posts",
+      "backLabel": "← All Posts",
       "minReadSuffix": "min read"
     },
     "notFound": {

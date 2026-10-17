@@ -1,4 +1,4 @@
-export type VideoEmbed = { kind: "youtube" | "vimeo"; src: string };
+export type VideoEmbed = { kind: "youtube" | "vimeo" | "facebook"; src: string };
 
 const YOUTUBE_ID = /^[\w-]{6,}$/;
 
@@ -34,6 +34,16 @@ export function parseVideoEmbed(input: string | undefined | null): VideoEmbed | 
   if (host === "vimeo.com" || host === "player.vimeo.com") {
     const id = [...url.pathname.split("/").filter(Boolean)].reverse().find((part) => /^\d+$/.test(part));
     return id ? { kind: "vimeo", src: `https://player.vimeo.com/video/${id}` } : null;
+  }
+
+  if (host === "facebook.com" || host === "m.facebook.com" || host === "fb.watch") {
+    if (url.pathname.startsWith("/plugins/video.php")) return { kind: "facebook", src: url.toString() };
+    if (/\/(videos|reel|watch)\b/.test(url.pathname) || url.searchParams.has("v")) {
+      return {
+        kind: "facebook",
+        src: `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url.toString())}&show_text=false`,
+      };
+    }
   }
 
   return null;

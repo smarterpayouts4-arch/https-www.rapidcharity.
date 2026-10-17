@@ -5,6 +5,9 @@ export const eventItemSchema = z.object({
   title: z.string().min(1),
   body: z.string().min(1),
   status: z.enum(["draft", "published"]).default("published"),
+  images: z
+    .array(z.object({ src: z.string().min(1), alt: z.string().default("") }))
+    .optional(),
 });
 
 export const eventsCollectionSchema = z.object({

@@ -222,7 +222,7 @@ test.describe("sample post featured image + share", () => {
       "/post/rapid-charity-hosts-educational-seminar-on-css-and-pms-competitive-exams",
       { waitUntil: "domcontentloaded" },
     );
-    await expect(page.locator("article figure img")).toBeVisible();
+    await expect(page.locator("article figure img").first()).toBeVisible();
     await expect(page.getByRole("navigation", { name: "Blog categories" })).toBeVisible();
     await expect(page.getByRole("link", { name: "All Posts" }).first()).toBeVisible();
     await expect(page.getByRole("heading", { name: "Introduction & Overview", level: 2 })).toBeVisible();

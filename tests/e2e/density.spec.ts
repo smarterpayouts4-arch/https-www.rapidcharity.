@@ -55,10 +55,10 @@ test("mobile home uses rows, a peeking carousel, and see all", async ({ page }) 
 test("how to apply steps use a short lead-in", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/education-scholarships1", { waitUntil: "domcontentloaded" });
-  const step = page.getByRole("listitem").filter({ hasText: "Start when you are deciding" });
+  // Original wording restored from rapidcharity.org (content audit, round 6).
+  await expect(page.getByText(/Start the application if you are in the process of deciding/)).toBeVisible();
+  const step = page.getByRole("listitem").filter({ hasText: "Fill out the Pre-Qualification Form" });
   await expect(step).toBeVisible();
-  await expect(step.locator("strong")).toHaveText("Start when you are deciding on");
-  await expect(page.getByText("Aim for top-ranking institutions where possible.")).toBeVisible();
-  await expect(page.getByText("Complete the pre-qualification form on the website and submit it.")).toBeVisible();
+  await expect(step.locator("strong")).toBeVisible();
   await expect(page.getByText(/direct reimbursement of payment to the professional institution/)).toBeVisible();
 });

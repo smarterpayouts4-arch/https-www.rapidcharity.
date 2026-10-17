@@ -195,6 +195,7 @@ export function Header({ nav, programBlurbs = {} }: Props) {
                         aria-haspopup="true"
                         aria-expanded={pinned}
                         aria-controls={menuId}
+                        aria-current={active ? "true" : undefined}
                         onClick={() => {
                           if (pinned) {
                             setPinned(false);
@@ -259,15 +260,14 @@ export function Header({ nav, programBlurbs = {} }: Props) {
               );
             })}
           </ul>
+          <Link
+            href={donate.href}
+            className={`${styles.donate} ${donateActive ? styles.donateActive : ""}`}
+            aria-current={donateActive ? "page" : undefined}
+          >
+            {donate.label}
+          </Link>
         </nav>
-
-        <Link
-          href={donate.href}
-          className={`${styles.donate} ${donateActive ? styles.donateActive : ""}`}
-          aria-current={donateActive ? "page" : undefined}
-        >
-          {donate.label}
-        </Link>
 
         <button
           ref={menuToggleRef}
@@ -319,7 +319,7 @@ export function Header({ nav, programBlurbs = {} }: Props) {
             </svg>
           </button>
         </div>
-        <nav className={styles.drawerNav} aria-label={nav.primaryAriaLabel}>
+        <nav className={styles.drawerNav} aria-label={`${nav.primaryAriaLabel} mobile`}>
           <ul className={styles.drawerList}>
             {mainNav.map((item) => {
               const active = isActive(pathname, item.href, item.children);

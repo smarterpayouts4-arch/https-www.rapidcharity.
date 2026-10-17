@@ -31,6 +31,7 @@ export const homeContentShape = {
   }),
   missionOverview: z.object({
     eyebrow: z.string(), title: z.string(), lead: z.string(), ctaLabel: z.string(), ctaHref: z.string(), quote: z.string(),
+    details: z.array(z.string()).optional(), motto: z.string().optional(), videoCaption: z.string().optional(),
     video: z.object({
       src: z.string(), label: z.string(), poster: z.string(), ariaLabel: z.string(), facebookHref: z.string().optional(),
       embedUrl: z.string().optional().default(""),

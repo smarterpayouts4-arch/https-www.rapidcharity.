@@ -37,6 +37,8 @@
 .embedWrap {
   position: relative;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   aspect-ratio: 16 / 10;
   border-radius: var(--radius-card);
   overflow: hidden;
@@ -86,11 +88,6 @@
   .section { padding: 1.35rem 0 1.75rem; }
   .card { padding: 1rem; }
   .cardHeader { margin-bottom: 0.85rem; }
-  .cardLead {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .embedWrap { aspect-ratio: 16 / 10; min-height: 0; }
+  /* Full lead text and a taller viewer so the slide and its toolbar are never clipped. */
+  .embedWrap { aspect-ratio: 4 / 3; min-height: 0; max-width: 100%; }
 }
