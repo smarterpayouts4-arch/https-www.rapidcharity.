@@ -4,6 +4,10 @@ import { fileURLToPath } from "url";
 
 const nextConfig: NextConfig = {
   outputFileTracingRoot: path.dirname(fileURLToPath(import.meta.url)),
+  // The sample-document route reads these at runtime (sample mode, see docs/mock-applications.md).
+  outputFileTracingIncludes: {
+    "/api/dev/sample-documents": ["./tests/fixtures/sample-documents/*-sample.{jpg,png,pdf}"],
+  },
   images: {
     formats: ["image/avif", "image/webp"],
   },

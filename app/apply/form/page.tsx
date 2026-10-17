@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ApplicationScreen } from "@/components/apply/ApplicationScreen";
 import { isScholarshipId } from "@/lib/application/constants";
-import { mockApplicationsEnabled } from "@/lib/application/mockGate";
+import { sampleModeAllowed } from "@/lib/application/mockGate";
 import { findMock } from "@/lib/application/mocks";
 import { site } from "@/lib/site";
 
@@ -18,8 +18,10 @@ export default async function ApplicationPage({ searchParams }: { searchParams?:
   const params = searchParams ? await searchParams : undefined;
   const raw = params?.scholarship;
   const value = Array.isArray(raw) ? raw[0] : raw;
-  const rawMock = params?.mock;
-  const mock = mockApplicationsEnabled() ? findMock(Array.isArray(rawMock) ? rawMock[0] : rawMock) : undefined;
+  // Sample mode: env gate, or ?demo=<key> on this request. A browser that unlocked
+  // earlier and comes back without the parameter fetches the samples itself.
+  const sampleMode = sampleModeAllowed(params?.demo);
+  const mock = sampleMode ? findMock(params?.mock) : undefined;
   const initialScholarship = mock ? mock.scholarship : isScholarshipId(value) ? value : "";
-  return <ApplicationScreen initialScholarship={initialScholarship} initialMock={mock?.id ?? ""} />;
+  return <ApplicationScreen initialScholarship={initialScholarship} initialMock={mock?.id ?? ""} sampleMode={sampleMode} />;
 }

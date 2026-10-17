@@ -40,6 +40,7 @@ import { FORM_STEPS, errorsForStep, validateApplication } from "@/lib/applicatio
 import { inferProgramSelection, SCHOOL_ALIASES } from "@/lib/application/search";
 import type { ApplicationInput, DocumentInput, PromotedOption } from "@/lib/application/types";
 import type { MockApplication } from "@/lib/application/mocks";
+import { demoHeaders, forgetDemoKey, syncDemoKeyFromUrl } from "@/lib/application/demoMode";
 import { DocumentFields } from "./DocumentFields";
 import { DraftNoticeView } from "./DraftNotice";
 import { ProgramField } from "./ProgramField";
@@ -67,6 +68,11 @@ function toIssues(fieldErrors: Errors): FormIssue[] {
   }));
 }
 
+/** Same check as isSampleEmail in lib/application/mocks.ts, kept here so the mock JSON stays out of the bundle. */
+function looksLikeSample(email: string): boolean {
+  return /^sample\.applicant\+[a-z-]+@example\.com$/i.test(email.trim());
+}
+
 function fromMock(mock: MockApplication): ApplicationInput {
   return { ...structuredClone(mock.data), client_id: crypto.randomUUID(), documents: [] };
 }
@@ -85,7 +91,10 @@ export function ApplicationForm({
   mocks?: MockApplication[];
   initialMock?: string;
 }) {
+  const [sampleList, setSampleList] = useState<MockApplication[]>(mocks ?? []);
   const startMock = mocks?.find((item) => item.id === initialMock);
+  const [sampleId, setSampleId] = useState<string>(startMock?.id ?? "");
+  const [sampleUploading, setSampleUploading] = useState(false);
   const [data, setData] = useState<ApplicationInput>(() =>
     startMock
       ? fromMock(startMock)
@@ -206,16 +215,10 @@ export function ApplicationForm({
     return () => window.clearTimeout(handle);
   }, [data, step]);
 
-  useEffect(() => {
-    if (!startMock) return;
-    const url = new URL(window.location.href);
-    if (!url.searchParams.has("mock")) return;
-    url.searchParams.delete("mock");
-    window.history.replaceState(null, "", `${url.pathname}${url.search}`);
-  }, [startMock]);
-
   function loadMock(mock: MockApplication) {
     const next = fromMock(mock);
+    setSampleId(mock.id);
+    setSampleUploading(false);
     dirty.current = true;
     dataRef.current = next;
     setData(next);
@@ -232,6 +235,64 @@ export function ApplicationForm({
     url.searchParams.delete("mock");
     window.history.replaceState(null, "", `${url.pathname}${url.search}`);
   }
+
+  function clearSample() {
+    const next = { ...emptyApplication(""), client_id: crypto.randomUUID() };
+    clearDraft();
+    dirty.current = false;
+    dataRef.current = next;
+    setData(next);
+    setSampleId("");
+    setSampleUploading(false);
+    setStep(0);
+    setPicking(true);
+    setErrors({});
+    setIssues([]);
+    setTouched(new Set());
+    setStepAttempted(false);
+    setReturnToReview(false);
+    setDraftDismissed(true);
+    setSavedLabel("");
+    const url = new URL(window.location.href);
+    url.searchParams.delete("scholarship");
+    window.history.replaceState(null, "", `${url.pathname}${url.search}`);
+  }
+
+  const loadMockRef = useRef(loadMock);
+  useEffect(() => {
+    loadMockRef.current = loadMock;
+  });
+
+  useEffect(() => {
+    // Remember ?demo=<key> (or forget it with ?demo=off) and tidy the address bar.
+    const key = syncDemoKeyFromUrl();
+    const url = new URL(window.location.href);
+    const wanted = url.searchParams.get("mock");
+    if (wanted !== null) {
+      url.searchParams.delete("mock");
+      window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+    }
+    if ((mocks && mocks.length > 0) || !key) return;
+    // Unlocked earlier in this browser: ask the server for the samples with the remembered key.
+    let cancelled = false;
+    fetch("/api/dev/mock-applications", { headers: demoHeaders(), cache: "no-store" })
+      .then(async (response) => {
+        if (response.status === 404) {
+          forgetDemoKey();
+          return;
+        }
+        if (!response.ok) return;
+        const body = (await response.json()) as { mocks?: MockApplication[] };
+        if (cancelled || !body.mocks?.length) return;
+        setSampleList(body.mocks);
+        const start = wanted ? body.mocks.find((item) => item.id === wanted || item.scholarship === wanted) : undefined;
+        if (start) loadMockRef.current(start);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [mocks]);
 
   const focusField = useCallback((key: string) => {
     const root = formRef.current;
@@ -411,6 +472,13 @@ export function ApplicationForm({
       presentFieldErrors(result.fieldErrors);
       return;
     }
+    if (sampleId || looksLikeSample(snapshot.email)) {
+      const who = [snapshot.first_name, snapshot.last_name].filter(Boolean).join(" ") || "a sample applicant";
+      const sure = window.confirm(
+        `This is sample data (${who}). Submitting it creates a real test application. Submit anyway?`,
+      );
+      if (!sure) return;
+    }
     setBusy(true);
     setIssues([]);
     try {
@@ -520,6 +588,14 @@ export function ApplicationForm({
         </ol>
       </aside>
       <div className={styles.card}>
+      {sampleList.length > 0 ? (
+        <SampleChips
+          samples={sampleList}
+          activeId={sampleId}
+          onPick={loadMock}
+          onClear={clearSample}
+        />
+      ) : null}
       <div className={styles.mobileProgress}>
         <p className={styles.progressLabel}>
           Step {step + 1} of {FORM_STEPS.length} · {current?.label}
@@ -540,18 +616,6 @@ export function ApplicationForm({
         </div>
       </div>
       {savedLabel ? <p className={styles.saved}>{savedLabel}</p> : null}
-      {mocks && mocks.length > 0 ? (
-        <div className={styles.testTools} data-testid="mock-tools">
-          <p className={styles.testToolsLabel}>Test mode: fill the form with a sample application</p>
-          <div className={styles.testToolsActions}>
-            {mocks.map((mock) => (
-              <button key={mock.id} type="button" className="btn-secondary btn-sm" onClick={() => loadMock(mock)}>
-                {mock.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      ) : null}
       {pendingDraft ? (
         <DraftNoticeView
           step={pendingDraft.step}
@@ -947,7 +1011,9 @@ export function ApplicationForm({
               ...(data.disability && data.disability !== "none" ? [{ slot: "disability_certificate", text: "Required because a disability is selected." }] : []),
               ...(data.other_financial_support === "Yes" ? [{ slot: "other_award", text: "Required because another scholarship was declared." }] : []),
             ]}
-            sampleSlots={mocks && mocks.length > 0 ? requiredDocumentSlots(data) : undefined}
+            sampleSlots={sampleList.length > 0 ? requiredDocumentSlots(data) : undefined}
+            autoSample={Boolean(sampleId)}
+            onSampleBusy={setSampleUploading}
             onUpsert={upsertDocument}
             onRemove={removeDocument}
           />
@@ -1006,7 +1072,9 @@ export function ApplicationForm({
           Back
         </button>
         {step < FORM_STEPS.length - 1 ? (
-          <button type="button" className="btn" disabled={blocked || !ready} onClick={() => goNext()}>{returnToReview ? "Back to review" : "Continue"}</button>
+          <button type="button" className="btn" disabled={blocked || !ready || (step === 6 && sampleUploading)} onClick={() => goNext()}>
+            {step === 6 && sampleUploading ? "Attaching sample files…" : returnToReview ? "Back to review" : "Continue"}
+          </button>
         ) : (
           <button type="button" className="btn" disabled={busy || !ready} onClick={() => void submit()}>
             {busy ? "Submitting…" : "Submit application"}
@@ -1015,6 +1083,53 @@ export function ApplicationForm({
       </div>
       </div>
     </form>
+  );
+}
+
+function SampleChips({
+  samples,
+  activeId,
+  onPick,
+  onClear,
+}: {
+  samples: MockApplication[];
+  activeId: string;
+  onPick: (mock: MockApplication) => void;
+  onClear: () => void;
+}) {
+  const active = samples.find((item) => item.id === activeId);
+  return (
+    <section className={styles.samples} data-testid="mock-tools" aria-labelledby="sample-chips-label">
+      <p className={styles.samplesLabel} id="sample-chips-label">
+        Test with a sample applicant
+      </p>
+      <div className={styles.sampleChips}>
+        {samples.map((mock) => (
+          <button
+            key={mock.id}
+            type="button"
+            className={`btn-secondary btn-sm ${styles.sampleChip}`}
+            aria-pressed={mock.id === activeId}
+            data-mock={mock.id}
+            onClick={() => onPick(mock)}
+          >
+            <span className={styles.sampleName}>{mock.name}</span>
+            <span className={styles.sampleMeta}>{mock.detail}</span>
+          </button>
+        ))}
+      </div>
+      {active ? (
+        <div className={styles.sampleDone} role="status" data-testid="sample-filled">
+          <p>
+            Filled with {active.name}&apos;s sample. Tap Continue to move through the steps.
+          </p>
+          <button type="button" className={`btn-text btn-sm ${styles.sampleClear}`} onClick={onClear}>
+            Clear sample
+          </button>
+        </div>
+      ) : null}
+      <p className={styles.sampleWarn}>Samples are for testing. Submitting one creates a real test application.</p>
+    </section>
   );
 }
 

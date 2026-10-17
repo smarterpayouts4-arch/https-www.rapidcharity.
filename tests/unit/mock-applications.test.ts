@@ -3,8 +3,9 @@ import { existsSync } from "node:fs";
 import test from "node:test";
 import { requiredDocumentSlots } from "../../lib/application/documents";
 import { emptyChecks } from "../../lib/application/documents";
-import { mockApplicationsEnabled } from "../../lib/application/mockGate";
-import { MOCK_APPLICATIONS, SAMPLE_DOCUMENT_FILES, findMock } from "../../lib/application/mocks";
+import { DEMO_UNLOCK_KEY, demoKeyMatches, mockApplicationsEnabled, sampleModeAllowed } from "../../lib/application/mockGate";
+import { normalizeCnic } from "../../lib/application/normalize";
+import { MOCK_APPLICATIONS, SAMPLE_DOCUMENT_FILES, findMock, isSampleEmail } from "../../lib/application/mocks";
 import { FORM_STEPS, errorsForStep, validateApplication } from "../../lib/application/schema";
 import type { ApplicationInput, DocumentInput } from "../../lib/application/types";
 
@@ -50,6 +51,12 @@ for (const mock of MOCK_APPLICATIONS) {
 
   test(`${mock.id} mock uses obviously fake contact details`, () => {
     assert.match(mock.data.email, /^sample\.applicant\+[a-z-]+@example\.com$/);
+    assert.ok(isSampleEmail(mock.data.email));
+    assert.equal(mock.data.email_confirm, mock.data.email);
+    assert.ok(normalizeCnic(mock.data.cnic).ok, mock.data.cnic);
+    assert.equal(mock.name, `${mock.data.first_name} ${mock.data.last_name}`);
+    assert.equal(mock.data.consent_name, mock.data.full_name_as_on_cnic);
+    assert.doesNotMatch(JSON.stringify(mock.data), /Sample|Tester/, "applicant text uses realistic names, not placeholders");
     assert.equal(mock.data.scholarship, mock.scholarship);
     assert.equal(mock.data.documents.length, 0);
     for (const slot of requiredDocumentSlots(mock.data)) {
@@ -62,6 +69,26 @@ for (const mock of MOCK_APPLICATIONS) {
 
 test("ivy mock is a female applicant", () => {
   assert.equal(findMock("ivy")?.data.gender, "Female");
+});
+
+test("sample applicants have realistic Pakistani names", () => {
+  assert.equal(findMock("john-ivy")?.name, "Akram Naseem");
+  assert.equal(findMock("john-ivy")?.data.gender, "Male");
+  assert.equal(findMock("ivy")?.name, "Ayesha Khan");
+  assert.equal(findMock("robert")?.name, "Bilal Masih");
+  assert.equal(findMock(["robert-mathias"])?.id, "robert");
+  assert.equal(isSampleEmail("ayesha@example.com"), false);
+});
+
+test("private unlock key: exact match only", () => {
+  assert.equal(DEMO_UNLOCK_KEY, "rapid2027");
+  assert.equal(demoKeyMatches("rapid2027"), true);
+  assert.equal(demoKeyMatches(["rapid2027"]), true);
+  assert.equal(demoKeyMatches("RAPID2027"), false);
+  assert.equal(demoKeyMatches("off"), false);
+  assert.equal(demoKeyMatches(""), false);
+  assert.equal(demoKeyMatches(null), false);
+  assert.equal(demoKeyMatches(undefined), false);
 });
 
 test("mock gate: on in dev, off in production unless opted in, always off on Vercel production", () => {
@@ -79,6 +106,11 @@ test("mock gate: on in dev, off in production unless opted in, always off on Ver
     assert.equal(mockApplicationsEnabled(), true);
     env.VERCEL_ENV = "production";
     assert.equal(mockApplicationsEnabled(), false);
+    // The private unlock works on Vercel production without any env var.
+    delete env.NEXT_PUBLIC_ENABLE_MOCK_APPLICATIONS;
+    assert.equal(sampleModeAllowed(), false);
+    assert.equal(sampleModeAllowed("nope"), false);
+    assert.equal(sampleModeAllowed("rapid2027"), true);
   } finally {
     for (const key of Object.keys(env)) if (!(key in saved)) delete env[key];
     Object.assign(env, saved);

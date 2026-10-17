@@ -9,7 +9,7 @@ import { DeadlineBand } from "@/components/DeadlineBand";
 import { PreviewBanner } from "@/components/PreviewBanner";
 import { ShareRow } from "@/components/ShareRow";
 import { isScholarshipId } from "@/lib/application/constants";
-import { mockApplicationsEnabled } from "@/lib/application/mockGate";
+import { DEMO_PARAM, demoKeyMatches, sampleModeAllowed } from "@/lib/application/mockGate";
 import { findMock } from "@/lib/application/mocks";
 import { deadlineBandItems, deadlineCycleItems, type ScholarshipId } from "@/lib/application/intakes";
 import { loadSiteContent, resolvePreview } from "@/lib/content";
@@ -53,13 +53,14 @@ export default async function ApplyPage({
   const preview = await resolvePreview(params);
   const raw = params?.scholarship;
   const scholarshipValue = Array.isArray(raw) ? raw[0] : raw;
-  const rawMock = params?.mock;
-  const mock = mockApplicationsEnabled() ? findMock(Array.isArray(rawMock) ? rawMock[0] : rawMock) : undefined;
+  const mock = sampleModeAllowed(params?.demo) ? findMock(params?.mock) : undefined;
+  // Keep a valid ?demo= key on the redirect so the form unlocks sample mode too.
+  const demo = demoKeyMatches(params?.demo) ? `&${DEMO_PARAM}=${encodeURIComponent(String(params?.demo))}` : "";
   if (mock) {
-    redirect(`/apply/form?scholarship=${mock.scholarship}&mock=${mock.id}`);
+    redirect(`/apply/form?scholarship=${mock.scholarship}&mock=${mock.id}${demo}`);
   }
   if (isScholarshipId(scholarshipValue)) {
-    redirect(`/apply/form?scholarship=${scholarshipValue}`);
+    redirect(`/apply/form?scholarship=${scholarshipValue}${demo}`);
   }
   const content = await loadSiteContent({ preview });
   const { apply, chrome } = content;

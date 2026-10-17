@@ -2,11 +2,11 @@
   "client_id": "",
   "scholarship": "robert-mathias",
   "applicant_type": "continuing",
-  "first_name": "Sample",
-  "last_name": "Robert Tester",
-  "full_name_as_on_cnic": "Sample Robert Tester",
+  "first_name": "Bilal",
+  "last_name": "Masih",
+  "full_name_as_on_cnic": "Bilal Masih",
   "date_of_birth": "2003-11-21",
-  "gender": "Female",
+  "gender": "Male",
   "disability": "none",
   "disability_other": "",
   "marital_status": "Single",
@@ -21,12 +21,12 @@
     "option_id": "christianity",
     "other_text": ""
   },
-  "cnic": "35202-0000003-4",
+  "cnic": "37405-0000303-5",
   "email": "sample.applicant+robert@example.com",
   "email_confirm": "sample.applicant+robert@example.com",
   "mobile_phone": "0300 0000301",
   "secondary_phone": "",
-  "address_line": "House 3, Sample Lane, Test Gardens",
+  "address_line": "House 3, Lane 5, Westridge",
   "city": {
     "option_id": "rawalpindi",
     "other_text": ""
@@ -41,8 +41,8 @@
     "period": "month",
     "value_state": "known"
   },
-  "father_name": "Sample Father Robert",
-  "mother_name": "Sample Mother Robert",
+  "father_name": "Yousaf Masih",
+  "mother_name": "Parveen Masih",
   "father_status": "Living",
   "mother_status": "Living",
   "father_occupation": {
@@ -204,21 +204,21 @@
     "option_id": "pastor_church",
     "other_text": ""
   },
-  "church_name": "Sample Rawalpindi Church",
+  "church_name": "Christ Church Westridge",
   "denomination": {
     "option_id": "presbyterian",
     "other_text": ""
   },
   "pastor_title": "Rev.",
   "pastor_title_other": "",
-  "pastor_name": "Sample Reverend Robert",
+  "pastor_name": "Daniel Sadiq",
   "pastor_phone": "0300 0000303",
   "pastor_email": "sample.pastor+robert@example.com",
-  "faculty_ref_name": "Sample Faculty Robert",
+  "faculty_ref_name": "Ms. Rubina Javed",
   "faculty_ref_designation": "Lecturer, Business School",
   "faculty_ref_phone": "0300 0000304",
   "faculty_ref_email": "sample.faculty+robert@example.com",
-  "family_ref_name": "Sample Brother Robert",
+  "family_ref_name": "Danish Masih",
   "family_ref_relationship": {
     "option_id": "brother",
     "other_text": ""
@@ -235,6 +235,6 @@
   "reuse_guardian": false,
   "documents": [],
   "consent_accepted": true,
-  "consent_name": "Sample Robert Tester",
+  "consent_name": "Bilal Masih",
   "website": ""
 }

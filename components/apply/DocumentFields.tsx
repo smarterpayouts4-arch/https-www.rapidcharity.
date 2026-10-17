@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "@/app/apply/form/form.module.css";
 import { PDF_NOTE, prepareFile, mergeImagesToPdf } from "@/lib/application/prepareFile";
 import type { DocumentInput } from "@/lib/application/types";
+import { demoHeaders } from "@/lib/application/demoMode";
 
 /** Image types plus PDF, so phones open the photo picker. No `capture`: gallery and files only. */
 export const UPLOAD_ACCEPT =
@@ -42,6 +43,8 @@ export function DocumentFields({
   hints,
   context,
   sampleSlots,
+  autoSample = false,
+  onSampleBusy,
   onUpsert,
   onRemove,
 }: {
@@ -54,6 +57,9 @@ export function DocumentFields({
   context: { name: string; cnic: string; fatherName: string; fee: number | null; fatherLate: boolean; under18: boolean };
   /** Test mode only: required slots to fill with the SAMPLE files from tests/fixtures/sample-documents. */
   sampleSlots?: string[];
+  /** A sample applicant is loaded: attach the SAMPLE files automatically when this step opens. */
+  autoSample?: boolean;
+  onSampleBusy?: (busy: boolean) => void;
   onUpsert: (document: DocumentInput) => void;
   onRemove: (slot: string, index: number) => void;
 }) {
@@ -172,6 +178,7 @@ export function DocumentFields({
   async function uploadSamples() {
     if (!sampleSlots) return;
     setSampleBusy(true);
+    onSampleBusy?.(true);
     try {
       const { SAMPLE_DOCUMENT_FILES } = await import("@/lib/application/sampleDocuments");
       for (const slot of sampleSlots) {
@@ -179,7 +186,10 @@ export function DocumentFields({
         const names = SAMPLE_DOCUMENT_FILES[slot] ?? [];
         const files: File[] = [];
         for (const name of names) {
-          const response = await fetch(`/api/dev/sample-documents?file=${encodeURIComponent(name)}`);
+          const response = await fetch(`/api/dev/sample-documents?file=${encodeURIComponent(name)}`, {
+            headers: demoHeaders(),
+            cache: "no-store",
+          });
           if (!response.ok) throw new Error(`Sample file ${name} is not available.`);
           const blob = await response.blob();
           files.push(new File([blob], name, { type: blob.type }));
@@ -190,8 +200,22 @@ export function DocumentFields({
       setStatus(reason instanceof Error ? reason.message : "The sample files could not be loaded.");
     } finally {
       setSampleBusy(false);
+      onSampleBusy?.(false);
     }
   }
+
+  const autoStarted = useRef(false);
+  const uploadSamplesRef = useRef(uploadSamples);
+  useEffect(() => {
+    uploadSamplesRef.current = uploadSamples;
+  });
+  useEffect(() => {
+    if (!autoSample || !sampleSlots || autoStarted.current) return;
+    if (sampleSlots.every((slot) => documents.some((item) => item.slot === slot))) return;
+    autoStarted.current = true;
+    const timer = window.setTimeout(() => void uploadSamplesRef.current(), 0);
+    return () => window.clearTimeout(timer);
+  }, [autoSample, sampleSlots, documents]);
 
   const slots = [
     "photo",
@@ -215,7 +239,9 @@ export function DocumentFields({
       </p>
       {sampleSlots ? (
         <div className={styles.testTools} data-testid="sample-documents">
-          <p className={styles.testToolsLabel}>Test mode: upload the SAMPLE files for every required document</p>
+          <p className={styles.testToolsLabel}>
+            {autoSample ? "Sample applicant: the SAMPLE files are attached for you" : "Sample mode: attach the SAMPLE file for every required document"}
+          </p>
           <div className={styles.testToolsActions}>
             <button type="button" className="btn-secondary btn-sm" disabled={sampleBusy} onClick={() => void uploadSamples()}>
               {sampleBusy ? "Uploading sample files…" : "Upload sample documents"}

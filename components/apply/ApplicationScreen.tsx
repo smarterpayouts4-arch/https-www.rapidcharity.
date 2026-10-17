@@ -3,16 +3,18 @@ import type { ScholarshipId } from "@/lib/application/constants";
 import { loadPromoted } from "@/lib/application/store";
 import { loadFormState } from "@/lib/application/formSettings";
 import type { PromotedOption } from "@/lib/application/types";
-import { mockApplicationsEnabled } from "@/lib/application/mockGate";
 import { MOCK_APPLICATIONS } from "@/lib/application/mocks";
 import styles from "@/app/apply/form/form.module.css";
 
 export async function ApplicationScreen({
   initialScholarship,
   initialMock = "",
+  sampleMode = false,
 }: {
   initialScholarship: ScholarshipId | "";
   initialMock?: string;
+  /** Decided by the page (env gate or a matching ?demo= key). Sample data is only sent when true. */
+  sampleMode?: boolean;
 }) {
   const form = await loadFormState();
   if (!form.open) {
@@ -53,7 +55,7 @@ export async function ApplicationScreen({
           initialScholarship={initialScholarship}
           promoted={promoted}
           cycleName={form.cycleName}
-          {...(mockApplicationsEnabled() ? { mocks: MOCK_APPLICATIONS, initialMock } : {})}
+          {...(sampleMode ? { mocks: MOCK_APPLICATIONS, initialMock } : {})}
         />
       </div>
     </section>

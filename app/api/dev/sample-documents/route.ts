@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { NextResponse, type NextRequest } from "next/server";
-import { mockApplicationsEnabled } from "@/lib/application/mockGate";
+import { DEMO_HEADER, DEMO_PARAM, sampleModeAllowed } from "@/lib/application/mockGate";
 import { SAMPLE_DOCUMENT_FILES } from "@/lib/application/sampleDocuments";
 
 export const dynamic = "force-dynamic";
@@ -9,9 +9,13 @@ export const dynamic = "force-dynamic";
 const ALLOWED = new Set(Object.values(SAMPLE_DOCUMENT_FILES).flat());
 const TYPES: Record<string, string> = { ".jpg": "image/jpeg", ".png": "image/png", ".pdf": "application/pdf" };
 
-/** Serves the SAMPLE test documents to the "Upload sample documents" button. 404 unless mocks are enabled. */
+/**
+ * Serves the SAMPLE test documents to the sample applicant flow. 404 unless the env gate is on
+ * or the request carries the unlock key (x-rapid-demo header, or ?demo=<key>).
+ */
 export async function GET(request: NextRequest) {
-  if (!mockApplicationsEnabled()) return new NextResponse("Not found", { status: 404 });
+  const key = request.headers.get(DEMO_HEADER) ?? request.nextUrl.searchParams.get(DEMO_PARAM);
+  if (!sampleModeAllowed(key)) return new NextResponse("Not found", { status: 404 });
   const name = request.nextUrl.searchParams.get("file") ?? "";
   if (!ALLOWED.has(name)) return new NextResponse("Not found", { status: 404 });
   try {
