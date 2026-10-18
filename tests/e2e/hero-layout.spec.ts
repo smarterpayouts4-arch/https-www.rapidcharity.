@@ -95,15 +95,18 @@ test("hero text stays off the photos at every width and slide", async ({ page })
       await page.screenshot({ path: join(dir, "top.png"), fullPage: false });
     }
 
-    await page.getByRole("button", { name: "Pause" }).click();
-
-    const tabs = page.getByRole("tab");
-    const count = await tabs.count();
-    expect(count).toBeGreaterThan(1);
+    await expect(page.locator("[data-hero-media] button")).toHaveCount(0);
+    const dots = page.locator("[data-hero-dots] > span");
+    const count = await dots.count();
+    expect(count).toBe(3);
 
     for (let slide = 0; slide < count; slide += 1) {
-      await tabs.nth(slide).click();
-      await expect(tabs.nth(slide)).toHaveAttribute("aria-selected", "true");
+      await page.evaluate((target) => {
+        const scroller = document.querySelector("[data-hero-scroller]") as HTMLElement;
+        const cards = [...scroller.children] as HTMLElement[];
+        scroller.scrollTo({ left: Math.max(0, cards[target].offsetLeft - cards[0].offsetLeft), behavior: "auto" });
+      }, slide);
+      await page.waitForTimeout(150);
       await page.mouse.move(0, 0);
       const report = await page.evaluate(() => {
         const overlaps: string[] = [];
@@ -188,7 +191,7 @@ test("hero text stays off the photos at every width and slide", async ({ page })
           }
         }
 
-        for (const control of document.querySelectorAll<HTMLElement>("[data-hero-controls] button")) {
+        for (const control of document.querySelectorAll<HTMLElement>("[data-hero-media] button")) {
           const box = control.getBoundingClientRect();
           photos.forEach((photo, photoIndex) => {
             if (hits(box, photo)) overlaps.push(`control overlaps photo ${photoIndex + 1}`);
@@ -200,8 +203,8 @@ test("hero text stays off the photos at every width and slide", async ({ page })
           if (score < 4.5) contrastFails.push(`control ${control.getAttribute("aria-label") || control.innerText} ${score.toFixed(2)}`);
         }
 
-        for (const dot of document.querySelectorAll<HTMLElement>("[data-hero-controls] [role='tab']")) {
-          const mark = parse(getComputedStyle(dot, "::before").backgroundColor);
+        for (const dot of document.querySelectorAll<HTMLElement>("[data-hero-dots] > span")) {
+          const mark = parse(getComputedStyle(dot).backgroundColor);
           const bg = backing(dot);
           if (!mark) continue;
           const score = ratio(flatten(mark, bg), bg);
@@ -213,7 +216,7 @@ test("hero text stays off the photos at every width and slide", async ({ page })
         );
 
         const gutterFails: string[] = [];
-        const controls = document.querySelector("[data-hero-controls]");
+        const controls = document.querySelector("[data-hero-dots]");
         if (controls && window.innerWidth <= 440) {
           const buttons = [...controls.querySelectorAll<HTMLElement>("button")];
           buttons.forEach((button) => {
@@ -267,7 +270,7 @@ test("hero text stays off the photos at every width and slide", async ({ page })
         const dir = join(SHOT_DIR, String(viewport.width));
         mkdirSync(dir, { recursive: true });
         await page.mouse.move(0, 0);
-        await page.locator("[data-hero-controls]").evaluate((element) => {
+        await page.locator("[data-hero-dots]").evaluate((element) => {
           element.scrollIntoView({ block: "center", inline: "nearest" });
         });
         await page.screenshot({ path: join(dir, `slide-${slide + 1}.png`), fullPage: false });
@@ -275,13 +278,7 @@ test("hero text stays off the photos at every width and slide", async ({ page })
       }
     }
 
-    const pause = page.getByRole("button", { name: "Play" });
-    await expect(pause).toBeVisible();
-    const box = await pause.boundingBox();
-    expect(box && box.width >= 44 && box.height >= 44).toBeTruthy();
-    const arrow = page.getByRole("button", { name: "Next photo" });
-    await expect(arrow).toBeVisible();
-    const arrowBox = await arrow.boundingBox();
-    expect(arrowBox && arrowBox.width >= 44 && arrowBox.height >= 44).toBeTruthy();
+    await expect(page.locator("[data-hero-media] button")).toHaveCount(0);
+    await expect(page.locator("[data-hero-dots] > span")).toHaveCount(3);
   }
 });
