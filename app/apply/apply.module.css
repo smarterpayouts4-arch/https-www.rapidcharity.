@@ -40,3 +40,83 @@
   font-weight: 600;
   line-height: 1.45;
 }
+
+/* Compact scholarship cards: summary plus Read more / Apply, detail stays
+   on each scholarship page. Status card sits above them. */
+.page :global(.btn),
+.page :global(.btn-outline) {
+  min-height: 44px;
+}
+
+.cards {
+  display: grid;
+  gap: 1rem;
+  margin: 1.5rem 0 2rem;
+  min-width: 0;
+}
+
+.card {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 1rem 1.05rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  scroll-margin-top: 6rem;
+}
+
+.cardTitle {
+  margin: 0 0 0.55rem;
+  font-size: 1.15rem;
+  line-height: 1.3;
+}
+
+.page .cardTitle {
+  margin-top: 0;
+}
+
+.chipRow {
+  margin: 0 0 0.65rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-pill);
+  background: #FFE8EE;
+  color: #8B0A24;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.summary {
+  margin: 0 0 1rem;
+  color: var(--color-text-secondary);
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.actions a {
+  flex: 1 1 9rem;
+}
+
+@media (min-width: 900px) {
+  .cards {
+    gap: 1.1rem;
+  }
+  .card {
+    padding: 1.25rem 1.35rem;
+  }
+  .actions a {
+    flex: 0 1 auto;
+  }
+}

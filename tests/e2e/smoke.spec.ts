@@ -99,7 +99,7 @@ test.describe("navigation", () => {
 test.describe("external apply/donate hrefs (no submit)", () => {
   test("apply page scholarship form links", async ({ page }) => {
     await page.goto("/apply", { waitUntil: "domcontentloaded" });
-    const links = page.locator("a.text-link[href*='/apply?scholarship=']");
+    const links = page.locator("a.btn[href*='/apply?scholarship=']");
     await expect(links).toHaveCount(3);
     const hrefs = await links.evaluateAll((nodes) => nodes.map((node) => node.getAttribute("href")));
     expect(hrefs).toEqual([
@@ -186,11 +186,18 @@ test.describe("apply page chrome", () => {
     await expect(band).toBeVisible();
   });
 
-  test("apply CTAs are underlined text links not pills", async ({ page }) => {
+  test("apply scholarship cards have filled Apply and outline Read more actions", async ({ page }) => {
     await page.goto("/apply", { waitUntil: "domcontentloaded" });
-    const links = page.locator("a.text-link[href*='/apply?scholarship=']");
-    await expect(links).toHaveCount(3);
-    await expect(page.locator("a.btn[href*='/apply']")).toHaveCount(0);
+    const applyLinks = page.locator("a.btn[href*='/apply?scholarship=']");
+    await expect(applyLinks).toHaveCount(3);
+    const readMore = page.locator("a.btn-outline");
+    await expect(readMore).toHaveCount(3);
+    const detailHrefs = await readMore.evaluateAll((nodes) => nodes.map((node) => node.getAttribute("href")));
+    expect(detailHrefs).toEqual([
+      "/general-8",
+      "/robert-mathais-scholarship",
+      "/ivy-azariah-scholarship",
+    ]);
     await expect(page.locator("a.btn[href*='docs.google.com/forms']")).toHaveCount(0);
   });
 

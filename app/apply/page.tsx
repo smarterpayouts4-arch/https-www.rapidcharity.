@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { ContentLink } from "@/components/ContentLink";
-import { deadlineFact } from "@/components/apply/LandingBody";
-import { ReadableParagraph } from "@/components/content/Guide";
-import { ScholarshipStory } from "@/components/apply/ScholarshipStory";
 import { DraftNotice } from "@/components/apply/DraftNotice";
+import { ApplicationCard } from "@/components/home/ApplicationCard";
 import { DeadlineBand } from "@/components/DeadlineBand";
 import { PreviewBanner } from "@/components/PreviewBanner";
 import { ShareRow } from "@/components/ShareRow";
@@ -12,34 +9,32 @@ import { isScholarshipId } from "@/lib/application/constants";
 import { DEMO_PARAM, demoKeyMatches, sampleModeAllowed } from "@/lib/application/mockGate";
 import { TESTING_BANNER_TEXT, testingModeFromEnv } from "@/lib/application/testingMode";
 import { findMock } from "@/lib/application/mocks";
-import { deadlineBandItems, deadlineCycleItems, type ScholarshipId } from "@/lib/application/intakes";
+import { deadlineBandItems } from "@/lib/application/intakes";
 import { loadSiteContent, resolvePreview } from "@/lib/content";
 import { site } from "@/lib/site";
 import styles from "./apply.module.css";
 
-const PROGRAM_FACTS: Record<string, { who: string; eligibility: string; covers: string }> = {
-  "john-ivy": {
-    who: "This scholarship aims to support students in various fields of study, encouraging academic excellence and providing financial assistance to those in need.",
-    eligibility: "The John-Ivy Azariah Scholarship is open to all students except those pursuing a business degree.",
-    covers: "Providing financial assistance to those in need.",
-  },
-  "robert-mathais": {
-    who: "The Robert Mathais Scholarship is specifically for students enrolled in business programs.",
-    eligibility: "This scholarship is intended to support future business leaders, providing them with the resources they need to succeed in their academic and professional endeavors.",
-    covers: "Providing them with the resources they need to succeed in their academic and professional endeavors.",
-  },
-  "ivy-azariah": {
-    who: "Ivy Azariah Scholarship (for Women only).",
-    eligibility: "For our wonderful grandmother we would like to give this award to an individual that is not looking for just making themselves better but how they could be an important part in the development of others as true success can be measured by the skills that can be passed from generation to generation.",
-    covers: "Ivy Azariah believed these qualities were the true measure of success: 1) respect for God, your family and yourself, 2) education and 3) discipline.",
-  },
+const PROGRAM_CARDS: Record<string, { chip: string; detailHref: string }> = {
+  "john-ivy": { chip: "All fields except business", detailHref: "/general-8" },
+  "robert-mathais": { chip: "Business students", detailHref: "/robert-mathais-scholarship" },
+  "ivy-azariah": { chip: "Women only", detailHref: "/ivy-azariah-scholarship" },
 };
 
-const PROGRAM_SCHOLARSHIP: Record<string, ScholarshipId> = {
-  "john-ivy": "john-ivy-azariah",
-  "robert-mathais": "robert-mathias",
-  "ivy-azariah": "ivy-azariah",
-};
+function cardTitle(heading: string): string {
+  return heading.replace(/^\d+\.\s*/, "").replace(/\s*\([^)]*\)\s*$/, "");
+}
+
+function cardSummary(body: string): string {
+  const sentences = body.replace(/^Ivy Azariah Scholarship:\s*/, "").split(/(?<=\.)\s+/).filter(Boolean);
+  const picked: string[] = [];
+  for (const sentence of sentences) {
+    if (picked.length > 0 && picked.join(" ").length + sentence.length > 220) break;
+    picked.push(sentence);
+    if (picked.length === 2) break;
+  }
+  return picked.join(" ");
+}
+
 
 export const metadata: Metadata = { title: "Apply" , alternates: { canonical: `${site.url}/apply` } };
 
@@ -85,31 +80,35 @@ export default async function ApplyPage({
           </p>
           <DraftNotice />
 
-          {apply.programs.map((prog) => {
-            const facts = PROGRAM_FACTS[prog.id];
-            const intro = prog.body.split(/(?<=\.)\s/)[0] ?? prog.body;
-            return (
-              <div key={prog.id} data-reveal>
-                <h2>{prog.heading}</h2>
-                <ScholarshipStory
-                  intro={intro}
-                  facts={[
-                    { label: "Who it's for", text: facts?.who ?? intro },
-                    { label: "Eligibility", text: facts?.eligibility ?? prog.heading },
-                    { label: "What it covers", text: facts?.covers ?? intro },
-                    deadlineFact(deadlineCycleItems(content.intakes, PROGRAM_SCHOLARSHIP[prog.id])),
-                  ]}
-                >
-                  <ReadableParagraph text={prog.body} />
-                </ScholarshipStory>
-                <p>
-                  <ContentLink className="text-link" href={prog.applyHref}>
-                    {prog.applyLabel}
-                  </ContentLink>
-                </p>
-              </div>
-            );
-          })}
+          <ApplicationCard content={content.applicationCard} intakes={content.intakes} />
+
+          <div className={styles.cards}>
+            {apply.programs.map((prog) => {
+              const card = PROGRAM_CARDS[prog.id];
+              const title = cardTitle(prog.heading);
+              return (
+                <article key={prog.id} id={prog.id} className={styles.card} data-reveal>
+                  <h2 className={styles.cardTitle}>{title}</h2>
+                  {card ? (
+                    <p className={styles.chipRow}>
+                      <span className={styles.chip}>{card.chip}</span>
+                    </p>
+                  ) : null}
+                  <p className={styles.summary}>{cardSummary(prog.body)}</p>
+                  <div className={styles.actions}>
+                    {card ? (
+                      <a className="btn-outline btn-sm" href={card.detailHref} aria-label={`Read more about ${title}`}>
+                        Read more
+                      </a>
+                    ) : null}
+                    <a className="btn btn-sm" href={prog.applyHref} aria-label={prog.applyLabel}>
+                      Apply
+                    </a>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
 
           <p>{apply.closing}</p>
           <p>
