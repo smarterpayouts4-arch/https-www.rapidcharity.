@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import styles from "@/app/apply/form/form.module.css";
-import { EDUCATION_QUALIFICATIONS, EDUCATION_STATUSES, MAX_EDUCATION_ROWS } from "@/lib/application/constants";
+import { BOARDS, EDUCATION_QUALIFICATIONS, EDUCATION_STATUSES, MAX_EDUCATION_ROWS } from "@/lib/application/constants";
 import { emptyEducationRow } from "@/lib/application/empty";
 import { isLocalSampleDocument } from "@/lib/application/sampleDocuments";
 import type { DocumentInput, EducationRow } from "@/lib/application/types";
@@ -227,6 +227,7 @@ export function EducationRows({
               field={`${base}.board`}
               error={visible(`${base}.board`)}
               placeholder="e.g. BISE Lahore, Punjab University"
+              list="board-options"
               onChange={(value) => update(index, { board: value })}
             />
             <SegmentedField
@@ -294,6 +295,11 @@ export function EducationRows({
           </article>
         );
       })}
+      <datalist id="board-options">
+        {BOARDS.map((board) => (
+          <option key={board} value={board} />
+        ))}
+      </datalist>
       {rows.length < MAX_EDUCATION_ROWS ? (
         <button
           type="button"

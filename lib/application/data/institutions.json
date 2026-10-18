@@ -1,0 +1,1009 @@
+{
+ "version": "2026-10-18",
+ "source": "schools.json + mapping-present/previous-institution.csv + Scholarship-Normalization-Map InstitutionAliases",
+ "options": [
+  {
+   "id": "abasyn_university_peshawar",
+   "label": "Abasyn University, Peshawar",
+   "type": "university",
+   "city": "Peshawar",
+   "aliases": [
+    "Abasyn University, Peshawar Campus"
+   ]
+  },
+  {
+   "id": "al_ain_institute_of_medical_sciences_gujranwala",
+   "label": "Al-Ain Institute of Medical Sciences, Gujranwala",
+   "type": "institute",
+   "city": "Gujranwala",
+   "aliases": [
+    "Al- Ain Institute of Medical science."
+   ]
+  },
+  {
+   "id": "allama_iqbal_open_university",
+   "label": "Allama Iqbal Open University",
+   "type": "university",
+   "city": "",
+   "aliases": [
+    "Open University"
+   ]
+  },
+  {
+   "id": "alliant_college_of_professional_studies_acps",
+   "label": "Alliant College of Professional Studies (ACPS)",
+   "type": "college",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "askari_institute_of_health_sciences",
+   "label": "Askari Institute of Health Sciences",
+   "type": "institute",
+   "city": "",
+   "aliases": [
+    "Askari Institue Of Health Sciences"
+   ]
+  },
+  {
+   "id": "bahria_university",
+   "label": "Bahria University",
+   "type": "university",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "bannu_medical_college",
+   "label": "Bannu Medical College",
+   "type": "college",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "barki_college_and_university",
+   "label": "Barki College and University",
+   "type": "university",
+   "city": "",
+   "aliases": [
+    "Barki College & University",
+    "Barki College & University peshawar"
+   ]
+  },
+  {
+   "id": "beaconhouse_national_university_lahore",
+   "label": "Beaconhouse National University, Lahore",
+   "type": "university",
+   "city": "Lahore",
+   "aliases": [
+    "BeaconHouse National University"
+   ]
+  },
+  {
+   "id": "beaconhouse_school_system",
+   "label": "Beaconhouse School System",
+   "type": "school",
+   "city": "",
+   "aliases": [
+    "Beaconhouse College Program - Margalla Islamabad",
+    "Beaconhouse Defense Campus, Lahore"
+   ]
+  },
+  {
+   "id": "cecos_university_of_it_and_emerging_sciences_peshawar",
+   "label": "CECOS University of IT and Emerging Sciences, Peshawar",
+   "type": "university",
+   "city": "Peshawar",
+   "aliases": [
+    "CECOS University of IT and emerging Sciences",
+    "cecos university"
+   ]
+  },
+  {
+   "id": "city_university_of_science_and_information_technology_peshaw",
+   "label": "City University of Science and Information Technology, Peshawar",
+   "type": "university",
+   "city": "Peshawar",
+   "aliases": [
+    "City University of science & information technology",
+    "City university of science and information technology"
+   ]
+  },
+  {
+   "id": "cleveland_state_university_usa",
+   "label": "Cleveland State University (USA)",
+   "type": "university",
+   "city": "",
+   "aliases": [
+    "Cleveland State University"
+   ]
+  },
+  {
+   "id": "college_of_nursing_christian_hospital_quetta",
+   "label": "College of Nursing, Christian Hospital, Quetta",
+   "type": "college",
+   "city": "Quetta",
+   "aliases": [
+    "College of Nursing, Christian Hospital, Quetta affiliated with Bolan University of Medical and Health Sciences",
+    "College of Nursing, Christian Hospital, Quetta affiliated with Bolan University of Medical and Health Sciences (BUMHS)"
+   ]
+  },
+  {
+   "id": "convent_of_jesus_and_mary",
+   "label": "Convent of Jesus and Mary",
+   "type": "institute",
+   "city": "",
+   "aliases": [
+    "School: Convent of Jesus and Mary, Lahore"
+   ]
+  },
+  {
+   "id": "crescent_college_of_accountancy",
+   "label": "Crescent College of Accountancy",
+   "type": "college",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "ecole_law_college_hyderabad",
+   "label": "Ecole Law College, Hyderabad",
+   "type": "college",
+   "city": "Hyderabad",
+   "aliases": []
+  },
+  {
+   "id": "edwardes_college_peshawar",
+   "label": "Edwardes College, Peshawar",
+   "type": "college",
+   "city": "Peshawar",
+   "aliases": [
+    "Edward college"
+   ]
+  },
+  {
+   "id": "faran_boys_higher_secondary_school_pirmahal",
+   "label": "Faran Boys Higher Secondary School, Pirmahal",
+   "type": "school",
+   "city": "Pirmahal",
+   "aliases": [
+    "Faran Boys Higher Secondary School"
+   ]
+  },
+  {
+   "id": "farkhanda_institute_of_nursing_and_public_health_peshawar",
+   "label": "Farkhanda Institute of Nursing and Public Health, Peshawar",
+   "type": "institute",
+   "city": "Peshawar",
+   "aliases": [
+    "Farkhanda Institute of Nursing and Public Health, Gandhara University"
+   ]
+  },
+  {
+   "id": "fatima_jinnah_women_university",
+   "label": "Fatima Jinnah Women University",
+   "type": "university",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "fazaia_college_peshawar",
+   "label": "Fazaia College, Peshawar",
+   "type": "college",
+   "city": "Peshawar",
+   "aliases": [
+    "FAZAIA COLLEGE OF EDUCATION FOR WOMEN PESHAWAR",
+    "Fazaia Degree Collage Peshawar .",
+    "Fazaia inter college Peshawar",
+    "Fazaia inter college Peshawar cantt",
+    "fazaia inter college Peshawar"
+   ]
+  },
+  {
+   "id": "federal_urdu_university_of_arts_science_and_technology_fuuas",
+   "label": "Federal Urdu University of Arts, Science and Technology (FUUAST)",
+   "type": "university",
+   "city": "Science and Technology (FUUAST)",
+   "aliases": []
+  },
+  {
+   "id": "forman_christian_college_a_chartered_university_lahore",
+   "label": "Forman Christian College (A Chartered University), Lahore",
+   "type": "university",
+   "city": "Lahore",
+   "aliases": [
+    "Current university = Forman christian college and a chartered university",
+    "FC",
+    "FC College",
+    "FC College (A Chartered University), Lahore",
+    "FC College Lahore",
+    "FCC",
+    "FCCU",
+    "Forman",
+    "Forman Chirstain college and chartered university",
+    "Forman Christian College",
+    "Forman Christian College ( A Charted University)",
+    "Forman Christian College ( Charted University )",
+    "Forman Christian College ( Chartered University )",
+    "Forman Christian College (A Chartered University)",
+    "Forman Christian College (A Chartered University).",
+    "Forman Christian College Lahore",
+    "Forman Christian College Univerisity",
+    "Forman Christian College University",
+    "Forman Christian College University Lahore",
+    "Forman Christian College University(FCCU)",
+    "Forman Christian College University, Lahore",
+    "Forman Christian College a Chartered University",
+    "Forman Christian College a charted university",
+    "Forman Christian College and University",
+    "Forman Christian College and university ( Fc College)",
+    "Forman Christian College, University, Lahore",
+    "Forman Christian chartered university",
+    "Forman Christian college",
+    "Forman Christian college ( A charted university)",
+    "Forman Christian college a chartered university",
+    "Previous college= Forman christian college",
+    "School: Cathedral High School, No.4 College: Forman Christian College",
+    "University: Forman Christian College"
+   ],
+   "exportGroup": "FCCU"
+  },
+  {
+   "id": "foundation_university_islamabad",
+   "label": "Foundation University Islamabad",
+   "type": "university",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "ghulam_ishaq_khan_institute_of_engineering_sciences_and_tech",
+   "label": "Ghulam Ishaq Khan Institute of Engineering Sciences and Technology (GIKI)",
+   "type": "institute",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "government_college_of_nursing_khyber_teaching_hospital_pesha",
+   "label": "Government College of Nursing, Khyber Teaching Hospital, Peshawar",
+   "type": "college",
+   "city": "Peshawar",
+   "aliases": [
+    "Gcon KTH Peshawar",
+    "Government College Of Nursing KTH Peshawar.",
+    "Government College Of Nursing, KTH Peshawar"
+   ]
+  },
+  {
+   "id": "government_college_university_faisalabad",
+   "label": "Government College University Faisalabad",
+   "type": "university",
+   "city": "",
+   "aliases": [
+    "GC University Fasilabad",
+    "GCUF",
+    "Govt Collage university Faisalabad",
+    "Govt College University Faisalabad",
+    "Govt College University Faisalabad.",
+    "Govt collage university Faisalabad"
+   ]
+  },
+  {
+   "id": "government_girls_degree_college_bacha_khan_peshawar",
+   "label": "Government Girls Degree College Bacha Khan, Peshawar",
+   "type": "college",
+   "city": "Peshawar",
+   "aliases": [
+    "College: Government Girls Degree College Bacha Khan Kohat Road Peshawar.",
+    "GGDC Bacha Khan",
+    "Government Girls degrees College, Bacha Khan Kohat Road Peshawar.",
+    "Govt girls degree college bacha khan kohat road peshawar"
+   ]
+  },
+  {
+   "id": "government_graduate_college_for_women_city_unspecified",
+   "label": "Government Graduate College for Women (city unspecified)",
+   "type": "college",
+   "city": "",
+   "aliases": [
+    "Government Graduate College for Women",
+    "Government Graduate college for women Model town Lahore",
+    "Government Graduate women college Jhang sadar",
+    "Government graduate college for women model town E block",
+    "Government graduate college for women model town, Lahore",
+    "Govt Graduate collage for women"
+   ]
+  },
+  {
+   "id": "grace_neil_institute_rawalpindi",
+   "label": "Grace Neil Institute, Rawalpindi",
+   "type": "institute",
+   "city": "Rawalpindi",
+   "aliases": [
+    "Grace Neil institute Chandni Chowk Rawalpindi",
+    "Grace Niels institute Chandni Chowk Rawalpindi"
+   ]
+  },
+  {
+   "id": "hayatabad_institute_of_medical_sciences_hims_peshawar",
+   "label": "Hayatabad Institute of Medical Sciences (HIMS), Peshawar",
+   "type": "institute",
+   "city": "Peshawar",
+   "aliases": [
+    "HIMS college of nursing",
+    "Hayatabad institute of medical sciences"
+   ]
+  },
+  {
+   "id": "heart_institute_of_nursing_and_health_sciences",
+   "label": "Heart Institute of Nursing and Health Sciences",
+   "type": "institute",
+   "city": "",
+   "aliases": [
+    "Heart institute of nursing and health science"
+   ]
+  },
+  {
+   "id": "horizon_institute_of_health_sciences_hassan_abdal",
+   "label": "Horizon Institute of Health Sciences, Hassan Abdal",
+   "type": "institute",
+   "city": "Hassan Abdal",
+   "aliases": [
+    "Wah college of accountancy and science - WCA / Horizon institute of Health Sciences HC"
+   ]
+  },
+  {
+   "id": "institute_of_chartered_accountants_of_pakistan_icap",
+   "label": "Institute of Chartered Accountants of Pakistan (ICAP)",
+   "type": "institute",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "inter_boys_college_quetta",
+   "label": "Inter Boys College, Quetta",
+   "type": "college",
+   "city": "Quetta",
+   "aliases": [
+    "Inter Boys College, Brewery Road Quetta.",
+    "Inter Boys College, Brewery Road, Quetta"
+   ]
+  },
+  {
+   "id": "iqra_national_university_peshawar",
+   "label": "Iqra National University, Peshawar",
+   "type": "university",
+   "city": "Peshawar",
+   "aliases": [
+    "Iqra National University",
+    "Iqra National University of Peshawar",
+    "SCHOOL OF NURSING IQRA NATIONAL UNIVERSITY PESHAWAR"
+   ]
+  },
+  {
+   "id": "iqra_university",
+   "label": "Iqra University",
+   "type": "university",
+   "city": "",
+   "aliases": [
+    "IQRA University North Campus",
+    "Iqra University H-9 Campus"
+   ]
+  },
+  {
+   "id": "islamabad_model_college_for_girls_f_7_4_islamabad",
+   "label": "Islamabad Model College for Girls F-7/4, Islamabad",
+   "type": "college",
+   "city": "Islamabad",
+   "aliases": [
+    "IMCG F-7/4 Islamabad"
+   ]
+  },
+  {
+   "id": "islamia_university_of_bahawalpur",
+   "label": "The Islamia University of Bahawalpur",
+   "type": "university",
+   "city": "",
+   "aliases": [
+    "Islamia University Bahawalpur",
+    "Islamia University of Bahawalpur"
+   ]
+  },
+  {
+   "id": "jinnah_college_for_women_peshawar",
+   "label": "Jinnah College for Women, Peshawar",
+   "type": "college",
+   "city": "Peshawar",
+   "aliases": [
+    "Jinnah College for Women"
+   ]
+  },
+  {
+   "id": "jinnah_university_for_women_karachi",
+   "label": "Jinnah University for Women, Karachi",
+   "type": "university",
+   "city": "Karachi",
+   "aliases": [
+    "Jinnah University for Women"
+   ]
+  },
+  {
+   "id": "kbcma_college_of_veterinary_and_animal_sciences_narowal",
+   "label": "KBCMA College of Veterinary and Animal Sciences, Narowal",
+   "type": "college",
+   "city": "Narowal",
+   "aliases": [
+    "KBCMA CVAS Narowal",
+    "KBCMA CVAS Narowal ,UVAS Lahore",
+    "KBCMA CVAS Narowal UVAS Lahore",
+    "KBCMA CVAS Narowal, UVAS Lahore",
+    "KBCMA Cvas Narowal"
+   ]
+  },
+  {
+   "id": "khyber_medical_university_kmu_peshawar",
+   "label": "Khyber Medical University (KMU), Peshawar",
+   "type": "university",
+   "city": "Peshawar",
+   "aliases": [
+    "KHYBER MEDICAL UNIVERSITY PESHAWAR",
+    "KMU IHS Mardan",
+    "Khyber Medical University",
+    "WISDOM HOUSE PUBLIC SCHOOL LALAZAR PESHAWAR/CAPITAL DEGREE COLLEGE PESHAWAR/KHYBER MEDICAL UNIVERSITY"
+   ]
+  },
+  {
+   "id": "kinnaird_college_for_women_university_lahore",
+   "label": "Kinnaird College for Women University, Lahore",
+   "type": "university",
+   "city": "Lahore",
+   "aliases": [
+    "Cathedral High school Model town/ Kinnaird College",
+    "KC",
+    "Kinnaird",
+    "Kinnaird College",
+    "Kinnaird College For Women",
+    "Kinnaird College For Women University",
+    "Kinnaird College for Women",
+    "Kinnaird College for Women Univeristy",
+    "Kinnaird College for Women University",
+    "Kinnaird College for Women, University",
+    "Kinnaird College for Women.",
+    "Kinnaird College of Women University",
+    "Kinnaird college for Women",
+    "Kinnaird college for Women University",
+    "Kinnaird college for women"
+   ],
+   "exportGroup": "KC"
+  },
+  {
+   "id": "kmu_institute_of_health_sciences_swabi",
+   "label": "KMU Institute of Health Sciences, Swabi",
+   "type": "institute",
+   "city": "Swabi",
+   "aliases": []
+  },
+  {
+   "id": "lahore_college_for_women_university",
+   "label": "Lahore College for Women University",
+   "type": "university",
+   "city": "",
+   "aliases": [
+    "LCWU",
+    "Lahore College for Women University, Lahore"
+   ]
+  },
+  {
+   "id": "lahore_grammar_school",
+   "label": "Lahore Grammar School",
+   "type": "school",
+   "city": "",
+   "aliases": [
+    "Lahore Grammar School Johar Town International"
+   ]
+  },
+  {
+   "id": "mehran_university_of_engineering_and_technology",
+   "label": "Mehran University of Engineering and Technology",
+   "type": "university",
+   "city": "",
+   "aliases": [
+    "Muet",
+    "mehran university",
+    "muet jamshoro"
+   ]
+  },
+  {
+   "id": "mehreen_institute_of_nursing_and_allied_health_sciences",
+   "label": "Mehreen Institute of Nursing and Allied Health Sciences",
+   "type": "institute",
+   "city": "",
+   "aliases": [
+    "Mehreen Institute Of Nursing And Allied Health Science"
+   ]
+  },
+  {
+   "id": "misali_zakariya_group_of_schools_colleges",
+   "label": "Misali Zakariya Group of Schools & Colleges",
+   "type": "college",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "mok_school_of_law_lahore",
+   "label": "MOK School of Law, Lahore",
+   "type": "school",
+   "city": "Lahore",
+   "aliases": [
+    "Mok School of Law"
+   ]
+  },
+  {
+   "id": "national_college_of_arts_lahore",
+   "label": "National College of Arts, Lahore",
+   "type": "college",
+   "city": "Lahore",
+   "aliases": [
+    "National College of Arts"
+   ]
+  },
+  {
+   "id": "national_college_of_business_administration_and_economics_nc",
+   "label": "National College of Business Administration and Economics (NCBA&E)",
+   "type": "college",
+   "city": "",
+   "aliases": [
+    "NCBA&E (National College of Business Administration and Economics)"
+   ]
+  },
+  {
+   "id": "national_university_of_modern_languages_numl",
+   "label": "National University of Modern Languages (NUML)",
+   "type": "university",
+   "city": "",
+   "aliases": [
+    "NUML"
+   ]
+  },
+  {
+   "id": "national_university_of_sciences_and_technology_nust",
+   "label": "National University of Sciences and Technology (NUST)",
+   "type": "university",
+   "city": "",
+   "aliases": [
+    "NUST"
+   ]
+  },
+  {
+   "id": "new_international_college_of_nursing_and_health_sciences_lah",
+   "label": "New International College of Nursing and Health Sciences, Lahore",
+   "type": "college",
+   "city": "Lahore",
+   "aliases": [
+    "New International College Of Nursing And Health Sciences",
+    "New International College of Nursing and health Sciences",
+    "The International College of Nursing and health Sciences",
+    "The new International College of Nursing and health Sciences"
+   ]
+  },
+  {
+   "id": "nfc_institute_of_engineering_and_fertilizer_research_faisala",
+   "label": "NFC Institute of Engineering and Fertilizer Research, Faisalabad",
+   "type": "institute",
+   "city": "Faisalabad",
+   "aliases": [
+    "NFC IE&FR, Faisalabad"
+   ]
+  },
+  {
+   "id": "nur_international_university",
+   "label": "NUR International University",
+   "type": "university",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "nursing_college_hitec_ims_taxila",
+   "label": "Nursing College HITEC-IMS, Taxila",
+   "type": "college",
+   "city": "Taxila",
+   "aliases": []
+  },
+  {
+   "id": "obaid_noor_institute_of_medical_sciences",
+   "label": "Obaid Noor Institute of Medical Sciences",
+   "type": "institute",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "pak_turk_maarif_international_schools_colleges",
+   "label": "Pak-Turk Maarif International Schools & Colleges",
+   "type": "college",
+   "city": "",
+   "aliases": [
+    "Pak Turk Maarif"
+   ]
+  },
+  {
+   "id": "peace_institute_of_nursing_and_health_sciences_karachi",
+   "label": "Peace Institute of Nursing and Health Sciences, Karachi",
+   "type": "institute",
+   "city": "Karachi",
+   "aliases": [
+    "Peace institute of nursing and health sciences"
+   ]
+  },
+  {
+   "id": "pef_university_college_peshawar",
+   "label": "PEF University College, Peshawar",
+   "type": "university",
+   "city": "Peshawar",
+   "aliases": [
+    "Edwards College School Wing II / Pef University College Peshawar/ City University Peshawar",
+    "PEF University College",
+    "PEF college",
+    "PEF university college",
+    "Pef college (Post graduate college)",
+    "Peshawar Education Foundation college peshawar"
+   ]
+  },
+  {
+   "id": "pmas_arid_agriculture_university_rawalpindi",
+   "label": "PMAS Arid Agriculture University, Rawalpindi",
+   "type": "university",
+   "city": "Rawalpindi",
+   "aliases": [
+    "PMAS Arid Agriculture University",
+    "PMAS Arid agriculture Univetsity"
+   ]
+  },
+  {
+   "id": "premier_institute_of_nursing_sciences_peshawar",
+   "label": "Premier Institute of Nursing Sciences, Peshawar",
+   "type": "institute",
+   "city": "Peshawar",
+   "aliases": [
+    "Premier Institute of the nursing sciences Peshawar"
+   ]
+  },
+  {
+   "id": "prime_institute_of_health_sciences_pihs",
+   "label": "Prime Institute of Health Sciences (PIHS)",
+   "type": "institute",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "prime_institute_of_health_sciences_pihs_islamabad",
+   "label": "Prime Institute of Health Sciences (PIHS), Islamabad",
+   "type": "institute",
+   "city": "Islamabad",
+   "aliases": []
+  },
+  {
+   "id": "professional_academy_of_commerce",
+   "label": "Professional Academy of Commerce",
+   "type": "institute",
+   "city": "",
+   "aliases": [
+    "PAC (Professional Academy of Commerce)",
+    "Professional Academy of Commerce Peshawar"
+   ]
+  },
+  {
+   "id": "punjab_group_of_colleges_pgc",
+   "label": "Punjab Group of Colleges (PGC)",
+   "type": "college",
+   "city": "",
+   "aliases": [
+    "Punjab College",
+    "Punjab College Campus 8",
+    "Punjab College Johar Town Lahore",
+    "Punjab Colleges Lahore \"Ayubia Market Campus # 16\"",
+    "Punjab Group Of Colleges",
+    "Punjab Group of College",
+    "Punjab Group of College Gujranwala",
+    "Punjab Group of College Women",
+    "Punjab Group of Colleges",
+    "Punjab Group of Colleges Okara",
+    "Punjab Group of college phool nagar",
+    "Punjab Group of colleges",
+    "Punjab Group of colleges Nankana Sahib",
+    "Punjab college",
+    "Punjab college daska",
+    "Punjab college for women",
+    "Punjab college for women Sargodha",
+    "Punjab college group of colleges",
+    "Punjab college,ayub park campus",
+    "Punjab group of college Sub-campus Pirmahal",
+    "Punjab group of college for women jaranwala road faisalabad",
+    "punjab group of colleges"
+   ]
+  },
+  {
+   "id": "qurtuba_university_of_science_and_it",
+   "label": "Qurtuba University of Science and IT",
+   "type": "university",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "rawal_college_of_nursing_islamabad",
+   "label": "Rawal College of Nursing, Islamabad",
+   "type": "college",
+   "city": "Islamabad",
+   "aliases": [
+    "RAWAL COLLEGE OF NURSING",
+    "Rawal college of Nursing",
+    "current studying in RAWAL COLLEGE OF NURSING"
+   ]
+  },
+  {
+   "id": "rehman_medical_institute_rmi_peshawar",
+   "label": "Rehman Medical Institute (RMI), Peshawar",
+   "type": "institute",
+   "city": "Peshawar",
+   "aliases": [
+    "Rehman Medical Institute (RMI)"
+   ]
+  },
+  {
+   "id": "riphah_international_university",
+   "label": "Riphah International University",
+   "type": "university",
+   "city": "",
+   "aliases": [
+    "RIPHAH INTERNATIONAL UNIVERSTY LAHORE"
+   ]
+  },
+  {
+   "id": "roots_ivy_international_schools",
+   "label": "Roots IVY International Schools",
+   "type": "school",
+   "city": "",
+   "aliases": [
+    "Roots IVY"
+   ]
+  },
+  {
+   "id": "saifee_burhani_college_of_nursing",
+   "label": "Saifee Burhani College of Nursing",
+   "type": "college",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "sargodha_medical_college",
+   "label": "Sargodha Medical College",
+   "type": "college",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "sarhad_university_of_science_and_it_peshawar",
+   "label": "Sarhad University of Science and IT, Peshawar",
+   "type": "university",
+   "city": "Peshawar",
+   "aliases": [
+    "Sarhad University Peshawar"
+   ]
+  },
+  {
+   "id": "school_of_health_sciences_peshawar",
+   "label": "School of Health Sciences, Peshawar",
+   "type": "school",
+   "city": "Peshawar",
+   "aliases": []
+  },
+  {
+   "id": "shaheed_benazir_bhutto_university_lyari_karachi",
+   "label": "Shaheed Benazir Bhutto University, Lyari, Karachi",
+   "type": "university",
+   "city": "Karachi",
+   "aliases": [
+    "Benazir Bhutto Shaheed University Lyari Karachi",
+    "Benazir bhutto Shaheeed University Lyari, Karachi"
+   ]
+  },
+  {
+   "id": "shaheed_mohtarma_benazir_bhutto_medical_college_lyari",
+   "label": "Shaheed Mohtarma Benazir Bhutto Medical College, Lyari",
+   "type": "college",
+   "city": "Lyari",
+   "aliases": []
+  },
+  {
+   "id": "shaheed_zulfiqar_ali_bhutto_medical_university",
+   "label": "Shaheed Zulfiqar Ali Bhutto Medical University",
+   "type": "university",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "shaheed_zulfiqar_ali_bhutto_medical_university_pims_islamaba",
+   "label": "Shaheed Zulfiqar Ali Bhutto Medical University (PIMS), Islamabad",
+   "type": "university",
+   "city": "Islamabad",
+   "aliases": [
+    "SCHOOL OF NURSING, PIMS ISLAMABAD",
+    "School of Nursing PIMS Islamabad",
+    "Szabmu PIMS"
+   ]
+  },
+  {
+   "id": "shifa_tameer_e_millat_university",
+   "label": "Shifa Tameer-e-Millat University",
+   "type": "university",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "sk_royal_college_of_nursing_lahore",
+   "label": "SK Royal College of Nursing, Lahore",
+   "type": "college",
+   "city": "Lahore",
+   "aliases": [
+    "SK ROYAL COLLEGE OF NURSUNG",
+    "Sk Royal college for nursing."
+   ]
+  },
+  {
+   "id": "skans_school_of_accountancy",
+   "label": "SKANS School of Accountancy",
+   "type": "school",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "st_mary_s_academy",
+   "label": "St. Mary's Academy",
+   "type": "institute",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "superior_group_of_colleges",
+   "label": "Superior Group of Colleges",
+   "type": "college",
+   "city": "",
+   "aliases": [
+    "Superior Group Of Colleges Peshawar",
+    "Superior college"
+   ]
+  },
+  {
+   "id": "superior_university_lahore",
+   "label": "The Superior University, Lahore",
+   "type": "university",
+   "city": "Lahore",
+   "aliases": [
+    "Superior university Lahore",
+    "Superior university lahore",
+    "THE SUPERIOR UNIVERSTY LAHORE"
+   ]
+  },
+  {
+   "id": "szabist_university",
+   "label": "SZABIST University",
+   "type": "university",
+   "city": "",
+   "aliases": [
+    "Szabist Islamabad Campus",
+    "Szabist university Clifton Karachi",
+    "Szabist university, Hyderabad"
+   ]
+  },
+  {
+   "id": "unique_group_of_institutions",
+   "label": "Unique Group of Institutions",
+   "type": "institute",
+   "city": "",
+   "aliases": [
+    "Unique Group of Colleges"
+   ]
+  },
+  {
+   "id": "unique_science_academy",
+   "label": "Unique Science Academy",
+   "type": "institute",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "university_of_chenab",
+   "label": "The University of Chenab",
+   "type": "university",
+   "city": "",
+   "aliases": [
+    "University of Chenab",
+    "u o chenab gujrat",
+    "univercity of chenab gujrat"
+   ]
+  },
+  {
+   "id": "university_of_kamalia",
+   "label": "University of Kamalia",
+   "type": "university",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "university_of_lahore",
+   "label": "The University of Lahore",
+   "type": "university",
+   "city": "",
+   "aliases": [
+    "University Of Lahore",
+    "University of Lahore"
+   ]
+  },
+  {
+   "id": "university_of_okara",
+   "label": "University of Okara",
+   "type": "university",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "university_of_peshawar",
+   "label": "University of Peshawar",
+   "type": "university",
+   "city": "",
+   "aliases": [
+    "Peshawar University"
+   ]
+  },
+  {
+   "id": "university_of_sargodha",
+   "label": "University of Sargodha",
+   "type": "university",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "university_of_sindh",
+   "label": "University of Sindh",
+   "type": "university",
+   "city": "",
+   "aliases": [
+    "Department of Zoology, University of Sindh Jamshoro",
+    "University Of Sindh Jamshoro",
+    "University of Sindh Jamshoro",
+    "University of Sindh, Jamshoro",
+    "University of sindh Jamshoro"
+   ]
+  },
+  {
+   "id": "university_of_the_punjab_lahore",
+   "label": "University of the Punjab, Lahore",
+   "type": "university",
+   "city": "Lahore",
+   "aliases": [
+    "PU",
+    "Punjab University",
+    "Punjab University Lahore",
+    "School of Communication Studies, University of the Punjab, Lahore",
+    "The Punjab university",
+    "The Punjab university Lahore",
+    "University of the Punjab",
+    "University of the punjab"
+   ]
+  },
+  {
+   "id": "virtual_university_of_pakistan",
+   "label": "Virtual University of Pakistan",
+   "type": "university",
+   "city": "",
+   "aliases": []
+  },
+  {
+   "id": "wilderness_school_college_quetta",
+   "label": "Wilderness School & College, Quetta",
+   "type": "college",
+   "city": "Quetta",
+   "aliases": []
+  }
+ ],
+ "other": {
+  "id": "other",
+  "label": "Other (please specify)"
+ }
+}

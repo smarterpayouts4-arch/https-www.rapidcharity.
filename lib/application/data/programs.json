@@ -1,0 +1,1047 @@
+{
+ "version": "2026-10-18",
+ "source": "degrees.json programs + mapping-degree-program.csv + Scholarship-Normalization-Map ProgramAliases",
+ "programs": [
+  {
+   "id": "a_level",
+   "label": "A Level",
+   "degreeLevel": "intermediate",
+   "fieldOfStudy": "",
+   "aliases": [
+    "A levels"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "acca_qualification",
+   "label": "ACCA qualification",
+   "degreeLevel": "other",
+   "fieldOfStudy": "",
+   "aliases": [
+    "ACCA"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "associate_degree_in_computer_science",
+   "label": "Associate degree in Computer Science",
+   "degreeLevel": "other",
+   "fieldOfStudy": "",
+   "aliases": [
+    "A.D.S Computer Science"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "b_ed_bs_education",
+   "label": "B.Ed / BS Education",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "B.Ed.(Hons).",
+    "B.ed elementary",
+    "Bachelor Of Education (B.Ed)",
+    "Bachelor of Education (B.ED 1.5 Years)",
+    "Bs Education",
+    "Degree in Elementary education from IER department",
+    "Elementary education"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "ba_christian_studies",
+   "label": "BA Christian Studies",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "Bachelors in Christian Studies"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "ba_christian_studies_psychology",
+   "label": "BA Christian Studies & Psychology",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "Christian Studies and Psychology"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bachelor_international_relations",
+   "label": "Bachelor International Relations",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "Bachelors in International Relations"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bachelor_medical_imaging_sciences",
+   "label": "Bachelor Medical Imaging Sciences",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "Bachelors of Medical Imaging Sciences"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bachelor_of_business_administration",
+   "label": "Bachelor of Business Administration",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "business_administration",
+   "aliases": [
+    "BBA",
+    "BBA - H",
+    "Bachelor in Business Administration"
+   ],
+   "exportCategory": "business"
+  },
+  {
+   "id": "bachelor_of_science_in_computer_science",
+   "label": "Bachelor of Science in Computer Science",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "Bachelor's in Computer Science",
+    "Bachelors in Computer Science (Hons.)",
+    "Bachelors of Sciences in Computer Science"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bachelor_of_science_in_nursing_track_unspecified",
+   "label": "BS Nursing (BSN)",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "nursing",
+   "aliases": [
+    "BS Nursing",
+    "BS Nursing (BSN)",
+    "BS- Nursing",
+    "BS-nursing",
+    "BS. Nursing",
+    "BSN",
+    "BSN ( Bachelor's of Science in Nursing)",
+    "BSN 5th semster",
+    "Bachelor in Nursing",
+    "Bachelor of Science in Nursing",
+    "Bachelor of Science in Nursing (BSN)",
+    "Bachelor of science in nursing",
+    "Bachelor of science in nursing (BSN)",
+    "Bachelor science in nursing ( BSN)",
+    "Bachelors in Nursing",
+    "Bachelors in Science of Nursing",
+    "Bachelors of science in Nursing",
+    "Bachlor of Science in Nurisng",
+    "Ban gernic nursing",
+    "Bs Nursing",
+    "Bs nursing",
+    "Bs-Nursing",
+    "Generic BSN",
+    "bs in nursing",
+    "bs nursing"
+   ],
+   "exportCategory": "nursing"
+  },
+  {
+   "id": "bachelor_of_studies_in_business",
+   "label": "Bachelor of Studies in Business",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "BSB",
+    "Bachelors Studies Of Business",
+    "bachelors of studies in business BSB"
+   ],
+   "exportCategory": "business"
+  },
+  {
+   "id": "bachelor_of_studies_in_computer_science",
+   "label": "Bachelor of Studies in Computer Science",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bachelor_of_studies_mass_communication",
+   "label": "Bachelor of Studies Mass Communication",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "BST(Mass Communication)"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bachelor_political_science",
+   "label": "Bachelor Political Science",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "Bachelor of Political science"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bba",
+   "label": "BBA",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "business_administration",
+   "aliases": [
+    "Bachelor of Business Administration"
+   ],
+   "exportCategory": "business"
+  },
+  {
+   "id": "bcs_computer_science",
+   "label": "BCS Computer Science",
+   "degreeLevel": "other",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "be_electronic_engineering",
+   "label": "BE Electronic Engineering",
+   "degreeLevel": "other",
+   "fieldOfStudy": "",
+   "aliases": [
+    "B.E ELECTRONIC ENGINEERING"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "be_telecommunication",
+   "label": "BE Telecommunication",
+   "degreeLevel": "other",
+   "fieldOfStudy": "",
+   "aliases": [
+    "B.E Telecommunication"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bfa_textile",
+   "label": "BFA Textile",
+   "degreeLevel": "intermediate",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_adp_accounting_finance",
+   "label": "BS / ADP Accounting & Finance",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "ADP ( Accounting and finance)",
+    "Accounting and Finance",
+    "Associate Degree in Accounting and Finance",
+    "BS Accounting and Finance",
+    "Bachelors in Business with plan to specialize in Accounting & Finance"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_accounting_and_finance",
+   "label": "BS Accounting And Finance",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_ai",
+   "label": "BS Ai",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_anesthesia_technology",
+   "label": "BS Anesthesia Technology",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "BS ANESTHESIA"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_applied_psychology",
+   "label": "BS Applied Psychology",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_audiology",
+   "label": "BS Audiology",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_biblical_studies",
+   "label": "BS Biblical Studies",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_biotechnology",
+   "label": "BS Biotechnology",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "BS (Hons) Biotechnology",
+    "BS Biotechnology (BTC)",
+    "Biotechnology"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_business",
+   "label": "BS Business",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "business"
+  },
+  {
+   "id": "bs_business_bsb_bst",
+   "label": "BS Business (BSB/BST)",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "BS Business",
+    "BS Bussiness",
+    "BS.Business",
+    "BSB (Bachelor of Studies in Business)",
+    "BSB Business",
+    "BST",
+    "Bachelor of Business",
+    "Bachelor's in Business",
+    "Bachelor's in business",
+    "Bachelors in Business",
+    "Bachelors in Business BSB",
+    "Bachelors in Business Studies (BSB)",
+    "Bs Business Honors",
+    "Business"
+   ],
+   "exportCategory": "business"
+  },
+  {
+   "id": "bs_business_marketing",
+   "label": "BS Business (Marketing)",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "BS Marketing and Selling",
+    "Bs. Business (Marketing & Sales)",
+    "Business (Marketing & Sales)",
+    "online course of marketing"
+   ],
+   "exportCategory": "business"
+  },
+  {
+   "id": "bs_business_analytics",
+   "label": "BS Business Analytics",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "BST (Bachelor of Studies in Data Analytics)",
+    "Business Analytics"
+   ],
+   "exportCategory": "business"
+  },
+  {
+   "id": "bs_chemistry",
+   "label": "BS Chemistry",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_clinical_psychology",
+   "label": "BS Clinical Psychology",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_computer_engineering",
+   "label": "BS Computer Engineering",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_computer_science",
+   "label": "BS Computer Science",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "BCS",
+    "BCS Computer science",
+    "BS(CS)",
+    "Bachelor's In Computer Science"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_cyber_security",
+   "label": "BS Cyber Security",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "Cyber Security and Digital Forensics"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_data_analytics",
+   "label": "BS Data Analytics",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "BST (BS Data Analytics)"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_economics",
+   "label": "BS Economics",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "BS Economics (4 Year Program)",
+    "Bachelor in Economics",
+    "Bachelor's in economics"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_english",
+   "label": "BS English",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_english_in_languages_and_literature",
+   "label": "BS English In Languages And Literature",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_english_literature",
+   "label": "BS English Literature",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_food_science_human_nutrition",
+   "label": "BS Food Science & Human Nutrition",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "BS. Food Science and Nutirition",
+    "Food Science and Human Nutrition"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_food_science_and_human_nutrition",
+   "label": "BS Food Science And Human Nutrition",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_international_relations_political_science",
+   "label": "BS International Relations / Political Science",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "BS-International Relations",
+    "Bachelors in Political Science with specialization in International Relations"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_mass_communication_media",
+   "label": "BS Mass Communication / Media",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "Bachelors in Media and Development Communication",
+    "Mass Communication"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_medical_imaging_technology",
+   "label": "BS Medical Imaging Technology",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "BS Radiology",
+    "Bachelors Of Medical Imaging Sciences"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_microbiology",
+   "label": "BS Microbiology",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_psychology",
+   "label": "BS Psychology",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "Applied Psychology",
+    "Bachelor's in Psychology",
+    "Bachelor's in applied psychology.",
+    "Bachelors in Psychology",
+    "It will be psychology"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_public_administration",
+   "label": "BS Public Administration",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "Public Administration"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_sociology",
+   "label": "BS Sociology",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_software_engineering",
+   "label": "BS Software Engineering",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_zoology",
+   "label": "BS Zoology",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "BS (Hons) Zoology"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_mphil_chemistry",
+   "label": "BS/MPhil Chemistry",
+   "degreeLevel": "mphil",
+   "fieldOfStudy": "",
+   "aliases": [
+    "BS Chemistry",
+    "Bs chemistry",
+    "MPhil Chemistry"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_mphil_english_literature",
+   "label": "BS/MPhil English Literature",
+   "degreeLevel": "mphil",
+   "fieldOfStudy": "",
+   "aliases": [
+    "BA English",
+    "BS English Literature",
+    "Mphil English (Literature)"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_mphil_statistics",
+   "label": "BS/MPhil Statistics",
+   "degreeLevel": "mphil",
+   "fieldOfStudy": "",
+   "aliases": [
+    "MPhil Statistics",
+    "Statistics"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_ms_artificial_intelligence",
+   "label": "BS/MS Artificial Intelligence",
+   "degreeLevel": "master",
+   "fieldOfStudy": "",
+   "aliases": [
+    "Artificial Intelligence",
+    "Artificial Intelligence (AI)",
+    "MS Artificial Intelligence"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bs_ms_microbiology",
+   "label": "BS/MS Microbiology",
+   "degreeLevel": "master",
+   "fieldOfStudy": "",
+   "aliases": [
+    "BS Microbiology",
+    "MS | Microbiology and Molecular Genetics",
+    "Microbiology"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bsc_civil_engineering",
+   "label": "BSc Civil Engineering",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bsc_economics",
+   "label": "BSc Economics",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "bsn_generic",
+   "label": "BSN - Generic",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "nursing",
+   "aliases": [
+    "BS Nursing Generic",
+    "Bachelor of Generic Nursing",
+    "Bs Nursing Generic",
+    "GBSN",
+    "Generic BS Nursing",
+    "Generic BSN",
+    "Generic BSN 4-year"
+   ],
+   "exportCategory": "nursing"
+  },
+  {
+   "id": "bsn_post_rn",
+   "label": "BSN - Post RN",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "nursing",
+   "aliases": [
+    "Post RN",
+    "Post RN BSN",
+    "Post-RN BSN",
+    "Post-RN BSN 2-year"
+   ],
+   "exportCategory": "nursing"
+  },
+  {
+   "id": "bsn_generic_4_year",
+   "label": "BSN Generic (4-year)",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "nursing",
+   "aliases": [
+    "BS NURSING 2nd semester",
+    "BS Nursing",
+    "BS- Nursing",
+    "BS-Nursing",
+    "BSN",
+    "BSN ( Bachelor of Science in Nursing)",
+    "BSN ( Bachelor's of Science in Nursing)",
+    "BSN (bachelors of science in nursing)",
+    "BSN 7th semester",
+    "BSN Generic Nursing",
+    "BSN program currently doing",
+    "Bachelor of Science in Nursing (BSN)",
+    "Bachelor of nursing ( BSN )",
+    "Bachelor of science in nurisng",
+    "Bachelor of science in nursing",
+    "Bachelor of science in nursing.",
+    "Bachelor's In Science of Nursing",
+    "Bachelor's Of Science In Nursing",
+    "Bachelor's in Science of Nursing (BsN)",
+    "Bachelors in Science & Nursing",
+    "Bachelors in nursing",
+    "Bachelors of science in nursing",
+    "Bachlor of Science in Nursing",
+    "Ban gernic nursing 4 years degree",
+    "Bs NURSING",
+    "Bs Nursing",
+    "Bs nursing",
+    "Bs-NURSING",
+    "BsN( Bachelors in Science of Nursing)",
+    "GENERIC Nursing 4 years Degree program",
+    "Generic BSN",
+    "Generic bsn",
+    "Generic nursing",
+    "Nursing"
+   ],
+   "exportCategory": "nursing"
+  },
+  {
+   "id": "bsn_post_rn",
+   "label": "BSN Post-RN",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "nursing",
+   "aliases": [
+    "Post RN"
+   ],
+   "exportCategory": "nursing"
+  },
+  {
+   "id": "chartered_accountancy",
+   "label": "Chartered Accountancy",
+   "degreeLevel": "other",
+   "fieldOfStudy": "",
+   "aliases": [
+    "CA ( chartered accountant)"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "chartered_accountancy_acca",
+   "label": "Chartered Accountancy / ACCA",
+   "degreeLevel": "other",
+   "fieldOfStudy": "",
+   "aliases": [
+    "ACCA (AFD)",
+    "Baccalaureate",
+    "Chartered accountancy"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "christian_studies_award_unspecified",
+   "label": "Christian Studies (award unspecified)",
+   "degreeLevel": "other",
+   "fieldOfStudy": "",
+   "aliases": [
+    "Christian Study"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "diploma_bs_clinical_psychology",
+   "label": "Diploma/BS Clinical Psychology",
+   "degreeLevel": "bachelor",
+   "fieldOfStudy": "",
+   "aliases": [
+    "Advance diploma in clinical psychology",
+    "B's Clinical Psychogy"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "doctor_of_pharmacy",
+   "label": "Doctor of Pharmacy",
+   "degreeLevel": "professional",
+   "fieldOfStudy": "pharmacy",
+   "aliases": [
+    "Pharm D",
+    "Pharm- D",
+    "Pharm-D"
+   ],
+   "exportCategory": "medical"
+  },
+  {
+   "id": "doctor_of_pharmacy_pharm_d",
+   "label": "Doctor of Pharmacy (Pharm-D)",
+   "degreeLevel": "professional",
+   "fieldOfStudy": "pharmacy",
+   "aliases": [
+    "Doctor of Pharmacy",
+    "Pharm D",
+    "Pharm \u2013 D",
+    "Pharm-D",
+    "Pharm.D"
+   ],
+   "exportCategory": "medical"
+  },
+  {
+   "id": "doctor_of_physical_therapy",
+   "label": "Doctor of Physical Therapy",
+   "degreeLevel": "professional",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "medical"
+  },
+  {
+   "id": "doctor_of_physical_therapy_dpt",
+   "label": "Doctor of Physical Therapy (DPT)",
+   "degreeLevel": "professional",
+   "fieldOfStudy": "",
+   "aliases": [
+    "DPT",
+    "DPT 7 semester",
+    "DPT doctor of physical therapy",
+    "Doctor of Physical Therapy",
+    "Doctor of Physical tberapy"
+   ],
+   "exportCategory": "medical"
+  },
+  {
+   "id": "doctor_of_veterinary_medicine",
+   "label": "Doctor of Veterinary Medicine",
+   "degreeLevel": "professional",
+   "fieldOfStudy": "",
+   "aliases": [
+    "DVM"
+   ],
+   "exportCategory": "medical"
+  },
+  {
+   "id": "doctor_of_veterinary_medicine_dvm",
+   "label": "Doctor of Veterinary Medicine (DVM)",
+   "degreeLevel": "professional",
+   "fieldOfStudy": "",
+   "aliases": [
+    "DVM",
+    "Doctor of veterinary medicines"
+   ],
+   "exportCategory": "medical"
+  },
+  {
+   "id": "double_major_mass_comm_christian_studies",
+   "label": "Double major Mass Comm & Christian Studies",
+   "degreeLevel": "other",
+   "fieldOfStudy": "",
+   "aliases": [
+    "Double major (Mass communication and Chirstain study)"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "eastern_medicine_award_unspecified_likely_bems",
+   "label": "Eastern Medicine (award unspecified; likely BEMS)",
+   "degreeLevel": "other",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "fa_humanities",
+   "label": "FA Humanities",
+   "degreeLevel": "intermediate",
+   "fieldOfStudy": "",
+   "aliases": [
+    "FA Humanities Part 1"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "fsc_pre_medical",
+   "label": "FSc Pre-Medical",
+   "degreeLevel": "intermediate",
+   "fieldOfStudy": "",
+   "aliases": [
+    "F.Sc pre-medical part-1",
+    "Fsc Pre Medical Part 2"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "intermediate_stream_unspecified",
+   "label": "Intermediate (stream unspecified)",
+   "degreeLevel": "other",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "llb",
+   "label": "LLB",
+   "degreeLevel": "professional",
+   "fieldOfStudy": "",
+   "aliases": [
+    "Law (LLB)",
+    "Planning to pursue LLB from University of London"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "master_of_business_administration",
+   "label": "Master of Business Administration",
+   "degreeLevel": "master",
+   "fieldOfStudy": "business_administration",
+   "aliases": [
+    "Master of Business Administration (MBA)"
+   ],
+   "exportCategory": "business"
+  },
+  {
+   "id": "masters_art_design",
+   "label": "Masters Art & Design",
+   "degreeLevel": "master",
+   "fieldOfStudy": "",
+   "aliases": [
+    "Masters in Art and Design Studies"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "mbbs",
+   "label": "MBBS",
+   "degreeLevel": "professional",
+   "fieldOfStudy": "medicine",
+   "aliases": [
+    "Bachelor in Medicine and Bachelor in Surgery (Mbbs)",
+    "Bachelor of Medicine Bachelor of Surgery"
+   ],
+   "exportCategory": "medical"
+  },
+  {
+   "id": "mphil_business_administration",
+   "label": "MPhil Business Administration",
+   "degreeLevel": "mphil",
+   "fieldOfStudy": "business_administration",
+   "aliases": [
+    "Bachelor in Business Administration",
+    "M.Phil Business Administration"
+   ],
+   "exportCategory": "business"
+  },
+  {
+   "id": "mphil_chemistry",
+   "label": "MPhil Chemistry",
+   "degreeLevel": "mphil",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "mphil_english_literature",
+   "label": "MPhil English Literature",
+   "degreeLevel": "mphil",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "mphil_environmental_sciences",
+   "label": "MPhil Environmental Sciences",
+   "degreeLevel": "mphil",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "mphil_mass_communication",
+   "label": "MPhil Mass Communication",
+   "degreeLevel": "mphil",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "mphil_physics",
+   "label": "MPhil Physics",
+   "degreeLevel": "mphil",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "mphil_social_work",
+   "label": "MPhil Social Work",
+   "degreeLevel": "mphil",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "ms_developmental_studies",
+   "label": "MS Developmental Studies",
+   "degreeLevel": "master",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "ms_microbiology_and_molecular_genetics",
+   "label": "MS Microbiology And Molecular Genetics",
+   "degreeLevel": "master",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "ms_social_sciences_clinical_psychology",
+   "label": "MS Social Sciences (Clinical Psychology)",
+   "degreeLevel": "master",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "o_level",
+   "label": "O Level",
+   "degreeLevel": "intermediate",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "paediatric_technician_course",
+   "label": "Paediatric Technician course",
+   "degreeLevel": "other",
+   "fieldOfStudy": "",
+   "aliases": [
+    "Course. PAEDIATRIC TEACHNICAIN"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "phd_education",
+   "label": "PhD Education",
+   "degreeLevel": "phd",
+   "fieldOfStudy": "",
+   "aliases": [
+    "Ph.D. Education"
+   ],
+   "exportCategory": "graduates"
+  },
+  {
+   "id": "phd_project_management",
+   "label": "PhD Project Management",
+   "degreeLevel": "phd",
+   "fieldOfStudy": "",
+   "aliases": [],
+   "exportCategory": "graduates"
+  }
+ ]
+}

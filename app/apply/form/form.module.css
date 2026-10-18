@@ -1477,3 +1477,14 @@
   flex: none;
   min-height: 44px;
 }
+
+.testingBanner {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #B20F3A;
+  border-radius: 0.75rem;
+  background: #FFE8EE;
+  color: #8B0A24;
+  font-weight: 600;
+  line-height: 1.45;
+}

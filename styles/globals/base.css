@@ -72,3 +72,29 @@ summary:focus-visible {
     scroll-behavior: auto !important;
   }
 }
+
+/* Shared standard for every text-like form control site-wide.
+   Buttons keep the pill radius; inputs never do, and no state fills them dark. */
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]):not([type="submit"]):not([type="button"]),
+select,
+textarea {
+  background-color: var(--input-bg);
+  color: var(--color-text-primary);
+  border-radius: var(--input-radius);
+  font-size: var(--input-font-size);
+}
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"])::placeholder,
+textarea::placeholder {
+  color: var(--input-placeholder);
+  opacity: 1;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: var(--color-text-primary);
+  -webkit-box-shadow: 0 0 0 1000px var(--input-bg) inset;
+  box-shadow: 0 0 0 1000px var(--input-bg) inset;
+  caret-color: var(--color-text-primary);
+}

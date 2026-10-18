@@ -13,6 +13,8 @@ import {
   relationshipOptions,
   religionOptions,
   schoolOptions,
+  schoolSearchAliases,
+  STREAM_ALIAS_MAP,
   streamOptions,
   withPromoted,
 } from "@/lib/application/catalogs";
@@ -43,11 +45,12 @@ import { missingRequiredDocuments } from "@/lib/application/documents";
 import { FORM_STEPS, errorsForStep, validateApplication } from "@/lib/application/schema";
 import { SLOT_STEP } from "@/lib/application/steps";
 import { sessionCode, sessionName } from "@/lib/application/portal";
-import { inferProgramSelection, SCHOOL_ALIASES } from "@/lib/application/search";
+import { inferProgramSelection } from "@/lib/application/search";
 import type { ApplicationInput, DocumentInput, PromotedOption } from "@/lib/application/types";
 import type { CatalogOption } from "@/lib/application/catalogs";
 import type { MockApplication } from "@/lib/application/mocks";
 import { demoHeaders, forgetDemoKey, syncDemoKeyFromUrl } from "@/lib/application/demoMode";
+import { TESTING_BANNER_TEXT, TESTING_SUBMIT_TEXT } from "@/lib/application/testingMode";
 import { DocumentFields } from "./DocumentFields";
 import { EducationRows } from "./EducationRows";
 import { PhotoField } from "./PhotoField";
@@ -118,6 +121,8 @@ export function ApplicationForm({
   cycleId = APPLICATION_CYCLE,
   mocks,
   initialMock = "",
+  testingMode = false,
+  envTestingMode = false,
 }: {
   initialScholarship: ScholarshipId | "";
   promoted: PromotedOption[];
@@ -127,8 +132,14 @@ export function ApplicationForm({
   /** Test-only sample applications. Passed by the server only when mocks are enabled. */
   mocks?: MockApplication[];
   initialMock?: string;
+  /** Testing mode (env gate, flag, or the demo unlock for this request). */
+  testingMode?: boolean;
+  /** Only the environment part of testing mode, so ?demo=off can turn the unlock part off. */
+  envTestingMode?: boolean;
 }) {
   const [sampleList, setSampleList] = useState<MockApplication[]>(mocks ?? []);
+  const [testing, setTesting] = useState(testingMode);
+  const [testSubmitted, setTestSubmitted] = useState(false);
   const startMock = mocks?.find((item) => item.id === initialMock);
   const [sampleId, setSampleId] = useState<string>(startMock?.id ?? "");
   const [sampleUploading, setSampleUploading] = useState(false);
@@ -235,6 +246,7 @@ export function ApplicationForm({
   }
 
   function visible(...keys: string[]): string | undefined {
+    if (testing) return undefined;
     const seen = keys.some((key) => {
       if (stepAttempted) return true;
       const root = key.split(".")[0] ?? key;
@@ -248,6 +260,7 @@ export function ApplicationForm({
   }
 
   function reveal(key: string) {
+    if (testing) return;
     setTouched((current) => {
       const next = new Set(current);
       next.add(key);
@@ -325,7 +338,13 @@ export function ApplicationForm({
 
   useEffect(() => {
     // Remember ?demo=<key> (or forget it with ?demo=off) and tidy the address bar.
+    const hadOff = new URL(window.location.href).searchParams.get("demo") === "off";
     const key = syncDemoKeyFromUrl();
+    // Defer: this mirrors the browser unlock into React state after hydration.
+    window.setTimeout(() => {
+      if (hadOff && !envTestingMode) setTesting(false);
+      else if (key) setTesting(true);
+    }, 0);
     const url = new URL(window.location.href);
     const wanted = url.searchParams.get("mock");
     if (wanted !== null) {
@@ -339,6 +358,7 @@ export function ApplicationForm({
       .then(async (response) => {
         if (response.status === 404) {
           forgetDemoKey();
+          if (!envTestingMode) setTesting(false);
           return;
         }
         if (!response.ok) return;
@@ -352,7 +372,7 @@ export function ApplicationForm({
     return () => {
       cancelled = true;
     };
-  }, [mocks]);
+  }, [mocks, envTestingMode]);
 
   const focusField = useCallback((key: string) => {
     const root = formRef.current;
@@ -425,6 +445,11 @@ export function ApplicationForm({
   }
 
   function validateCurrent(): boolean {
+    if (testing) {
+      setErrors({});
+      setIssues([]);
+      return true;
+    }
     const currentData = dataRef.current;
     const result = validateApplication(currentData, { promoted });
     if (result.ok) {
@@ -452,6 +477,17 @@ export function ApplicationForm({
   }
 
   function goNext() {
+    if (testing) {
+      setStepAttempted(false);
+      setIssues([]);
+      if (returnToReview) {
+        setReturnToReview(false);
+        setStep(FORM_STEPS.length - 1);
+        return;
+      }
+      setStep((current) => Math.min(current + 1, FORM_STEPS.length - 1));
+      return;
+    }
     if (blocked) {
       const message = suggestion?.message ?? "This answer does not match the selected scholarship.";
       const key = step === 1 ? "gender" : "field_of_study.option_id";
@@ -526,6 +562,12 @@ export function ApplicationForm({
   }
 
   async function submit() {
+    if (testing) {
+      // Never store a real application from a testing walk, empty or not.
+      clearDraft();
+      setTestSubmitted(true);
+      return;
+    }
     const snapshot = dataRef.current;
     const result = validateApplication(snapshot, { promoted });
     if (!result.ok) {
@@ -578,6 +620,19 @@ export function ApplicationForm({
     } finally {
       setBusy(false);
     }
+  }
+
+  if (testSubmitted) {
+    return (
+      <div className={`${styles.card} ${styles.success}`} data-testid="testing-submitted">
+        <h2 className={styles.sectionTitle}>Testing submit</h2>
+        <p>{TESTING_SUBMIT_TEXT}</p>
+        <p className={styles.hint}>Testing mode is on. Turn it off with ?demo=off in the address bar, or test on the live site without the unlock.</p>
+        <a className="text-link" href="/apply">
+          Return to the apply page
+        </a>
+      </div>
+    );
   }
 
   if (receipt) {
@@ -639,7 +694,7 @@ export function ApplicationForm({
                 data-active={index === step}
                 data-done={index < step}
                 onClick={() => {
-                  if (index <= step || returnToReview) setStep(index);
+                  if (testing || index <= step || returnToReview) setStep(index);
                 }}
               >
                 <span className={styles.stepMark}>{index < step ? "✓" : index + 1}</span>
@@ -650,8 +705,14 @@ export function ApplicationForm({
         </ol>
       </aside>
       <div className={styles.card}>
+      {testing ? (
+        <p className={styles.testingBanner} data-testid="testing-banner" role="status">
+          {TESTING_BANNER_TEXT}
+        </p>
+      ) : null}
       {sampleList.length > 0 ? (
         <SampleChips
+          testing={testing}
           samples={sampleList}
           activeId={sampleId}
           onPick={loadMock}
@@ -767,7 +828,7 @@ export function ApplicationForm({
             applicationId={data.client_id}
             document={data.documents.find((item) => item.slot === "photo")}
             thumb={photoThumb}
-            error={stepAttempted || touched.has("documents.photo") ? errors["documents.photo"] : undefined}
+            error={!testing && (stepAttempted || touched.has("documents.photo")) ? errors["documents.photo"] : undefined}
             context={{ name: data.full_name_as_on_cnic, cnic: data.cnic, fatherName: data.father_name, fee: data.fee.amount }}
             continuing={data.applicant_type === "continuing"}
             reuse={data.reuse_photo}
@@ -938,7 +999,7 @@ export function ApplicationForm({
             onRemoveDocument={removeDocument}
           />
           <h3 className={styles.subTitle}>Current program</h3>
-          <SelectOther label="Current institution" aliases={SCHOOL_ALIASES} options={lists.schools} value={data.current_institution} error={visible("current_institution.option_id", "current_institution.other_text")} field="current_institution.option_id" hint="Type to search. Choose Other if it is not listed." onChange={(current_institution) => patch({ current_institution })} />
+          <SelectOther label="Current institution" aliases={schoolSearchAliases} options={lists.schools} value={data.current_institution} error={visible("current_institution.option_id", "current_institution.other_text")} field="current_institution.option_id" hint="Type to search. Choose Other if it is not listed." onChange={(current_institution) => patch({ current_institution })} />
           <div className={styles.two}>
             <SelectOther label="Campus city" options={lists.cities} value={data.campus_city} error={visible("campus_city.option_id", "campus_city.other_text")} field="campus_city.option_id" onChange={(campus_city) => patch({ campus_city })} />
             <SelectOther label="Degree level" options={lists.levels} value={data.degree_level} error={visible("degree_level.option_id", "degree_level.other_text")} field="degree_level.option_id" onChange={(degree_level) => patch({ degree_level })} />
@@ -1050,9 +1111,9 @@ export function ApplicationForm({
             </fieldset>
           ))}
           <h3 className={styles.subTitle}>Previous study and fee</h3>
-          <SelectOther aliases={SCHOOL_ALIASES} label="Previous institution" options={lists.schools} value={data.previous_institution} error={visible("previous_institution.option_id", "previous_institution.other_text")} field="previous_institution.option_id" onChange={(previous_institution) => patch({ previous_institution })} />
+          <SelectOther aliases={schoolSearchAliases} label="Previous institution" options={lists.schools} value={data.previous_institution} error={visible("previous_institution.option_id", "previous_institution.other_text")} field="previous_institution.option_id" onChange={(previous_institution) => patch({ previous_institution })} />
           <div className={styles.two}>
-            <SelectOther label="Previous qualification" options={lists.streams} value={data.previous_qualification} error={visible("previous_qualification.option_id", "previous_qualification.other_text")} field="previous_qualification.option_id" onChange={(previous_qualification) => patch({ previous_qualification })} />
+            <SelectOther label="Previous qualification" aliases={STREAM_ALIAS_MAP} options={lists.streams} value={data.previous_qualification} error={visible("previous_qualification.option_id", "previous_qualification.other_text")} field="previous_qualification.option_id" onChange={(previous_qualification) => patch({ previous_qualification })} />
             <NumberField label="Previous completion year" value={data.previous_completion_year} error={visible("previous_completion_year")} field="previous_completion_year" max={2100} placeholder="e.g. 2022" onChange={(previous_completion_year) => patch({ previous_completion_year })} />
           </div>
           <div className={styles.pair}>
@@ -1284,7 +1345,7 @@ export function ApplicationForm({
           Back
         </button>
         {step < FORM_STEPS.length - 1 ? (
-          <button type="button" className="btn" disabled={blocked || !ready || (step === 6 && sampleUploading) || (step === 1 && photoBusy)} onClick={() => goNext()}>
+          <button type="button" className="btn" disabled={(!testing && blocked) || !ready || (step === 6 && !testing && sampleUploading) || (step === 1 && !testing && photoBusy)} onClick={() => goNext()}>
             {step === 6 && sampleUploading ? "Attaching sample files…" : step === 1 && photoBusy ? "Adding photo…" : returnToReview ? "Back to review" : "Continue"}
           </button>
         ) : (
@@ -1299,11 +1360,13 @@ export function ApplicationForm({
 }
 
 function SampleChips({
+  testing = false,
   samples,
   activeId,
   onPick,
   onClear,
 }: {
+  testing?: boolean;
   samples: MockApplication[];
   activeId: string;
   onPick: (mock: MockApplication) => void;
@@ -1340,7 +1403,7 @@ function SampleChips({
           </button>
         </div>
       ) : null}
-      <p className={styles.sampleWarn}>Samples are for testing. Submitting one creates a real test application.</p>
+      <p className={styles.sampleWarn}>{testing ? "Samples are for testing. In testing mode, submitting sends nothing." : "Samples are for testing. Submitting one creates a real test application."}</p>
     </section>
   );
 }

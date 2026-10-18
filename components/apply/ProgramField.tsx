@@ -2,8 +2,8 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import styles from "@/app/apply/form/form.module.css";
-import { programTitles } from "@/lib/application/catalogs";
-import { searchPrograms } from "@/lib/application/search";
+import { programTitles, PROGRAM_ALIAS_MAP } from "@/lib/application/catalogs";
+import { searchProgramsWithAliases } from "@/lib/application/search";
 import { FieldError } from "./widgets";
 
 export function ProgramField({
@@ -22,7 +22,7 @@ export function ProgramField({
   const rootRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState(value);
-  const matches = query.trim().length >= 2 ? searchPrograms(query, programTitles) : [];
+  const matches = query.trim().length >= 1 ? searchProgramsWithAliases(query, programTitles, PROGRAM_ALIAS_MAP) : [];
 
   useEffect(() => {
     function onDoc(event: MouseEvent) {

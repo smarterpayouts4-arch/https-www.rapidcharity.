@@ -1,0 +1,86 @@
+{
+ "version": "2026-10-18",
+ "source": "lib/application/constants.ts OCCUPATIONS (form-spec)",
+ "options": [
+  {
+   "id": "unemployed",
+   "label": "Unemployed",
+   "aliases": []
+  },
+  {
+   "id": "homemaker",
+   "label": "Homemaker",
+   "aliases": []
+  },
+  {
+   "id": "daily_wage_labourer",
+   "label": "Daily-wage labourer",
+   "aliases": []
+  },
+  {
+   "id": "driver",
+   "label": "Driver",
+   "aliases": []
+  },
+  {
+   "id": "domestic_worker",
+   "label": "Domestic worker",
+   "aliases": []
+  },
+  {
+   "id": "factory_worker",
+   "label": "Factory worker",
+   "aliases": []
+  },
+  {
+   "id": "farmer",
+   "label": "Farmer",
+   "aliases": []
+  },
+  {
+   "id": "shopkeeper_small_business",
+   "label": "Shopkeeper-small business",
+   "aliases": []
+  },
+  {
+   "id": "government_employee",
+   "label": "Government employee",
+   "aliases": []
+  },
+  {
+   "id": "private_sector_employee",
+   "label": "Private-sector employee",
+   "aliases": []
+  },
+  {
+   "id": "teacher",
+   "label": "Teacher",
+   "aliases": []
+  },
+  {
+   "id": "nurse_health_worker",
+   "label": "Nurse-health worker",
+   "aliases": []
+  },
+  {
+   "id": "pastor_ministry_worker",
+   "label": "Pastor-ministry worker",
+   "aliases": []
+  },
+  {
+   "id": "retired",
+   "label": "Retired",
+   "aliases": []
+  },
+  {
+   "id": "overseas_worker",
+   "label": "Overseas worker",
+   "aliases": []
+  },
+  {
+   "id": "other",
+   "label": "Other",
+   "aliases": []
+  }
+ ]
+}

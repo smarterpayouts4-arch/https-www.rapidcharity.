@@ -415,3 +415,30 @@ export const SEMESTER_OPTIONS = [
 export function isScholarshipId(value: string | undefined): value is ScholarshipId {
   return SCHOLARSHIP_IDS.includes(value as ScholarshipId);
 }
+
+/** Boards and awarding bodies seen on education rows (portal boards list plus form-spec boards). */
+export const BOARDS = [
+  "BISE Lahore",
+  "BISE Gujranwala",
+  "BISE Multan",
+  "BISE Sargodha",
+  "BISE Faisalabad",
+  "BISE Rawalpindi",
+  "BISE Bahawalpur",
+  "BISE Dera Ghazi Khan",
+  "BISE Sahiwal",
+  "BISE Karachi",
+  "BISE Hyderabad",
+  "BISE Sukkur",
+  "BISE Larkana",
+  "BISE Peshawar",
+  "BISE Abbottabad",
+  "BISE Kohat",
+  "BISE Quetta",
+  "Punjab University",
+  "Bahauddin Zakariya University (BZU)",
+  "University of the Punjab",
+  "Aga Khan University Examination Board",
+  "Cambridge (CAIE)",
+  "Other",
+] as const;

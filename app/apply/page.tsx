@@ -10,6 +10,7 @@ import { PreviewBanner } from "@/components/PreviewBanner";
 import { ShareRow } from "@/components/ShareRow";
 import { isScholarshipId } from "@/lib/application/constants";
 import { DEMO_PARAM, demoKeyMatches, sampleModeAllowed } from "@/lib/application/mockGate";
+import { TESTING_BANNER_TEXT, testingModeFromEnv } from "@/lib/application/testingMode";
 import { findMock } from "@/lib/application/mocks";
 import { deadlineBandItems, deadlineCycleItems, type ScholarshipId } from "@/lib/application/intakes";
 import { loadSiteContent, resolvePreview } from "@/lib/content";
@@ -70,6 +71,11 @@ export default async function ApplyPage({
       {preview ? <PreviewBanner content={chrome.preview} liveHref="/apply" /> : null}
       <section className={`section ${styles.page}`}>
         <div className={`container prose ${styles.prose}`}>
+          {testingModeFromEnv() || sampleModeAllowed(params?.demo) ? (
+            <p className={styles.testingBanner} data-testid="testing-banner" role="status">
+              {TESTING_BANNER_TEXT}
+            </p>
+          ) : null}
           <h1 className={styles.title}>{apply.title}</h1>
           <p className={styles.intro}>{apply.intro}</p>
           <p className={styles.criteriaLink}>

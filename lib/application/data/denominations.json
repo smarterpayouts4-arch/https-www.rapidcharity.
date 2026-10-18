@@ -1,0 +1,46 @@
+{
+ "version": "2026-10-18",
+ "source": "lib/application/constants.ts DENOMINATIONS (form-spec)",
+ "options": [
+  {
+   "id": "catholic",
+   "label": "Catholic",
+   "aliases": []
+  },
+  {
+   "id": "church_of_pakistan",
+   "label": "Church of Pakistan",
+   "aliases": []
+  },
+  {
+   "id": "presbyterian",
+   "label": "Presbyterian",
+   "aliases": []
+  },
+  {
+   "id": "methodist",
+   "label": "Methodist",
+   "aliases": []
+  },
+  {
+   "id": "salvation_army",
+   "label": "Salvation Army",
+   "aliases": []
+  },
+  {
+   "id": "pentecostal",
+   "label": "Pentecostal",
+   "aliases": []
+  },
+  {
+   "id": "full_gospel",
+   "label": "Full Gospel",
+   "aliases": []
+  },
+  {
+   "id": "other",
+   "label": "Other",
+   "aliases": []
+  }
+ ]
+}

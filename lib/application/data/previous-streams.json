@@ -1,0 +1,90 @@
+{
+ "version": "2026-10-18",
+ "source": "degrees.json previousStudyStreams + observed spelling variants in form-spec",
+ "streams": [
+  {
+   "id": "matric_science",
+   "label": "Matric Science",
+   "aliases": [
+    "Matriculation Science",
+    "SSC Science"
+   ]
+  },
+  {
+   "id": "matric_arts",
+   "label": "Matric Arts",
+   "aliases": [
+    "Matriculation Arts",
+    "SSC Arts"
+   ]
+  },
+  {
+   "id": "o_level",
+   "label": "O Level",
+   "aliases": []
+  },
+  {
+   "id": "fsc_pre_medical",
+   "label": "FSc Pre-Medical",
+   "aliases": [
+    "F.Sc Pre-Medical",
+    "Fsc Pre Medical",
+    "FSc (Pre-Medical)",
+    "F.Sc (Pre Medical)",
+    "Pre Medical",
+    "FSc Pre-Medical (Biology)"
+   ]
+  },
+  {
+   "id": "fsc_pre_engineering",
+   "label": "FSc Pre-Engineering",
+   "aliases": [
+    "F.Sc Pre-Engineering",
+    "Fsc Pre Engineering",
+    "Pre Engineering"
+   ]
+  },
+  {
+   "id": "ics_computer_science",
+   "label": "ICS (Computer Science)",
+   "aliases": [
+    "ICS",
+    "I.C.S",
+    "Computer Science ICS"
+   ]
+  },
+  {
+   "id": "i_com_commerce",
+   "label": "I.Com (Commerce)",
+   "aliases": [
+    "I.Com",
+    "ICom",
+    "Commerce"
+   ]
+  },
+  {
+   "id": "fa_humanities",
+   "label": "FA (Humanities)",
+   "aliases": [
+    "FA",
+    "F.A",
+    "Humanities"
+   ]
+  },
+  {
+   "id": "a_level",
+   "label": "A Level",
+   "aliases": []
+  },
+  {
+   "id": "ib_diploma",
+   "label": "IB Diploma",
+   "aliases": []
+  },
+  {
+   "id": "other",
+   "label": "Other (please specify)",
+   "aliases": []
+  }
+ ]
+}

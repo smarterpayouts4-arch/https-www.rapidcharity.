@@ -3,6 +3,7 @@ import type { ScholarshipId } from "@/lib/application/constants";
 import { loadPromoted } from "@/lib/application/store";
 import { loadFormState } from "@/lib/application/formSettings";
 import type { PromotedOption } from "@/lib/application/types";
+import { testingModeFromEnv } from "@/lib/application/testingMode";
 import { MOCK_APPLICATIONS } from "@/lib/application/mocks";
 import styles from "@/app/apply/form/form.module.css";
 
@@ -56,6 +57,8 @@ export async function ApplicationScreen({
           promoted={promoted}
           cycleName={form.cycleName}
           cycleId={form.cycleId}
+          testingMode={testingModeFromEnv() || sampleMode}
+          envTestingMode={testingModeFromEnv()}
           {...(sampleMode ? { mocks: MOCK_APPLICATIONS, initialMock } : {})}
         />
       </div>

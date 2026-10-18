@@ -150,15 +150,24 @@
 
 .subscribe input[type="email"] {
   flex: 1 1 10rem;
-  min-height: var(--btn-height-sm);
-  padding: 0.6rem 1rem;
-  border-radius: var(--btn-radius);
-  border: 1px solid #4a4446;
-  background: #2c2c2c;
-  color: #fff;
+  min-width: 0;
+  min-height: var(--input-height);
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--input-radius);
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: var(--input-font-size);
 }
 .subscribe input[type="email"]::placeholder {
-  color: #8a8084;
+  color: var(--input-placeholder);
+  opacity: 1;
+}
+.subscribe input[type="email"]:hover,
+.subscribe input[type="email"]:focus {
+  background: var(--input-bg);
+  border-color: var(--color-brand-primary);
 }
 
 .subscribe button {
@@ -255,5 +264,14 @@
   }
   .subscribeRow {
     flex-direction: column;
+    align-items: stretch;
+  }
+  .subscribe input[type="email"] {
+    flex: none;
+    width: 100%;
+    height: var(--input-height);
+  }
+  .subscribe button {
+    align-self: flex-start;
   }
 }

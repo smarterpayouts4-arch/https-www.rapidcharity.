@@ -1,0 +1,51 @@
+{
+ "version": "2026-10-18",
+ "source": "lib/application/constants.ts RELATIONSHIPS (form-spec)",
+ "options": [
+  {
+   "id": "father",
+   "label": "Father",
+   "aliases": []
+  },
+  {
+   "id": "mother",
+   "label": "Mother",
+   "aliases": []
+  },
+  {
+   "id": "brother",
+   "label": "Brother",
+   "aliases": []
+  },
+  {
+   "id": "sister",
+   "label": "Sister",
+   "aliases": []
+  },
+  {
+   "id": "uncle",
+   "label": "Uncle",
+   "aliases": []
+  },
+  {
+   "id": "aunt",
+   "label": "Aunt",
+   "aliases": []
+  },
+  {
+   "id": "spouse",
+   "label": "Spouse",
+   "aliases": []
+  },
+  {
+   "id": "guardian",
+   "label": "Guardian",
+   "aliases": []
+  },
+  {
+   "id": "other",
+   "label": "Other",
+   "aliases": []
+  }
+ ]
+}

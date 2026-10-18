@@ -1,5 +1,9 @@
 import degreesJson from "@/data/application/degrees.json";
 import schoolsJson from "@/data/application/schools.json";
+import institutionsJson from "./data/institutions.json";
+import programsJson from "./data/programs.json";
+import streamsJson from "./data/previous-streams.json";
+import { SCHOOL_ALIASES } from "./search";
 import {
   CITIES,
   DENOMINATIONS,
@@ -42,7 +46,31 @@ export const streamOptions: CatalogOption[] = degreesJson.previousStudyStreams.m
   label,
 }));
 
-export const programTitles: string[] = [...degreesJson.programs];
+/** Canonical program titles from the curated programs data (includes "BS Nursing (BSN)"). */
+export const programTitles: string[] = programsJson.programs.map((program) => program.label);
+
+/** Alias map (option id -> observed spellings) from the curated institutions data. */
+export const SCHOOL_ALIAS_MAP: Record<string, string[]> = Object.fromEntries(
+  institutionsJson.options.map((option) => [option.id, option.aliases]),
+);
+
+/** Hand aliases merged with the curated institution aliases, for combobox search. */
+export const schoolSearchAliases: Record<string, string[]> = Object.fromEntries(
+  Object.entries(SCHOOL_ALIAS_MAP).map(([id, aliases]) => [
+    id,
+    [...new Set([...(SCHOOL_ALIASES[id] ?? []), ...aliases])],
+  ]),
+);
+
+/** Alias map (stream id -> observed spellings) from the curated previous-streams data. */
+export const STREAM_ALIAS_MAP: Record<string, string[]> = Object.fromEntries(
+  streamsJson.streams.map((stream) => [stream.id, stream.aliases]),
+);
+
+/** Alias map (program label -> observed spellings) from the curated programs data. */
+export const PROGRAM_ALIAS_MAP: Record<string, string[]> = Object.fromEntries(
+  programsJson.programs.map((program) => [program.label, program.aliases]),
+);
 
 export const cityOptions = fromLabels([...CITIES, "Other"]);
 export const occupationOptions = fromLabels(OCCUPATIONS);

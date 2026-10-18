@@ -160,6 +160,8 @@ export function resolveTypedOption(
   return null;
 }
 
+export function searchProgramsWithAliases(query: string, titles: readonly string[], aliases: Record<string,string[]>, limit = 20) { const merged: Record<string,string[]> = {}; for (const title of titles) merged[title]=[...programAliases(title), ...(aliases[title]??[])]; const options=titles.map((title)=>({id:title,label:title})); return rankOptions(query, options, merged).filter((i)=>i.score>1).slice(0,limit).map((i)=>({id:i.id,label:i.label})); }
+
 export function searchPrograms(
   query: string,
   titles: readonly string[],
