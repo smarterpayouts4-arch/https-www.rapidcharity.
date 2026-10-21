@@ -3,11 +3,12 @@
  * from the published admin content (Firestore or local JSON) on every request.
  */
 import { loadSiteContent } from "@/lib/content";
+import { resolveApplicationNow } from "./clock";
 import { resolveFormState, type FormState } from "./formState";
 
 export { resolveFormState, type FormState };
 
-export async function loadFormState(now = new Date()): Promise<FormState> {
+export async function loadFormState(now = resolveApplicationNow()): Promise<FormState> {
   try {
     const content = await loadSiteContent({ preview: false });
     return resolveFormState(content.applicationForm, content.intakes, now);

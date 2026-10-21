@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import {
@@ -13,7 +14,6 @@ import {
 import { rememberFile } from "../../lib/application/blobStore";
 import { emptyChecks } from "../../lib/application/documents";
 import { emptyApplication, emptyTerms } from "../../lib/application/empty";
-import { applicationSequence } from "../../lib/application/portal";
 import { buildSubmission } from "../../lib/application/record";
 import { portalFields } from "./helpers/portalFields";
 import { validateApplication } from "../../lib/application/schema";
@@ -30,17 +30,6 @@ import {
 import type { ApplicationInput } from "../../lib/application/types";
 
 const cycle = "fall-2099";
-const batchesFile = path.join("data/submissions/batches.json");
-
-async function forgetBatch(): Promise<void> {
-  try {
-    const parsed = JSON.parse(await readFile(batchesFile, "utf8")) as { batches?: { cycle: string }[] };
-    const batches = (parsed.batches ?? []).filter((item) => item.cycle !== cycle);
-    await writeFile(batchesFile, `${JSON.stringify({ batches }, null, 2)}\n`);
-  } catch {
-    await rm(batchesFile, { force: true });
-  }
-}
 
 test("a batch cannot be purged until it is closed and the final export is newer", () => {
   const open = openBatch("spring-2027");
@@ -52,7 +41,22 @@ test("a batch cannot be purged until it is closed and the final export is newer"
   assert.equal(acceptanceError(open), null);
 });
 
-test("archive and purge deletes one batch from local files and keeps the next batch out", async () => {
+test("archive and purge deletes one batch from local files and keeps the next batch out", async (t) => {
+  const tmpSubs = await mkdtemp(path.join(os.tmpdir(), "rapid-subs-"));
+  const tmpUploads = await mkdtemp(path.join(os.tmpdir(), "rapid-uploads-"));
+  const prevSubs = process.env.RAPID_SUBMISSIONS_DIR;
+  const prevUploads = process.env.RAPID_UPLOADS_DIR;
+  process.env.RAPID_SUBMISSIONS_DIR = tmpSubs;
+  process.env.RAPID_UPLOADS_DIR = tmpUploads;
+  t.after(async () => {
+    if (prevSubs === undefined) delete process.env.RAPID_SUBMISSIONS_DIR;
+    else process.env.RAPID_SUBMISSIONS_DIR = prevSubs;
+    if (prevUploads === undefined) delete process.env.RAPID_UPLOADS_DIR;
+    else process.env.RAPID_UPLOADS_DIR = prevUploads;
+    await rm(tmpSubs, { recursive: true, force: true });
+    await rm(tmpUploads, { recursive: true, force: true });
+  });
+
   const parsed = validateApplication(applicationFor(), { now: new Date(Date.UTC(2026, 9, 16)) });
   assert.equal(parsed.ok, true);
   if (!parsed.ok) return;
@@ -69,8 +73,7 @@ test("archive and purge deletes one batch from local files and keeps the next ba
     file_id: `${cycle}/${submission.id}/${document.slot}-${document.index}.jpg`,
     storage: "local",
   }));
-  const full = path.join("data/uploads", relative);
-  await forgetBatch();
+  const full = path.join(tmpUploads, relative);
   await mkdir(path.dirname(full), { recursive: true });
   await writeFile(full, Buffer.from([0xff, 0xd8, 0xff, 0xd8]));
   await rememberFile({
@@ -85,8 +88,7 @@ test("archive and purge deletes one batch from local files and keeps the next ba
     fileId: relative,
     url: "",
   });
-  try {
-    await saveSubmission(submission);
+  await saveSubmission(submission);
     await closeBatch(cycle, "2026-10-16T18:00:00.000Z");
     await assert.rejects(saveSubmission({ ...submission, id: "22222222-2222-4222-8222-222222222222" }), BatchClosedError);
     await assert.rejects(purgeBatch(cycle, cycle), /final Excel/);
@@ -103,14 +105,7 @@ test("archive and purge deletes one batch from local files and keeps the next ba
     await assert.rejects(saveSubmission(submission), BatchClosedError);
     const stored = (await listBatches()).find((item) => item.cycle === cycle);
     assert.equal(stored?.status, "purged");
-    assert.equal(stored?.purged_submissions, 1);
-  } finally {
-    const seq = applicationSequence(submission.application_number);
-    if (seq !== null) await rm(path.join("data/submissions/numbers", String(seq)), { force: true });
-    await rm(path.join("data/submissions", `${submission.id}.json`), { force: true });
-    await rm(path.join("data/submissions/keys", submission.cycle_cnic), { force: true });
-    await rm(path.join("data/uploads", cycle), { recursive: true, force: true });
-  }
+  assert.equal(stored?.purged_submissions, 1);
 });
 
 function applicationFor(): ApplicationInput {

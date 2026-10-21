@@ -20,13 +20,18 @@ import { decodeFirestore, encodeFirestore, type FirestoreValue } from "./firesto
 import { FIELD_TO_PROMOTED_LIST } from "./record";
 import { applyDecision } from "./decision";
 import { formatApplicationNumber, nextApplicationSequence, normalizeStored } from "./portal";
+import { submissionsRoot } from "./runtimePaths";
 import type { PromotedOption, StoredApplication } from "./types";
 
 export { BatchClosedError };
 
-const root = path.join(process.cwd(), "data", "submissions");
-const promotedPath = path.join(root, "promoted.json");
-const batchesPath = path.join(root, "batches.json");
+function promotedPath(): string {
+  return path.join(submissionsRoot(), "promoted.json");
+}
+
+function batchesPath(): string {
+  return path.join(submissionsRoot(), "batches.json");
+}
 
 export class DuplicateCnicError extends Error {
   constructor() {
@@ -61,11 +66,11 @@ function assertWritable(): "firestore" | "local" {
 
 function applicationPath(id: string): string {
   if (!/^[\w-]+$/.test(id)) throw new Error("Invalid application id.");
-  return path.join(root, `${id}.json`);
+  return path.join(submissionsRoot(), `${id}.json`);
 }
 
 function keyPath(cycleCnic: string): string {
-  return path.join(root, "keys", cycleCnic);
+  return path.join(submissionsRoot(), "keys", cycleCnic);
 }
 
 async function exclusiveKey(cycleCnic: string, applicationId: string): Promise<void> {
@@ -92,7 +97,7 @@ export async function loadPromoted(): Promise<PromotedOption[]> {
 
 async function loadPromotedFile(): Promise<PromotedOption[]> {
   try {
-    const raw = await readFile(promotedPath, "utf8");
+    const raw = await readFile(promotedPath(), "utf8");
     const parsed = JSON.parse(raw) as { options?: PromotedOption[] };
     return Array.isArray(parsed.options) ? parsed.options : [];
   } catch {
@@ -101,7 +106,7 @@ async function loadPromotedFile(): Promise<PromotedOption[]> {
 }
 
 async function savePromotedFile(options: PromotedOption[]): Promise<void> {
-  await atomicWriteFile(promotedPath, `${JSON.stringify({ options }, null, 2)}\n`);
+  await atomicWriteFile(promotedPath(), `${JSON.stringify({ options }, null, 2)}\n`);
 }
 
 function baseUrl(): string {
@@ -146,7 +151,9 @@ async function savePromotedFirestore(options: PromotedOption[]): Promise<void> {
   if (!response.ok) throw new Error(`Could not save promoted options (${response.status}).`);
 }
 
-const numbersRoot = path.join(root, "numbers");
+function numbersRoot(): string {
+  return path.join(submissionsRoot(), "numbers");
+}
 
 /**
  * Reserves the next RAPID-<SESSIONCODE>-000001 number. The sequence is shared by
@@ -157,7 +164,7 @@ async function reserveApplicationNumber(application: StoredApplication, mode: "f
   let candidate = nextApplicationSequence((await listSubmissions()).map((item) => item.application_number));
   if (mode === "local") {
     try {
-      const names = await readdir(numbersRoot);
+      const names = await readdir(numbersRoot());
       for (const name of names) {
         const used = Number(name);
         if (Number.isInteger(used) && used >= candidate) candidate = used + 1;
@@ -171,9 +178,9 @@ async function reserveApplicationNumber(application: StoredApplication, mode: "f
   for (let attempt = 0; attempt < 500; attempt += 1, candidate += 1) {
     const number = formatApplicationNumber(application.cycle, candidate);
     if (mode === "local") {
-      await mkdir(numbersRoot, { recursive: true });
+      await mkdir(numbersRoot(), { recursive: true });
       try {
-        const handle = await open(path.join(numbersRoot, String(candidate)), "wx");
+        const handle = await open(path.join(numbersRoot(), String(candidate)), "wx");
         await handle.writeFile(`${number} ${application.id}`, "utf8");
         await handle.close();
         return number;
@@ -269,7 +276,7 @@ export async function listSubmissions(): Promise<StoredApplication[]> {
 async function listFiles(): Promise<StoredApplication[]> {
   let names: string[] = [];
   try {
-    names = await readdir(root);
+    names = await readdir(submissionsRoot());
   } catch {
     return [];
   }
@@ -277,7 +284,7 @@ async function listFiles(): Promise<StoredApplication[]> {
   for (const name of names) {
     // batches.json and promoted.json share this folder; only application records are listed.
     if (!name.endsWith(".json") || name === "promoted.json" || name === "batches.json") continue;
-    const raw = await readFile(path.join(root, name), "utf8");
+    const raw = await readFile(path.join(submissionsRoot(), name), "utf8");
     const parsed = JSON.parse(raw) as StoredApplication;
     if (!parsed || typeof parsed.id !== "string" || typeof parsed.cnic !== "string" || !parsed.review) continue;
     items.push(normalizeStored(parsed));
@@ -482,7 +489,7 @@ async function promoteOption(list: PromotedOption["list"], source: string): Prom
 async function readStoredBatches(): Promise<BatchRecord[]> {
   if (assertWritable() === "firestore") return readBatchesFirestore();
   try {
-    const raw = await readFile(batchesPath, "utf8");
+    const raw = await readFile(batchesPath(), "utf8");
     const parsed = JSON.parse(raw) as { batches?: BatchRecord[] };
     return Array.isArray(parsed.batches) ? parsed.batches.filter((item) => isCycleId(item.cycle)) : [];
   } catch {
@@ -495,7 +502,7 @@ async function writeStoredBatches(batches: BatchRecord[]): Promise<void> {
     await writeBatchesFirestore(batches);
     return;
   }
-  await atomicWriteFile(batchesPath, `${JSON.stringify({ batches }, null, 2)}\n`);
+  await atomicWriteFile(batchesPath(), `${JSON.stringify({ batches }, null, 2)}\n`);
 }
 
 async function readBatchesFirestore(): Promise<BatchRecord[]> {

@@ -28,6 +28,8 @@ export default defineConfig({
           ...process.env,
           ADMIN_LOCAL_PASSWORD: process.env.ADMIN_LOCAL_PASSWORD ?? "playwright-local",
           ADMIN_SESSION_SECRET: process.env.ADMIN_SESSION_SECRET ?? "playwright-session-secret-32",
+          // Mid-window Karachi date for follow-intake / API checks; unset in production deploys.
+          RAPID_TEST_NOW: process.env.RAPID_TEST_NOW ?? "2026-10-10T12:00:00+05:00",
         },
       },
 });

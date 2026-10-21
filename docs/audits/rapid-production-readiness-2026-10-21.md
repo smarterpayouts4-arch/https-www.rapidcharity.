@@ -38,10 +38,10 @@ Investigation and local verification are sufficient to proceed to **Step 3** whe
 | Applicant upload auth | Fail | P0 | F-P0-01–03 |
 | Data integrity (serverless) | Fail | P0 | Local manifest |
 | Build | Pass | — | `npm run build` exit 0 |
-| HTTP smoke (routes) | Partial | P2 | 1 asset expectation mismatch |
-| E2E (full) | Partial | P1 | 47 failures — closed form + env gates |
-| Unit tests | Partial | P1 | 1 EPERM on local `batches.json` |
-| Ops/git | Partial | P1 | Baseline `2785d71`; Step 2 audit commit follows |
+| HTTP smoke (routes) | Pass | — | Stabilization: 0 HTTP audit failures |
+| E2E (full) | Partial | P1 | 46 failures — testing mode + uncommitted hero UI |
+| Unit tests | Pass | — | Stabilization: 66/66 with isolated batch test |
+| Ops/git | Partial | P1 | Baseline `2785d71`; Step 2 `522ab40`; stabilization commit follows |
 
 ---
 
@@ -108,34 +108,101 @@ Investigation and local verification are sufficient to proceed to **Step 3** whe
 
 ## 8. Test and build results (exact)
 
+### Step 2 baseline (audit commit `522ab40`, before stabilization)
+
 | Command | Exit | Result |
 |---------|------|--------|
 | `npm run typecheck` | 0 | Pass |
 | `npm run lint` | 0 | Pass |
-| `npm run test:unit` | 1 | **63 pass, 1 fail** — `tests/unit/application-batch.test.ts` → `archive and purge deletes one batch…` → `EPERM` renaming `data/submissions/batches.json` (local file lock / existing dev data; not production) |
-| `npm run build` | 0 | Pass (prior successful build; no app source change since except audit/docs) |
-| Server | — | `npx next start -H 127.0.0.1 -p 4721` — ready after ~4s (log: `qa/server-4721.log`, gitignored) |
-| `AUDIT_BASE=http://127.0.0.1:4721 npm run qa:final:http` | 1 | **99 checks OK, 1 failure:** `/assets/documents/report-2025.pptx` returned **200**, audit expects **404** (file exists in `public/`; script comment expects missing asset) |
-| Playwright smoke | 0 | **5 passed** — `/`, `/about-us`, `/apply`, 404 unknown, primary nav (`tests/e2e/smoke.spec.ts`, `navigation.spec.ts`) |
-| Playwright admin 401 | 0 | **1 passed** — `admin API rejects anonymous reads and writes` (`tests/e2e/final-system.spec.ts:33`) |
-| `PLAYWRIGHT_SKIP_WEBSERVER=1 npm test` (full `tests/e2e`) | 1 | **83 passed, 47 failed, 6 skipped** (~3.6m). Log: `qa/playwright-full.log` (gitignored) |
+| `npm run test:unit` | 1 | 63 pass, 1 fail — EPERM on shared `data/submissions/batches.json` |
+| `npm run build` | 0 | Pass |
+| `AUDIT_BASE=http://127.0.0.1:4721 npm run qa:final:http` | 1 | 1 failure — `report-2025.pptx` 200 vs stale script expectation 404 |
+| Full Playwright (`PLAYWRIGHT_SKIP_WEBSERVER=1`) | 1 | 83 pass, 47 fail, 6 skip |
+
+### Stabilization checkpoint (2026-10-21, after test-infra commit)
+
+| Command | Exit | Result |
+|---------|------|--------|
+| `npm run typecheck` | 0 | Pass |
+| `npm run lint` | 0 | Pass (0 errors; 0 warnings after batch-test import cleanup) |
+| `npm run test:unit` | 0 | **66 pass, 0 fail** — batch purge uses temp `RAPID_SUBMISSIONS_DIR` / `RAPID_UPLOADS_DIR`; shared `data/submissions` untouched |
+| `npm run build` | 0 | Pass |
+| Server | — | `$env:RAPID_TEST_NOW='2026-10-10T12:00:00+05:00'; npx next start -H 127.0.0.1 -p 4721` (log: `qa/server-4721.log`, gitignored) |
+| `AUDIT_BASE=http://127.0.0.1:4721 npm run qa:final:http` | 0 | **100 checks OK, 0 failures** — script now expects `report-2025.pptx` **200** |
+| Playwright smoke subset | 1 | 50 pass, 2 fail — see E2E groups below |
+| `PLAYWRIGHT_SKIP_WEBSERVER=1 PLAYWRIGHT_BASE_URL=http://127.0.0.1:4721 npx playwright test` | 1 | **84 pass, 46 fail, 6 skip** (~4.8m). Log: `qa/playwright-full.log` |
+
+**Controlled clock:** `lib/application/clock.ts` → `resolveApplicationNow()` used by `loadFormState()` only when `RAPID_TEST_NOW` is set. Playwright `webServer` defaults to `2026-10-10T12:00:00+05:00`. Production deploys leave the variable unset. Unit coverage: `tests/unit/formState.test.ts` (before / during / deadline day / after for `follow-intake`) and `tests/unit/application-clock.test.ts`.
+
+**October 15 deadline:** unchanged in content. Published `applicationForm.availability` is **`always-open`**, so the live form is not closed solely because the audit calendar date is after 15 Oct 2026. Remaining apply-flow failures are **not** “correct closed-form behavior”; they track **testing mode** (see below).
+
+### 8.1 Uncommitted working tree (not in stabilization commit)
+
+| Path | Change | Origin | Needed? | App vs test |
+|------|--------|--------|---------|-------------|
+| `components/Header.module.css` | Nav/layout spacing | Parallel home polish (predates audit commit) | Unknown — Oscar | **Application UI** |
+| `components/home/DonateBanner.module.css` | Compact mobile donate band | Same | Unknown | **Application UI** |
+| `components/home/Hero.module.css` | Two-line fluid headline layout | Same | Unknown | **Application UI** |
+| `components/home/Hero.tsx` | Removed `TitleLine`; single-line spans for title | Same | Unknown | **Application UI** |
+| `components/home/Leadership.module.css` | Board section compact layout | Same | Unknown | **Application UI** |
+| `components/home/Leadership.tsx` | Board list / “7 Board Directors” copy | Same | Unknown | **Application UI** |
+| `components/home/ReportsShowcase.module.css` | Report cards / CTA sizing | Same | Unknown | **Application UI** |
+| `components/home/ReportsShowcase.tsx` | Report block structure | Same | Unknown | **Application UI** |
+| `tests/e2e/apply-flow.spec.ts` | +20 lines: mobile home board/report/donate compact test | Matches Leadership/Reports UI work | Yes if UI lands | **Test only** |
+| `tests/e2e/hero-layout.spec.ts` | 2-line headline assertions; `HERO_SHOT_DIR` env | Matches Hero refactor | Yes if Hero lands | **Test only** |
+| `qa/` (untracked) | Playwright/server logs | Audit runs | Ephemeral | N/A |
+
+**Action taken:** none of the above was reset, stashed, or committed. Step 3 should branch from audit `522ab40` or commit stabilization first, then merge UI work deliberately.
+
+### 8.2 Unit-test isolation
+
+- **Cause:** `application-batch.test.ts` called `forgetBatch()` against repo `data/submissions/batches.json` (Windows EPERM under lock).
+- **Fix:** `lib/application/runtimePaths.ts` — optional `RAPID_SUBMISSIONS_DIR` / `RAPID_UPLOADS_DIR` (test-only). Batch purge test uses `mkdtemp` + `t.after` cleanup.
+- **Acceptance:** `npm run test:unit` **66/66**; production paths unchanged when env overrides unset.
+
+### 8.3 `report-2025.pptx` exposure
+
+| Question | Answer |
+|----------|--------|
+| Source | `public/assets/documents/report-2025.pptx` (static file) |
+| In `public/`? | Yes |
+| Referenced by | `content/site.json` (`downloadHref`, `pptxPath`), `ReportsShowcase`, `/reports`, `lib/content/media.ts`, README |
+| Sensitive? | Public annual report deck — marketing content, not applicant data |
+| Intentional? | **Yes** — README documents local file; remote override via `REPORT_2025_URL` only when file absent |
+| Audit script | Was stale (expected 404). **Updated** to expect **200** like other CMS-linked assets |
+| Delete? | **Not recommended** — would break home/reports download links |
+
+### 8.4 Remaining E2E failures by root cause (46)
+
+| Group | Count (approx.) | First root cause |
+|-------|-----------------|------------------|
+| Apply validation / submit (`apply-flow.spec.ts`, 1× `smoke.spec.ts`) | 23 | `.env.local` **`NEXT_PUBLIC_ENABLE_MOCK_APPLICATIONS=1`** → `testingModeFromEnv()` true on `next start` → `goNext()` skips validation (`ApplicationForm.tsx`); **`[data-form-issues]` never appears** |
+| Mock chip walks (`mock-applications.spec.ts`) | 18 | Same testing-mode path + specs expect non-testing validation/submit behavior |
+| Hero layout (`hero-layout.spec.ts`) | 1 | **Uncommitted Hero/CSS** vs test expecting 2-line fit metrics (product + test in flux) |
+| Admin UI (`final-system.spec.ts`) | 2 | No signed-in admin session in default local `next start` |
+| Navigation crawl (`navigation.spec.ts:109`) | 1 | 30s timeout in link harvest (likely slow page under parallel load; not form-deadline) |
+| Skipped (unchanged) | 6 | `ADMIN_PORTAL_E2E`, `NO_STORAGE_BASE_URL`, production-only testing-mode cases |
+
+**Not classified as deadline closure:** published form is `always-open`; failures persist with `RAPID_TEST_NOW` mid-window.
+
+### 8.5 Regression baseline trust (Step 3 gate)
+
+| Gate | Trustworthy? |
+|------|----------------|
+| typecheck / lint / build | **Yes** |
+| unit (66) | **Yes** |
+| HTTP audit | **Yes** (after script fix) |
+| Full E2E as prod-blocker guard | **No** — run with testing flag off (or dedicated env) before treating E2E as release gate |
+| Step 3A (demo/dev removal) | **Proceed with caution** — use unit + targeted E2E after unsetting mock env; do not rely on full suite until env/UI debt resolved |
 
 ### Skipped E2E (6)
 
 | Spec | Reason |
 |------|--------|
-| `admin-portal.spec.ts` | `ADMIN_PORTAL_E2E` unset — avoids local submit/purge |
+| `admin-portal.spec.ts` | `ADMIN_PORTAL_E2E` unset |
 | `demo-no-storage.spec.ts` | `NO_STORAGE_BASE_URL` unset |
-| `testing-mode.spec.ts` (2) | Mock/testing env gate on server |
-| `mock-applications.spec.ts` (1) | Env gate on server |
-
-### Playwright failure pattern (47)
-
-- **Primary:** `tests/e2e/apply-flow.spec.ts` — locators not found / wrong disabled state on form steps and **submit *** tests.
-- **Likely cause (verified):** Audit date **2026-10-21** is after Spring 2027 intake deadline (**15 Oct 2026** Karachi); form resolves **closed** (`lib/application/formState.ts` + unit intakes tests). Closed UI breaks apply-flow expectations.
-- **Contributing:** `.env.local` sets `NEXT_PUBLIC_ENABLE_MOCK_APPLICATIONS=1` → extra testing/sample UI (`mock-applications.spec.ts` skips some cases).
-- **Other failures:** `final-system.spec.ts` admin UI workflow (needs local admin sign-in), `hero-layout.spec.ts`, several `mock-applications` chip walks, `navigation.spec.ts` internal links, one `smoke.spec.ts` apply chrome test.
-- **Not a hang:** suite completed; no single test exceeded global timeout without finishing.
+| `testing-mode.spec.ts` (2) | Production-only cases |
+| `mock-applications.spec.ts` (1) | Env gate |
 
 ---
 

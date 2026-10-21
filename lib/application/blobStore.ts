@@ -4,6 +4,7 @@ import path from "node:path";
 import { atomicWriteFile } from "../content/localStore";
 import { DEFAULT_APPLICATION_FORM } from "@/lib/content/schema/schedule";
 import { extensionFor, isDocSlot, type SniffedType } from "./fileRules";
+import { uploadsRoot } from "./runtimePaths";
 
 export type StorageName = "google-drive" | "cloudinary" | "local";
 
@@ -44,8 +45,9 @@ export function storageProvider(): StorageName {
   return "local";
 }
 
-const uploadRoot = path.join(process.cwd(), "data", "uploads");
-const manifestPath = path.join(uploadRoot, "manifest.json");
+function manifestPath(): string {
+  return path.join(uploadsRoot(), "manifest.json");
+}
 
 export type ManifestEntry = {
   sha256: string;
@@ -73,7 +75,7 @@ function enqueueManifest<T>(task: () => Promise<T>): Promise<T> {
 
 async function readManifest(): Promise<ManifestEntry[]> {
   try {
-    const raw = await readFile(manifestPath, "utf8");
+    const raw = await readFile(manifestPath(), "utf8");
     const parsed = JSON.parse(raw) as { files?: ManifestEntry[] };
     return Array.isArray(parsed.files) ? parsed.files : [];
   } catch {
@@ -82,8 +84,8 @@ async function readManifest(): Promise<ManifestEntry[]> {
 }
 
 async function writeManifest(files: ManifestEntry[]): Promise<void> {
-  await mkdir(uploadRoot, { recursive: true });
-  await atomicWriteFile(manifestPath, `${JSON.stringify({ files }, null, 2)}\n`);
+  await mkdir(uploadsRoot(), { recursive: true });
+  await atomicWriteFile(manifestPath(), `${JSON.stringify({ files }, null, 2)}\n`);
 }
 
 export function safeObjectPath(
@@ -120,7 +122,7 @@ export async function rememberFile(entry: ManifestEntry): Promise<{ duplicateAcr
     next.push(entry);
     await writeManifest(next);
     if (sameSlot && sameSlot.path !== entry.path && sameSlot.provider === "local") {
-      await rm(path.join(uploadRoot, sameSlot.path), { force: true });
+      await rm(path.join(uploadsRoot(), sameSlot.path), { force: true });
     }
     return { duplicateAcross };
   });
@@ -146,8 +148,9 @@ export async function findByHash(sha256: string, applicationId: string): Promise
 }
 
 async function putLocal(relativePath: string, bytes: Buffer): Promise<StoredFile> {
-  const full = path.join(uploadRoot, relativePath);
-  if (!full.startsWith(uploadRoot)) throw new UploadStorageError("Invalid path.");
+  const root = uploadsRoot();
+  const full = path.join(root, relativePath);
+  if (!full.startsWith(root)) throw new UploadStorageError("Invalid path.");
   await mkdir(path.dirname(full), { recursive: true });
   await writeFile(full, bytes);
   return { provider: "local", id: relativePath, path: relativePath, url: "" };
@@ -221,7 +224,7 @@ export async function putFile(relativePath: string, bytes: Buffer, mime: string)
 
 export async function readLocalFile(relativePath: string): Promise<Buffer> {
   if (relativePath.includes("..") || path.isAbsolute(relativePath)) throw new UploadStorageError("Invalid path.");
-  const full = path.join(uploadRoot, relativePath);
+  const full = path.join(uploadsRoot(), relativePath);
   return readFile(full);
 }
 
@@ -330,7 +333,7 @@ export async function deleteBatchFiles(cycle: string, refs: BatchFileRef[]): Pro
   }
   const driveRemoved = await deleteDrive(cycle, [...driveIds]);
   await deleteCloudinary(cycle, [...cloudIds]);
-  await rm(path.join(uploadRoot, cycle), { recursive: true, force: true });
+  await rm(path.join(uploadsRoot(), cycle), { recursive: true, force: true });
   await enqueueManifest(async () => {
     const latest = await readManifest();
     await writeManifest(latest.filter((item) => !item.path.startsWith(prefix)));

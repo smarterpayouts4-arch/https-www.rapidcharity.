@@ -42,10 +42,7 @@ function collectAssets(value, result = new Set()) {
   return result;
 }
 const assets = [...collectAssets({ site, blog })].sort();
-const expectedMissing = new Set([
-  "/assets/videos/rapid.mp4",
-  "/assets/documents/report-2025.pptx",
-]);
+const expectedMissing = new Set(["/assets/videos/rapid.mp4"]);
 
 async function check(path, expected = 200) {
   try {
@@ -96,7 +93,7 @@ const report = {
 mkdirSync("qa", { recursive: true });
 writeFileSync("qa/final-system-http.json", `${JSON.stringify(report, null, 2)}\n`);
 console.log(JSON.stringify(report.counts, null, 2));
-console.log("expected missing assets: rapid.mp4 and report-2025.pptx");
+console.log("expected missing asset: rapid.mp4 (report-2025.pptx is intentional in public/)");
 if (failures.length) {
   console.error(JSON.stringify(failures, null, 2));
   process.exit(1);
