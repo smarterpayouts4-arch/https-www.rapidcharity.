@@ -57,7 +57,8 @@ main section:not([data-hero-root]) {
   font-weight: 700;
   font-size: 0.85rem;
 }
-.prose ol.steps strong { display: block; color: var(--color-text-primary); }
+/* Lead-in stays inline: a block lead-in split sentences mid-way ("... Form on" / "our website ..."). */
+.prose ol.steps strong { color: var(--color-text-primary); }
 .callout {
   margin: 0 0 0.85rem;
   padding: 0.85rem 1rem;
@@ -79,6 +80,8 @@ main section:not([data-hero-root]) {
 }
 .callout h2 { margin-top: 0; }
 .read-more { margin: 0 0 0.85rem; }
+/* The open paragraph repeats the preview sentence and callouts, so hide the preview once it is open. */
+.read-group:has(> .read-more[open]) > p { display: none; }
 .read-more summary {
   cursor: pointer;
   font-weight: 650;

@@ -22,7 +22,7 @@
   font-size: 1.15rem;
   font-weight: 600;
   letter-spacing: 0.04em;
-  color: #4a90c7 !important;
+  color: var(--color-brand-primary) !important;
   text-transform: uppercase;
 }
 .intro {

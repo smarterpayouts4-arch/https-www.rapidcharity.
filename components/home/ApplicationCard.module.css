@@ -1,5 +1,6 @@
 .card {
   width: min(100%, 292px);
+  overflow-wrap: normal;
   background: var(--color-surface-card);
   border-radius: var(--radius-lg);
   padding: 1.35rem 1.3rem 1.25rem;
@@ -22,7 +23,8 @@
   color: var(--color-brand-primary);
 }
 
-.title {
+/* .card .title: the same card looks the same on every page (page h2 rules never resize it). */
+.card .title {
   font-family: var(--font-sans);
   font-size: 0.98rem;
   font-weight: 700;
@@ -41,11 +43,11 @@
 }
 
 .meta li {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 6.25rem minmax(0, 1fr);
   align-items: baseline;
   gap: 0.75rem;
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   color: var(--color-text-body);
   border-top: 1px solid var(--color-border);
   padding: 0.65rem 0;
@@ -59,7 +61,7 @@
 .meta strong {
   color: var(--color-text-muted);
   font-weight: 600;
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -67,7 +69,7 @@
 .meta span {
   color: var(--color-text-primary);
   font-weight: 500;
-  text-align: right;
+  text-align: left;
 }
 
 .btn {
@@ -77,8 +79,9 @@
 .guide {
   display: inline-flex;
   align-items: center;
+  min-height: 44px;
   gap: 0.3rem;
-  font-size: 0.84rem;
+  font-size: 0.875rem;
   font-weight: 600;
   color: var(--color-brand-primary);
   text-decoration: none;
@@ -95,8 +98,27 @@
   border-radius: 2px;
 }
 
-@media (max-width: 560px) {
+@media (max-width: 599px) {
   .card {
     width: 100%;
   }
+}
+
+/* The apply page passes wide from 600px: the card spans the content width with the
+   facts on the left and the actions on the right. The home hero card is left to the
+   hero layout, which hides one of its two card slots with display: none. */
+@media (min-width: 600px) {
+  .wide.wide {
+    width: 100%;
+    max-width: none;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    column-gap: 1.75rem;
+    align-items: start;
+  }
+  .wide .head { grid-column: 1 / -1; }
+  .wide .meta { grid-column: 1; grid-row: 2 / span 2; margin-bottom: 0; }
+  .wide .btn { grid-column: 2; grid-row: 2; margin-bottom: 0.35rem; }
+  .wide .guide { grid-column: 2; grid-row: 3; justify-self: start; }
+  .wide > :last-child:not(.guide) { grid-column: 1 / -1; }
 }

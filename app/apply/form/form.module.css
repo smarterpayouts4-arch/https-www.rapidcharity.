@@ -79,6 +79,7 @@
 }
 
 .card {
+  min-width: 0;
   background: var(--color-surface-card);
   border: 1px solid var(--color-border);
   border-radius: 1.25rem;
@@ -99,6 +100,7 @@
   font-size: 0.88rem;
   font-weight: 600;
   border-radius: 0.7rem;
+  min-height: 44px;
   padding: 0.45rem 0.4rem;
   text-align: left;
   cursor: pointer;
@@ -111,7 +113,7 @@
   border: 1px solid var(--color-border-strong);
   display: inline-grid;
   place-items: center;
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   flex: none;
 }
 
@@ -154,9 +156,14 @@
   gap: var(--field-gap);
 }
 
+.grid {
+  /* One shrinkable column: an implicit auto column grows to the widest select option. */
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .hint {
   margin: 0;
-  font-size: 0.86rem;
+  font-size: 0.875rem;
   line-height: 1.45;
   color: var(--color-text-muted);
   text-wrap: wrap;
@@ -186,6 +193,14 @@
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 0.75rem;
     align-items: start;
+  }
+}
+
+/* A searchable select needs the full row on phones, or its placeholder is cut off. */
+@media (max-width: 479px) {
+  .pair:has(.combo) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--field-gap);
   }
 }
 
@@ -259,13 +274,15 @@
 .choice {
   display: flex;
   gap: 0.55rem;
-  align-items: flex-start;
+  align-items: center;
+  min-height: 44px;
   font-weight: 500;
   color: var(--color-text-secondary);
 }
 
 .choice input {
-  margin-top: 0.2rem;
+  margin: 0;
+  flex: none;
   accent-color: var(--color-brand-primary);
 }
 
@@ -273,7 +290,7 @@
   display: block;
   font-weight: 400;
   color: var(--color-text-muted);
-  font-size: 0.85rem;
+  font-size: 0.875rem;
 }
 
 .combo {
@@ -402,7 +419,7 @@
 .counter {
   margin: 0;
   text-align: right;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   color: var(--color-text-muted);
 }
 
@@ -461,7 +478,7 @@
 }
 
 .dropHint {
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   line-height: 1.4;
   color: var(--color-text-muted);
 }
@@ -592,7 +609,7 @@
   border: 1px solid var(--color-border);
   background: var(--color-background-page);
   color: var(--color-brand-primary);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.06em;
 }
@@ -601,7 +618,7 @@
   display: grid;
   gap: 0.1rem;
   min-width: 0;
-  font-size: 0.86rem;
+  font-size: 0.875rem;
   line-height: 1.35;
 }
 
@@ -746,7 +763,7 @@
 
 .sampleMeta {
   font-family: var(--font-sans);
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   line-height: 1.3;
   letter-spacing: 0;
@@ -845,7 +862,7 @@
 
 .testToolsLabel {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   font-weight: 600;
   color: #222222;
 }
@@ -882,7 +899,8 @@
 }
 
 @media (max-width: 900px) {
-  .layout { grid-template-columns: 1fr; }
+  /* minmax(0, 1fr): a long select option or fieldset must never widen the card past the screen. */
+  .layout { grid-template-columns: minmax(0, 1fr); }
   .sidebar { display: none; }
   .mobileProgress {
     display: grid;
@@ -908,7 +926,8 @@
   .choice {
     min-height: 44px;
   }
-  .actions > * { flex: 1 1 0; }
+  /* Share the row, but a long label ("Submit application") keeps one line and wraps the row instead. */
+  .actions > * { flex: 1 1 auto; white-space: nowrap; }
 }
 
 /* Phones: one steady rhythm, 44px controls, 16px text in inputs (no iOS zoom). */
@@ -920,7 +939,7 @@
   .textarea { min-height: 7.5rem; font-size: 16px; line-height: 1.5; padding: 0.65rem 0.75rem; }
   .field label,
   .legend { font-size: 0.9rem; line-height: 1.3; }
-  .hint { font-size: 0.86rem; line-height: 1.4; }
+  .hint { font-size: 0.875rem; line-height: 1.4; }
   .chip { min-height: 44px; padding: 0.3rem 0.5rem 0.3rem 0.8rem; font-size: 0.92rem; }
   .mobileProgress { padding: 0.5rem 0 0.55rem; margin-bottom: 0.55rem; gap: 0.35rem; }
   .eduCard { padding: 0.75rem; gap: var(--field-gap); }
@@ -1085,7 +1104,7 @@
 
 .photoNote {
   margin: 0;
-  font-size: 0.86rem;
+  font-size: 0.875rem;
   color: #222222;
   overflow-wrap: anywhere;
 }
@@ -1101,7 +1120,8 @@
   position: relative;
   display: flex;
   flex: 0 1 auto;
-  min-width: 3.25rem;
+  /* Never narrower than its longest word: "Spring" must not break into "Sprin / g". */
+  min-width: min-content;
 }
 
 /* Two or three answers share the row evenly, up to a comfortable width. */
@@ -1130,8 +1150,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 3.25rem;
   min-height: 44px;
-  padding: 0.4rem 0.75rem;
+  padding: 0.4rem 0.6rem;
   border: 1px solid #8B0A24;
   border-radius: 999px;
   background: var(--pill-unselected-bg);
@@ -1140,7 +1161,7 @@
   color: var(--pill-unselected-text);
   text-align: center;
   line-height: 1.25;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
 }
 
 /* Selected: white on brand (6.95:1). Never white on the pale tint. */
@@ -1302,6 +1323,14 @@
   border-radius: 0.85rem;
 }
 
+.card fieldset {
+  min-inline-size: 0;
+}
+
+.card select {
+  max-width: 100%;
+}
+
 .termCard > legend {
   padding: 0 0.3rem;
 }
@@ -1399,7 +1428,7 @@
 }
 
 .reviewPhoto span {
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   text-align: center;
   padding: 0.25rem;
 }

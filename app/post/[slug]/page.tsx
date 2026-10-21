@@ -61,7 +61,7 @@ export default async function PostPage({ params, searchParams }: Props) {
       <article className={`section ${styles.article}`}>
         <div className={`container ${styles.wrap}`}>
           <p className="meta">
-            <Link href="/blog">{labels.backLabel}</Link>
+            <Link className="tap-link" href="/blog">{labels.backLabel}</Link>
           </p>
           <h1 className={styles.title}>{post.title}</h1>
           <p className={`meta ${styles.meta}`}>

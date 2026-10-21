@@ -38,15 +38,17 @@ function GraduationCapIcon() {
 
 type Props = {
   className?: string;
+  /** Lay the card out wide (facts left, actions right) on screens from 600px, e.g. the apply page. */
+  wide?: boolean;
   content: SiteContent["applicationCard"];
   intakes?: SiteContent["intakes"];
 };
 
-export function ApplicationCard({ className, content, intakes }: Props) {
+export function ApplicationCard({ className, content, intakes, wide = false }: Props) {
   const status = applicationStatus(intakes);
   return (
     <aside
-      className={`${styles.card}${className ? ` ${className}` : ""}`}
+      className={`${styles.card}${wide ? ` ${styles.wide}` : ""}${className ? ` ${className}` : ""}`}
       aria-label={content.ariaLabel}
       data-intake-state={status.state}
     >

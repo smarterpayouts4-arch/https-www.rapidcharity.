@@ -88,7 +88,9 @@ export function renderPostBody(body: string): ReactNode[] {
       nodes.push(
         <ol key={key++} className="steps">
           {steps.map((step, i) => (
-            <li key={i}>{stepLine(step)}</li>
+            <li key={i}>
+              <span>{stepLine(step)}</span>
+            </li>
           ))}
         </ol>,
       );
@@ -136,7 +138,7 @@ function paragraphNode(block: string, key: number): ReactNode {
   const rest = sentences.filter((sentence) => !isKeyFact(sentence));
   const [first, ...more] = rest;
   return (
-    <div key={key}>
+    <div key={key} className="read-group">
       {facts.map((fact) => (
         <p key={fact} className="callout">
           {fact}

@@ -85,3 +85,11 @@
   .footer { margin-top: 1.25rem; }
   .quote p { font-size: 1.2rem; }
 }
+
+/* Narrow phones (iPhone SE): "See all" moves up beside the eyebrow so the title gets the
+   full width and stays on two lines ("Real Stories." / "Brighter Tomorrows."). */
+@media (max-width: 389px) {
+  .header :global(.eyebrow) { grid-column: 1; grid-row: 1; align-self: center; }
+  .seeAll { grid-row: 1; }
+  .title { grid-column: 1 / -1; }
+}

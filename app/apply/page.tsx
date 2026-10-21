@@ -74,13 +74,13 @@ export default async function ApplyPage({
           <h1 className={styles.title}>{apply.title}</h1>
           <p className={styles.intro}>{apply.intro}</p>
           <p className={styles.criteriaLink}>
-            <a className="text-link" href="/education-scholarships1">
+            <a className="text-link tap-link" href="/education-scholarships1">
               Review scholarship eligibility criteria
             </a>
           </p>
           <DraftNotice />
 
-          <ApplicationCard content={content.applicationCard} intakes={content.intakes} />
+          <ApplicationCard wide content={content.applicationCard} intakes={content.intakes} />
 
           <div className={styles.cards}>
             {apply.programs.map((prog) => {
@@ -112,7 +112,7 @@ export default async function ApplyPage({
 
           <p>{apply.closing}</p>
           <p>
-            <a href={`mailto:${apply.contactEmail}`}>{apply.contactEmail}</a>
+            <a className="tap-link" href={`mailto:${apply.contactEmail}`}>{apply.contactEmail}</a>
           </p>
 
           <ShareRow content={chrome.share} url={site.url} variant="labeled" />

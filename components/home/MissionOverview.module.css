@@ -15,7 +15,7 @@
   flex-direction: column;
   justify-content: center;
   padding: clamp(3rem, 6vw, 5.5rem);
-  max-width: 40rem;
+  max-width: 46rem;
 }
 
 .eyebrow {
@@ -31,9 +31,9 @@
 .title {
   margin: 0 0 1.1rem;
   color: var(--color-text-inverse);
-  font-size: clamp(2.6rem, 4.5vw, 4.4rem);
-  line-height: 0.98;
-  max-width: 12ch;
+  /* Sized so each sentence keeps its own line: "Education for People." / "Progress for Communities." */
+  font-size: clamp(2.4rem, 3.4vw, 3.2rem);
+  line-height: 1.02;
 }
 
 .title em {
@@ -71,7 +71,7 @@
   background: rgba(26, 26, 26, 0.45);
   color: var(--color-text-inverse);
   font-family: var(--font-button);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -170,7 +170,7 @@
   background: var(--color-brand-tint);
   color: var(--color-brand-deep);
   font-family: var(--font-button);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.04em;
 }
@@ -202,7 +202,7 @@
 
 @media (max-width: 767px) {
   .statement { padding: 1.35rem 1.1rem; }
-  .title { font-size: 1.85rem; }
+  .title { font-size: clamp(1.65rem, 7.6vw, 1.85rem); }
   .video, .fbWrap, .fallback { min-height: 11rem; }
   .journeyWrap { padding: 1.35rem 0; }
   .quoteCard { margin-bottom: 1rem; }
@@ -211,8 +211,8 @@
   .pillar { padding-top: 0.65rem; }
   .pillar h3 { font-size: 1.1rem; }
   .pillar p {
-    font-size: 0.82rem;
-    overflow-wrap: anywhere;
+    font-size: 0.875rem;
+    overflow-wrap: break-word;
   }
 }
 

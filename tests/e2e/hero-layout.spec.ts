@@ -15,7 +15,7 @@ const VIEWPORTS = [
 ] as const;
 
 const SHOTS = new Set([360, 390, 430, 440]);
-const SHOT_DIR = "/opt/cursor/artifacts/hero-cards";
+const SHOT_DIR = process.env.HERO_SHOT_DIR ?? "/opt/cursor/artifacts/hero-cards";
 
 test.beforeEach(async ({ page }) => {
   const problems: string[] = [];
@@ -73,6 +73,16 @@ test("hero text stays off the photos at every width and slide", async ({ page })
         loaded,
         italicLoaded,
         italicStyle: italicStyle.fontStyle,
+        // Widest headline line vs the copy column (both lines are nowrap blocks).
+        inkRight: Math.max(
+          ...[...title.querySelectorAll<HTMLElement>("span")].map((node) => {
+            const range = document.createRange();
+            range.selectNodeContents(node);
+            return range.getBoundingClientRect().right;
+          }),
+        ),
+        copyRight: title.parentElement!.getBoundingClientRect().right,
+        docWidth: document.documentElement.scrollWidth,
       };
     });
     expect(placement.scrollY, `${viewport.width} initial scroll`).toBe(0);
@@ -83,10 +93,13 @@ test("hero text stays off the photos at every width and slide", async ({ page })
     expect(placement.loaded, `${viewport.width} ${placement.primary}`).toBeTruthy();
     expect(placement.italicStyle).toBe("italic");
     expect(placement.italicLoaded, `${viewport.width} italic`).toBeTruthy();
+    // Always two lines: "Education Empowers" / "Brighter Futures." (round 13),
+    // sized fluidly so the first line fills but never overflows the column.
+    expect(placement.lines, `${viewport.width} headline lines`).toBe(2);
+    expect(placement.inkRight, `${viewport.width} headline fits`).toBeLessThanOrEqual(placement.copyRight + 0.5);
+    expect(placement.docWidth, `${viewport.width} no overflow`).toBeLessThanOrEqual(viewport.width);
     if (viewport.width <= 440) {
-      expect(placement.size, `${viewport.width} headline size`).toBeGreaterThanOrEqual(40);
-      expect(placement.size, `${viewport.width} headline size`).toBeLessThanOrEqual(44);
-      expect(placement.lines, `${viewport.width} headline lines`).toBe(3);
+      expect(placement.size, `${viewport.width} headline size`).toBeGreaterThanOrEqual(36);
     }
 
     if (SHOTS.has(viewport.width)) {

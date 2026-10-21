@@ -30,6 +30,9 @@
   padding: 0;
   cursor: pointer;
   font: inherit;
+  min-width: 44px;
+  min-height: 44px;
+  justify-content: center;
 }
 .item:hover { text-decoration: none; }
 .icon {
@@ -42,7 +45,7 @@
   color: #fff;
 }
 .label {
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   color: var(--color-muted);
   line-height: 1.2;
 }
@@ -60,7 +63,7 @@
 }
 .compact .list {
   justify-content: flex-start;
-  gap: 0.55rem;
+  gap: 0.25rem;
 }
 .compact .icon {
   width: 36px;

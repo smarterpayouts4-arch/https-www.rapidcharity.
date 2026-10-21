@@ -1,6 +1,6 @@
 .hero {
   background: #f7f4ef;
-  color: #1a1a1a;
+  color: #222222;
   padding: 1.35rem 0 2.75rem;
 }
 
@@ -19,6 +19,8 @@
 .copy {
   max-width: 42rem;
   text-align: left;
+  /* The headline sizes itself to this column (cqi below). */
+  container-type: inline-size;
 }
 
 .eyebrow {
@@ -32,28 +34,38 @@
   margin: 0 0 0.85rem;
 }
 
+/* Headline is always exactly two lines: "Education Empowers" / "Brighter
+   Futures.". Each line is a nowrap block, and the size is fluid so the
+   longer first line (about 8.0em wide in Cormorant 600) always fits the
+   copy column with a little room to spare. vw fallback first, then the
+   exact column width via container query units. */
 .title {
   font-family: var(--font-serif);
-  font-size: clamp(2.7rem, 6vw, 5rem);
+  font-size: clamp(2rem, calc((100vw - 2.5rem) / 8.4), 5rem);
   font-weight: 600;
   letter-spacing: -0.02em;
   margin: 0 0 1rem;
   line-height: 0.96;
-  color: #1a1a1a;
+  color: #222222;
+}
+
+@supports (font-size: 1cqi) {
+  .title { font-size: clamp(1.75rem, calc(100cqi / 8.3), 5rem); }
+}
+
+.titleLine {
+  display: block;
+  white-space: nowrap;
 }
 
 .titleInk {
-  color: #1a1a1a;
+  color: #222222;
 }
 
 .titleBrand {
   color: #b20f3a;
   font-style: italic;
   font-weight: 600;
-}
-
-.mobileBreak {
-  display: none;
 }
 
 .lead {
@@ -88,7 +100,7 @@
   font-style: italic;
   font-size: 1.35rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #222222;
   line-height: 1.4;
 }
 
@@ -197,16 +209,7 @@
 
 @media (max-width: 640px) {
   .title {
-    font-size: clamp(2.5rem, 10vw, 2.75rem);
-    line-height: 0.94;
-  }
-
-  .mobileBreak {
-    display: inline;
-  }
-
-  .desktopSpace {
-    display: none;
+    line-height: 1.02;
   }
 
   .ctas {
@@ -243,6 +246,14 @@
   .copy {
     text-align: left;
     max-width: none;
+  }
+
+  .title {
+    font-size: clamp(2rem, calc((min(100vw - 2.5rem, var(--max)) - 23rem) / 8.4), 5rem);
+  }
+
+  @supports (font-size: 1cqi) {
+    .title { font-size: clamp(1.75rem, calc(100cqi / 8.3), 5rem); }
   }
 
   .lead {

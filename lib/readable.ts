@@ -1,10 +1,24 @@
-/** Split on sentence boundaries without breaking decimals such as 3.5. */
+/** Titles, abbreviations and initials that end in a period but do not end a sentence. */
+const NOT_A_SENTENCE_END = /(?:^|[\s(])(?:Mr|Mrs|Ms|Mx|Dr|Rev|Fr|Sr|Jr|St|Prof|Hon|Rt|Mt|No|Nos|vs|etc|e\.g|i\.e|[A-Z])\.$/;
+
+/** Split on sentence boundaries without breaking decimals such as 3.5, titles such as
+ *  "Ms." / "Rev. Dr." or initials such as "Jonathan S. Addleton". */
 export function splitSentences(text: string): string[] {
   const parts = text
     .replace(/\s+/g, " ")
     .trim()
     .split(/(?<=[.!?])\s+(?=[A-Z“"'])/);
-  const sentences = parts.map((part) => part.trim()).filter(Boolean);
+  const sentences: string[] = [];
+  for (const raw of parts) {
+    const part = raw.trim();
+    if (!part) continue;
+    const previous = sentences[sentences.length - 1];
+    if (previous !== undefined && NOT_A_SENTENCE_END.test(previous)) {
+      sentences[sentences.length - 1] = `${previous} ${part}`;
+    } else {
+      sentences.push(part);
+    }
+  }
   return sentences.length > 0 ? sentences : [text.trim()];
 }
 

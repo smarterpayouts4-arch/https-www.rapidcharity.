@@ -30,12 +30,26 @@ export function ReportsShowcase({ content, remoteHref }: Props) {
             {content.title}
           </h2>
           <p className={styles.lead}>{content.lead}</p>
+        </div>
+        <article className={styles.card} aria-labelledby="reports-card-title">
+          <div className={styles.cardHead}>
+            <span className={styles.cardBadge} aria-hidden="true">
+              {content.cardBadge}
+            </span>
+            <div className={styles.cardText}>
+              <p className={styles.cardEyebrow}>{content.cardEyebrow}</p>
+              <h3 id="reports-card-title" className={styles.cardTitle}>
+                {content.cardTitle}
+              </h3>
+              <p className={styles.cardMeta}>{content.cardMeta}</p>
+            </div>
+          </div>
           <div className={styles.actions}>
-            <Link className="btn" href={content.viewHref}>
+            <Link className={`btn ${styles.action}`} href={content.viewHref}>
               {content.viewLabel} <span aria-hidden="true">→</span>
             </Link>
             <a
-              className="btn-secondary"
+              className={`btn-secondary ${styles.action}`}
               href={download.href}
               {...(download.download ? { download: true } : {})}
               {...(download.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
@@ -43,19 +57,7 @@ export function ReportsShowcase({ content, remoteHref }: Props) {
               {content.downloadLabel}
             </a>
           </div>
-        </div>
-        <div className={styles.card} aria-hidden="true">
-          <div className={styles.cardBadge}>{content.cardBadge}</div>
-          <p className={styles.cardEyebrow}>{content.cardEyebrow}</p>
-          <h3 className={styles.cardTitle}>{content.cardTitle}</h3>
-          <p className={styles.cardMeta}>{content.cardMeta}</p>
-          <Link className={styles.cardLink} href={content.viewHref}>
-            {content.cardLinkLabel}
-          </Link>
-        </div>
-        <Link className={styles.seeAll} href={content.viewHref}>
-          See all <span aria-hidden="true">→</span>
-        </Link>
+        </article>
       </div>
     </section>
   );

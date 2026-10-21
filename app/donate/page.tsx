@@ -30,7 +30,7 @@ export default async function DonatePage({
           <p className={styles.ctaWrap}>
             <a
               id="donate-paypal"
-              className={`text-link ${styles.donateCta}`}
+              className={`text-link tap-link ${styles.donateCta}`}
               href={donate.paypalHref}
               target="_blank"
               rel="noopener noreferrer"

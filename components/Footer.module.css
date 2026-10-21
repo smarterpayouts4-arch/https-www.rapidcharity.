@@ -47,7 +47,7 @@
 
 .brandTag {
   display: block;
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   color: var(--color-text-on-brand-muted);
   max-width: 16rem;
   line-height: 1.35;
@@ -78,11 +78,16 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: 0;
 }
 
+/* Every footer link is a 44px tap target; the row height replaces the old list gap. */
 .links a,
 .contact a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  min-width: 44px;
   color: var(--color-text-on-brand-muted);
   font-size: 0.9rem;
   text-decoration: none;
@@ -96,6 +101,9 @@
 .contact li {
   font-size: 0.9rem;
   color: var(--color-text-on-brand-muted);
+}
+.contact li:not(:has(a)) {
+  padding-block: 0.3rem;
 }
 
 .wordmark {
@@ -136,7 +144,7 @@
 }
 
 .subscribeLabel {
-  font-size: 0.82rem;
+  font-size: 0.875rem;
   color: var(--color-text-secondary);
   margin: 0;
 }
@@ -148,8 +156,9 @@
   align-items: stretch;
 }
 
+/* The input always takes the full row so its placeholder is never cut off; Join sits below. */
 .subscribe input[type="email"] {
-  flex: 1 1 10rem;
+  flex: 1 1 100%;
   min-width: 0;
   min-height: var(--input-height);
   padding: 0.6rem 0.85rem;
@@ -176,19 +185,24 @@
 
 .consent {
   display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-  font-size: 0.78rem;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  font-size: 0.875rem;
+  line-height: 1.4;
   color: var(--color-text-muted);
-  margin: 0.15rem 0 0;
+  margin: 0;
+  cursor: pointer;
 }
 .consent input {
-  margin-top: 0.2rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: 0;
   flex-shrink: 0;
 }
 
 .note {
-  font-size: 0.78rem;
+  font-size: 0.875rem;
   color: var(--color-text-muted);
   margin: 0;
 }
@@ -201,8 +215,8 @@
 
 .socialBtn {
   display: inline-flex;
-  width: 2.15rem;
-  height: 2.15rem;
+  width: 44px;
+  height: 44px;
   border-radius: 999px;
   background: #3a3a3a;
   color: #fff;
@@ -235,15 +249,21 @@
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
-  font-size: 0.82rem;
+  align-items: center;
+  font-size: 0.875rem;
   color: var(--color-text-on-brand-muted);
 }
 
 .legal {
   display: flex;
-  gap: 1.25rem;
+  flex-wrap: wrap;
+  column-gap: 1.25rem;
 }
 .legal a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  min-width: 44px;
   color: var(--color-text-on-brand-muted);
   text-decoration: none;
 }
@@ -252,7 +272,9 @@
   text-decoration: underline;
 }
 
-@media (max-width: 960px) {
+/* Two columns up to 1099px: in four columns the subscribe box was too narrow for the
+   email placeholder on a 1024px iPad. */
+@media (max-width: 1099px) {
   .grid {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
@@ -261,7 +283,16 @@
 @media (max-width: 640px) {
   .grid {
     grid-template-columns: minmax(0, 1fr);
+    gap: 1.75rem;
   }
+  /* Phones: quick links in two columns so 44px rows stay compact. */
+  .links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 1rem;
+  }
+  .links a { line-height: 1.3; padding-block: 0.25rem; }
+  .bottom { margin-top: 1.75rem; row-gap: 0.25rem; }
   .subscribeRow {
     flex-direction: column;
     align-items: stretch;

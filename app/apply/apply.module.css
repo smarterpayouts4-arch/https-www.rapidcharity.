@@ -12,7 +12,7 @@
   max-width: 65ch;
   margin-inline: auto;
   min-width: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 .intro {
   text-align: left;
@@ -61,7 +61,7 @@
   border-radius: var(--radius-card);
   padding: 1rem 1.05rem;
   min-width: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   scroll-margin-top: 6rem;
 }
 
@@ -87,7 +87,7 @@
   border-radius: var(--radius-pill);
   background: #FFE8EE;
   color: #8B0A24;
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   line-height: 1.3;
 }

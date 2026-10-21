@@ -45,3 +45,8 @@
 .body li strong {
   font-weight: 600;
 }
+
+/* Phones: long post titles stay readable without running to six lines. */
+@media (max-width: 479px) {
+  .title { font-size: 1.6rem; line-height: 1.18; }
+}

@@ -57,7 +57,7 @@ export default async function Page({
             </p>
           ) : null}
           <p>
-            <Link href={landing.backHref || "/apply"}>
+            <Link className="tap-link" href={landing.backHref || "/apply"}>
               {landing.backLabel || "Back to Apply"}
             </Link>
           </p>

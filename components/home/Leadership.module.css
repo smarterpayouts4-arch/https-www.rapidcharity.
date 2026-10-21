@@ -1,19 +1,15 @@
+/* Board: heading block, then one compact card with an overlapping row of
+   numbered seat monograms, the seat count and the CTA.
+   Palette: #B20F3A #C81343 #8B0A24 #F7F4EF #222222 #FFE8EE */
 .section {
-  padding: 5rem 0;
+  padding: clamp(3.25rem, 5.5vw, 4.75rem) 0;
   background: var(--color-background-page);
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 2rem;
-  margin-bottom: 2.5rem;
-  flex-wrap: wrap;
-}
+.header { margin-bottom: 1.75rem; }
 
 .title {
-  font-size: clamp(1.85rem, 3vw, 2.45rem);
+  font-size: clamp(1.85rem, 3vw, 2.55rem);
   margin: 0 0 0.75rem;
 }
 
@@ -21,64 +17,101 @@
   margin: 0;
   max-width: 38rem;
   color: var(--color-body);
-  font-size: 0.95rem;
+  font-size: 0.98rem;
 }
 
-.row {
+.board {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.stack {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 1.75rem 2rem;
+  row-gap: 0.4rem;
 }
 
-.person {
+.seat {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.65rem;
-  width: 6.5rem;
+  gap: 0.4rem;
+  min-width: 0;
 }
+.seat + .seat { margin-left: -0.6rem; }
 
-.avatar {
-  width: 5.25rem;
-  height: 5.25rem;
+.monogram {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 3.25rem;
+  height: 3.25rem;
   border-radius: 999px;
-  background: linear-gradient(145deg, #f3e6ea, #e8d0d7);
-  color: var(--color-burgundy-deep);
-  font-family: var(--font-serif);
-  font-weight: 600;
-  font-size: 1.15rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  background: #FFE8EE;
   border: 3px solid var(--color-surface-card);
-  box-shadow: 0 8px 24px rgba(178, 15, 58, 0.12);
+  color: var(--color-brand-deep);
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1;
 }
 
-.name {
-  font-size: 0.78rem;
-  font-weight: 500;
-  color: var(--color-body);
-  text-align: center;
+/* Only used if seats ever get distinct labels (for example real names). */
+.role {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-right: 0.9rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .avatar {
-    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+.count {
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--font-button);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.cta { margin-left: auto; }
+
+@media (max-width: 1023px) {
+  .board {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem;
   }
-  .person:hover .avatar {
-    transform: translateY(-4px);
-  }
+  .stack { grid-column: 1 / -1; }
+  .cta { margin: 0; }
 }
 
 @media (max-width: 767px) {
-  .section { padding: 1.35rem 0; }
+  .section { padding: 1.75rem 0; }
   .header { margin-bottom: 1rem; }
-  .avatar { width: 3.25rem; height: 3.25rem; font-size: 0.85rem; }
-  .person { width: 4.4rem; gap: 0.35rem; }
-  .row { gap: 0.75rem 0.65rem; }
-  .title { font-size: 1.45rem; }
+  .header :global(.eyebrow) { margin: 0 0 0.4rem; }
+  .title { font-size: 1.55rem; margin: 0 0 0.4rem; }
+  .lead { font-size: 0.92rem; }
+  .board { padding: 0.9rem 1rem; }
+  .seat + .seat { margin-left: -0.45rem; }
+  .monogram { width: 2.6rem; height: 2.6rem; font-size: 0.95rem; border-width: 2px; }
+  .count { font-size: 0.88rem; align-self: center; }
+  .cta {
+    margin: 0;
+    min-height: 44px;
+    padding: var(--btn-pad-y-sm) var(--btn-pad-x-sm);
+    font-size: var(--btn-font-size-sm);
+  }
+}
+
+@media (max-width: 374px) {
+  .monogram { width: 2.35rem; height: 2.35rem; font-size: 0.88rem; }
 }

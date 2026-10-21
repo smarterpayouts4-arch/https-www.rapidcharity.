@@ -332,6 +332,26 @@ test("home mobile keeps news and programs to about four compact cards", async ({
   expect(clipped).toBe(0);
 });
 
+test("home board, annual report and donate blocks stay compact on mobile", async ({ page }) => {
+  await page.setViewportSize({ width: 393, height: 852 });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  const board = page.locator("section:has(#leadership-heading)");
+  await expect(board.getByRole("list", { name: "Board of Directors" }).locator("li")).toHaveCount(7);
+  await expect(board.getByText("7 Board Directors")).toBeVisible();
+  const meet = board.getByRole("link", { name: /Meet Our Board/ });
+  await expect(meet).toHaveAttribute("href", "/about-us");
+  const report = page.locator("section:has(#reports-heading)");
+  for (const name of [/View Report/, /Download PPTX/]) {
+    const link = report.getByRole("link", { name });
+    await expect(link).toBeVisible();
+    expect((await link.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
+  }
+  const donate = page.locator("section:has(#donate-banner-heading)").getByRole("link", { name: /Donate Now/ });
+  expect((await donate.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
+  const width = await page.evaluate(() => document.documentElement.scrollWidth);
+  expect(width).toBeLessThanOrEqual(393);
+});
+
 test("robert mathais page leads with eligibility bullets and a short deadline", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/robert-mathais-scholarship", { waitUntil: "domcontentloaded" });

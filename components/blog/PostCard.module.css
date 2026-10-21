@@ -6,6 +6,11 @@
   align-items: stretch;
 }
 
+/* Under 360px two columns are about 130px wide and long words break mid-word: one column. */
+@media (max-width: 359px) {
+  .grid { grid-template-columns: minmax(0, 1fr); }
+}
+
 @media (min-width: 640px) {
   .grid { gap: 1.5rem 1.25rem; }
   .page { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -71,7 +76,7 @@
 .kicker {
   margin: 0;
   font-family: var(--font-button);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -86,13 +91,9 @@
   font-weight: 600;
   line-height: 1.2;
   color: var(--color-text-primary);
-  text-wrap: pretty;
+  /* Full title, never clamped; balance keeps the last line from holding one word. */
+  text-wrap: balance;
   overflow-wrap: break-word;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
   transition: color 0.2s ease;
 }
 
@@ -102,17 +103,13 @@
   line-height: 1.5;
   color: var(--color-text-body);
   overflow-wrap: break-word;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  text-wrap: pretty;
 }
 
 .meta {
   margin: auto 0 0;
   padding-top: 0.35rem;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   line-height: 1.4;
   color: var(--color-text-muted);
 }
@@ -136,13 +133,13 @@
 @media (max-width: 639px) {
   .card { border-radius: 12px; }
   .body { padding: 0.7rem 0.75rem 0.8rem; gap: 0.3rem; }
-  .kicker { font-size: 0.62rem; letter-spacing: 0.08em; }
+  .kicker { font-size: 0.75rem; letter-spacing: 0.06em; }
   .title {
     font-family: var(--font-sans);
-    font-size: 0.95rem;
+    font-size: 1rem;
     font-weight: 600;
     line-height: 1.3;
   }
-  .excerpt { font-size: 0.8rem; line-height: 1.45; }
-  .meta { font-size: 0.72rem; }
+  .excerpt { font-size: 0.875rem; line-height: 1.45; }
+  .meta { font-size: 0.8125rem; }
 }

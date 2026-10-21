@@ -10,19 +10,6 @@ type Props = {
   intakes?: SiteContent["intakes"];
 };
 
-function TitleLine({ text }: { text: string }) {
-  const space = text.indexOf(" ");
-  if (space === -1) return text;
-  return (
-    <>
-      {text.slice(0, space)}
-      <br className={styles.mobileBreak} />
-      <span className={styles.desktopSpace}> </span>
-      {text.slice(space + 1)}
-    </>
-  );
-}
-
 export function Hero({ content, applicationCard, intakes }: Props) {
   return (
     <section className={styles.hero} aria-label={content.ariaLabel} data-hero-root>
@@ -30,11 +17,8 @@ export function Hero({ content, applicationCard, intakes }: Props) {
         <div className={styles.copy} data-hero-copy>
           <p className={styles.eyebrow}>{content.eyebrow}</p>
           <h1 className={styles.title}>
-            <span className={styles.titleInk}>
-              <TitleLine text={content.titleLine1} />
-            </span>
-            <br />
-            <span className={styles.titleBrand}>{content.titleLine2}</span>
+            <span className={`${styles.titleLine} ${styles.titleInk}`}>{content.titleLine1}</span>{" "}
+            <span className={`${styles.titleLine} ${styles.titleBrand}`}>{content.titleLine2}</span>
           </h1>
           <p className={styles.lead}>{content.lead}</p>
           <div className={styles.ctas}>

@@ -226,7 +226,7 @@ export function EducationRows({
               value={row.board}
               field={`${base}.board`}
               error={visible(`${base}.board`)}
-              placeholder="e.g. BISE Lahore, Punjab University"
+              hint="For example BISE Lahore or Punjab University."
               list="board-options"
               onChange={(value) => update(index, { board: value })}
             />
