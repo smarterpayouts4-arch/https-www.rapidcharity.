@@ -316,15 +316,20 @@ test("home mobile keeps news and programs to about four compact cards", async ({
   await expect(news.getByRole("link", { name: "See all" })).toBeVisible();
   const programs = page.locator("section:has(#scholarships-heading)");
   await expect(programs.getByRole("link", { name: "See all" })).toBeVisible();
-  const cards = programs.locator("article:visible");
-  await expect(cards).toHaveCount(3);
-  // Program descriptions show in full (no clamp) and stay compact.
-  const box = await cards.first().boundingBox();
-  expect(box?.height ?? 999).toBeLessThan(260);
-  const clamped = await cards.locator("p").evaluateAll((els) =>
-    els.filter((el) => el.scrollHeight > el.clientHeight + 2).length,
+  // Compact list rows: number chip, title, eligibility tag, chevron (round 11).
+  const rows = programs.locator("li:visible");
+  await expect(rows).toHaveCount(3);
+  await expect(rows.getByRole("link")).toHaveCount(3);
+  for (const tag of ["All fields except business", "Business students", "Women only"]) {
+    await expect(programs.getByText(tag, { exact: true })).toBeVisible();
+  }
+  const box = await rows.first().boundingBox();
+  expect(box?.height ?? 999).toBeGreaterThanOrEqual(44);
+  expect(box?.height ?? 999).toBeLessThan(100);
+  const clipped = await rows.locator("h3, span").evaluateAll((els) =>
+    els.filter((el) => el.scrollHeight > el.clientHeight + 2 && el.clientHeight > 0).length,
   );
-  expect(clamped).toBe(0);
+  expect(clipped).toBe(0);
 });
 
 test("robert mathais page leads with eligibility bullets and a short deadline", async ({ page }) => {

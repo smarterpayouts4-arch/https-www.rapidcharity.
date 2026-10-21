@@ -54,7 +54,7 @@ test("mobile home uses a two-column story grid, full program cards, and see all"
     expect(m.bLeft).toBeGreaterThan(m.aRight - 1);
     expect(Math.abs(m.imgOffset)).toBeLessThan(3);
   }
-  const programs = page.locator("#scholarships-heading").locator("xpath=ancestor::section[1]").locator("article");
+  const programs = page.locator("#scholarships-heading").locator("xpath=ancestor::section[1]").locator("li");
   await expect(programs).toHaveCount(3);
   const programBox = await programs.first().boundingBox();
   expect(programBox?.width ?? 999).toBeLessThanOrEqual(352);

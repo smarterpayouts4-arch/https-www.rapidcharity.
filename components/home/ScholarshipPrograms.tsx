@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { SiteContent } from "@/lib/content/schema";
 import styles from "./ScholarshipPrograms.module.css";
@@ -7,17 +6,18 @@ type Props = {
   content: SiteContent["scholarshipPrograms"];
 };
 
-/**
- * Blog post photos (student stories) are not scholarship imagery. The original
- * site has no photos for the three programs, so cards stay text-only unless an
- * editor sets a dedicated scholarship image outside the blog folder.
- */
-function programImage(src: string | undefined): string | null {
-  if (!src) return null;
-  if (src.startsWith("/assets/images/blog/")) return null;
-  return src;
-}
+/** Short eligibility tags, identical to the program cards on /apply. */
+const ELIGIBILITY: Record<string, string> = {
+  "/general-8": "All fields except business",
+  "/robert-mathais-scholarship": "Business students",
+  "/ivy-azariah-scholarship": "Women only",
+};
 
+/**
+ * Compact program list: one grouped card of tappable rows on phones and
+ * tablets (number chip, title, eligibility tag, chevron), three compact
+ * whole-card links across on desktop where the one-sentence blurb also shows.
+ */
 export function ScholarshipPrograms({ content }: Props) {
   return (
     <section className={styles.section} aria-labelledby="scholarships-heading">
@@ -38,43 +38,38 @@ export function ScholarshipPrograms({ content }: Props) {
           </Link>
         </div>
 
-        <div className={styles.grid}>
+        <ul className={styles.programList} data-reveal>
           {content.programs.map((p, index) => {
-            const image = programImage(p.image);
+            const tag = ELIGIBILITY[p.href];
             return (
-              <article key={p.href} className={styles.card} data-reveal-item>
-                {image ? (
-                  <div className={styles.imageWrap}>
-                    <Image
-                      src={image}
-                      alt={p.alt}
-                      width={480}
-                      height={360}
-                      sizes="(max-width: 700px) 100vw, 33vw"
-                    />
-                  </div>
-                ) : null}
-                <div className={styles.body}>
-                  <p className={styles.chip}>
-                    <span className={styles.num} aria-hidden="true">
-                      {String(index + 1).padStart(2, "0")}
+              <li key={p.href} className={styles.programItem}>
+                <Link href={p.href} className={styles.programRow}>
+                  <span className={styles.programNum} aria-hidden="true">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <div className={styles.programText}>
+                    <h3 className={styles.programTitle}>{p.title}</h3>
+                    {tag ? <span className={styles.programTag}>{tag}</span> : null}
+                    <span className={styles.programBlurb}>{p.blurb}</span>
+                    <span className={styles.programMore}>
+                      {p.learnMoreLabel} <span aria-hidden="true">→</span>
                     </span>
-                    Scholarship
-                  </p>
-                  <h3>
-                    <Link href={p.href} className={styles.titleLink}>
-                      {p.title}
-                    </Link>
-                  </h3>
-                  <p className={styles.blurb}>{p.blurb}</p>
-                  <Link className={styles.more} href={p.href} aria-label={`${p.learnMoreLabel}: ${p.title}`}>
-                    {p.learnMoreLabel} <span aria-hidden="true">→</span>
-                  </Link>
-                </div>
-              </article>
+                  </div>
+                  <svg
+                    className={styles.programChevron}
+                    viewBox="0 0 24 24"
+                    width="20"
+                    height="20"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </Link>
+              </li>
             );
           })}
-        </div>
+        </ul>
       </div>
     </section>
   );
