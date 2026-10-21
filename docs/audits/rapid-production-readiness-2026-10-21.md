@@ -119,7 +119,7 @@ Investigation and local verification are sufficient to proceed to **Step 3** whe
 | `AUDIT_BASE=http://127.0.0.1:4721 npm run qa:final:http` | 1 | 1 failure — `report-2025.pptx` 200 vs stale script expectation 404 |
 | Full Playwright (`PLAYWRIGHT_SKIP_WEBSERVER=1`) | 1 | 83 pass, 47 fail, 6 skip |
 
-### Stabilization checkpoint (2026-10-21, after test-infra commit)
+### Stabilization checkpoint (2026-10-21, commit `2578941aa00d2194fd2a2f896a0c49d3c6a0abdd`)
 
 | Command | Exit | Result |
 |---------|------|--------|
