@@ -5,7 +5,8 @@ import { site } from "@/lib/site";
 /** Rendered per request so lastModified follows the latest admin publish. */
 export const dynamic = "force-dynamic";
 
-const STATIC_ROUTES = [
+/** Canonical static paths included in the sitemap (exported for route tests). */
+export const STATIC_SITEMAP_ROUTES = [
   "",
   "/about-us",
   "/reports",
@@ -37,7 +38,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const eventsUpdated = stamp(events.updatedAt, siteUpdated);
   const routeStamp: Record<string, Date> = { "/blog": blogUpdated, "/events": eventsUpdated };
 
-  const pages = STATIC_ROUTES.map((path) => ({
+  const pages = STATIC_SITEMAP_ROUTES.map((path) => ({
     url: `${site.url}${path || "/"}`,
     lastModified: routeStamp[path] ?? siteUpdated,
   }));

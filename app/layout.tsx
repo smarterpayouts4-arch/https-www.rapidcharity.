@@ -3,7 +3,7 @@ import { Cormorant_Garamond, Plus_Jakarta_Sans, Poppins } from "next/font/google
 import { SiteShell } from "@/components/SiteShell";
 import { loadSiteContent } from "@/lib/content";
 import { activeAnnouncement } from "@/lib/content/announcement";
-import { site } from "@/lib/site";
+import { rootSiteMetadata } from "@/lib/site/shareMetadata";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -32,39 +32,7 @@ const poppins = Poppins({
   preload: false,
 });
 
-const description =
-  "RAPID Charity: Reconciliation And Peace Innovative Development. Scholarships and educational empowerment.";
-
-export const metadata: Metadata = {
-  title: {
-    default: `${site.name} | ${site.fullName}`,
-    template: `%s | ${site.name}`,
-  },
-  description,
-  metadataBase: new URL(site.url),
-  applicationName: site.name,
-  openGraph: {
-    title: `${site.name} | ${site.fullName}`,
-    description,
-    url: site.url,
-    siteName: site.name,
-    type: "website",
-    images: [
-      {
-        url: "/assets/images/blog/fccu-get-together-2025.jpg",
-        width: 1800,
-        height: 867,
-        alt: "RAPID scholars at FCCU get-together 2025",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${site.name} | ${site.fullName}`,
-    description,
-    images: ["/assets/images/blog/fccu-get-together-2025.jpg"],
-  },
-};
+export const metadata: Metadata = rootSiteMetadata();
 
 export default async function RootLayout({
   children,
